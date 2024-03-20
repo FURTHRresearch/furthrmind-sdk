@@ -22,12 +22,15 @@ class Column(BaseClass):
     def get_all(cls, project_id=None) -> List[Self]:
         raise ValueError("Not implemented for datatables")
 
-    def _get_url(self, id=None, project_id=None):
-        project_url = self.fm.get_project_url(project_id)
-        if id is None:
-            url = f"{project_url}/column/{self.id}"
-        else:
-            url = f"{project_url}/column/{id}"
+    def _get_url_instance(self, project_id=None):
+        project_url = Column.fm.get_project_url(project_id)
+        url = f"{project_url}/column/{self.id}"
+        return url
+
+    @classmethod
+    def _get_url_class(cls, id, project_id=None):
+        project_url = cls.fm.get_project_url(project_id)
+        url = f"{project_url}/column/{id}"
         return url
 
     @classmethod

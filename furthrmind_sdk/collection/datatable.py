@@ -20,12 +20,15 @@ class DataTable(BaseClass):
     def get_all(cls, project_id=None) -> List[Self]:
         raise ValueError("Not implemented for datatables")
 
-    def _get_url(self, id=None, project_id=None):
-        project_url = self.fm.get_project_url(project_id)
-        if id is None:
-            url = f"{project_url}/rawdata/{self.id}"
-        else:
-            url = f"{project_url}/rawdata/{id}"
+    def _get_url_instance(self, project_id=None):
+        project_url = DataTable.fm.get_project_url(project_id)
+        url = f"{project_url}/rawdata/{self.id}"
+        return url
+
+    @classmethod
+    def _get_url_class(cls, id, project_id=None):
+        project_url = cls.fm.get_project_url(project_id)
+        url = f"{project_url}/rawdata/{id}"
         return url
 
     @classmethod
@@ -69,7 +72,7 @@ class DataTable(BaseClass):
         column_id_string = ",".join(column_id_list)
         project_url = self.fm.get_project_url()
         url = f"{project_url}/columns/{column_id_string}"
-        columns = self.fm.get(url)
+        columns = self.fm.session.get(url)
         return columns
 
     @classmethod

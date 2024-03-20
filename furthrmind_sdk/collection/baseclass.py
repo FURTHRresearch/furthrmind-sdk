@@ -33,16 +33,17 @@ class BaseClass:
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
-        try:
-            if hasattr(self, item):
-                return getattr(self, item)
-            else:
-                raise ValueError("No such attribute")
-        except:
-            print(1)
+        if hasattr(self, item):
+            return getattr(self, item)
+        else:
+            raise ValueError("No such attribute")
 
-    @staticmethod
-    def _get_url(id=None, project_id=None):
+
+    def _get_url_instance(self, project_id=None):
+        return ""
+
+    @classmethod
+    def _get_url_class(cls, id, project_id=None):
         return ""
 
     @classmethod
@@ -144,7 +145,7 @@ class BaseClass:
     @_update_instance_decorator
     @furthr_wrap(force_list=False)
     def _get_instance_method(self):
-        url = self._get_url()
+        url = self._get_url_instance()
         data = self.fm.session.get(url)
         return data
 
@@ -152,7 +153,7 @@ class BaseClass:
     @_create_instances_decorator
     @furthr_wrap(force_list=False)
     def _get_class_method(cls, id):
-        url = cls.__class__._get_url(id)
+        url = cls._get_url_class(id)
         return cls.fm.session.get(url)
 
     @classmethod

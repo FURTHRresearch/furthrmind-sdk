@@ -28,12 +28,14 @@ class Project(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
+    def _get_url_instance(self):
+        project_url = Column.fm.get_project_url(self.id)
+        return project_url
 
-    def _get_url(self, id=None):
-        if id is None:
-            return self.fm.get_project_url(self.id)
-        else:
-            return self.fm.get_project_url(id)
+    @classmethod
+    def _get_url_class(cls, id):
+        project_url = cls.fm.get_project_url(id)
+        return project_url
 
     @classmethod
     def _get_all_url(cls):

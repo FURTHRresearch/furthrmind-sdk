@@ -1,4 +1,4 @@
-from furthrmind_sdk.collection import Experiment, Sample, ResearchItem
+from furthrmind_sdk.collection import Experiment, Sample, ResearchItem, Column
 from furthrmind_sdk.furthrmind import FURTHRmind
 
 def get_all_experiments():
@@ -56,6 +56,6 @@ if __name__ == "__main__":
 
     datatable = exp.datatables[0]
     column = datatable.columns[0]
-    column.get()
-
+    c = column.get()
+    c = Column.get('6319f87701c844a436e21ea1')
     print(1)
