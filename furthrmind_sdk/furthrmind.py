@@ -1,5 +1,4 @@
 import requests
-# from get import Get
 from furthrmind_sdk.collection.project import Project
 
 class FURTHRmind:
@@ -14,7 +13,6 @@ class FURTHRmind:
         self.session.headers.update({"X-API-KEY": api_key})
         self.api_key = api_key
         self.project_id = project_id
-        # self.get = Get(self)
         self._write_fm_to_base_class()
 
         if project_name is not None:

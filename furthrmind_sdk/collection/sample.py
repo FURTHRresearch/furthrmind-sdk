@@ -1,6 +1,5 @@
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
-from typing_extensions import Self, Dict, List
-from typing import TYPE_CHECKING
+from typing_extensions import Self, Dict, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 

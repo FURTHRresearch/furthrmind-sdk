@@ -1,8 +1,7 @@
 from ..utils import furthr_wrap
 from functools import wraps
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
-from typing_extensions import List, Dict, Self
-from typing import TYPE_CHECKING
+from typing_extensions import List, Dict, Self, TYPE_CHECKING
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 

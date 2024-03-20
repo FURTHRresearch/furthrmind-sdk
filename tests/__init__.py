@@ -46,12 +46,16 @@ def get_all_experiment():
     print(1)
 
 if __name__ == "__main__":
-    fm = FURTHRmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
-    get_all_experiments()
+    # fm = FURTHRmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
+    fm = FURTHRmind("http://127.0.0.1:5000", "4R25HIKQ0FXE7MFD4KSY3JJYO54E61J3", project_id="6319f6fb01c844a436e07971")
+    exps = get_all_experiments()
+    exp = exps[0]
     # create_experiment()
     # create_sample()
     # create_researchitem()
 
-
+    datatable = exp.datatables[0]
+    column = datatable.columns[0]
+    column.get()
 
     print(1)

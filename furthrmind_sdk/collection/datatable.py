@@ -1,10 +1,6 @@
-from typing import List
-
 from ..utils import furthr_wrap
-from functools import wraps
 from furthrmind_sdk.collection.baseclass import BaseClass
-from typing import TYPE_CHECKING
-from typing_extensions import Self, List, Dict
+from typing_extensions import Self, List, TYPE_CHECKING
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import Column
 

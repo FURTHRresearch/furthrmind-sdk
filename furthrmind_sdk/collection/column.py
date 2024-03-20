@@ -1,4 +1,3 @@
-from typing import List
 from typing_extensions import Self, List, Dict
 
 from ..utils import furthr_wrap
@@ -10,7 +9,7 @@ class Column(BaseClass):
     id = ""
     name = ""
     type = ""
-    data = []
+    values = []
 
 
     _attr_definition = {

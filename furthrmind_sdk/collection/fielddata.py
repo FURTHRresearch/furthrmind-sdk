@@ -4,8 +4,7 @@ from furthrmind_sdk.collection.baseclass import BaseClass
 from datetime import datetime, date
 from bson import ObjectId
 from furthrmind_sdk.utils import instance_overload
-from typing_extensions import List
-from typing import TYPE_CHECKING
+from typing_extensions import List, TYPE_CHECKING
 if TYPE_CHECKING:
     from furthrmind_sdk.collection.unit import Unit
 

@@ -1,8 +1,7 @@
 from functools import wraps
 
 from furthrmind_sdk.utils import furthr_wrap, instance_overload
-from typing_extensions import List, Self, Any, Dict
-from typing import TypedDict, TYPE_CHECKING
+from typing_extensions import List, Self, Any, Dict, TYPE_CHECKING
 from inspect import isclass
 import os
 
@@ -34,10 +33,13 @@ class BaseClass:
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
-        if hasattr(self, item):
-            return getattr(self, item)
-        else:
-            raise ValueError("No such attribute")
+        try:
+            if hasattr(self, item):
+                return getattr(self, item)
+            else:
+                raise ValueError("No such attribute")
+        except:
+            print(1)
 
     @staticmethod
     def _get_url(id=None, project_id=None):
@@ -55,8 +57,9 @@ class BaseClass:
     def _update_instance_decorator(f):
         @wraps(f)
         def decorated(*args, **kws):
+            results = f(*args, **kws)
             self = args[0]
-            self._update_attributes(*args, **kws)
+            self._update_attributes(results)
 
         return decorated
 
@@ -135,17 +138,19 @@ class BaseClass:
             return cls._get_class_method(id)
         else:
             self = cls
-            return self._get_instance_method()
+            data = self._get_instance_method()
+            return data
 
     @_update_instance_decorator
-    @furthr_wrap
+    @furthr_wrap(force_list=False)
     def _get_instance_method(self):
         url = self._get_url()
-        return self.fm.session.get(url)
+        data = self.fm.session.get(url)
+        return data
 
     @classmethod
-    @_update_instance_decorator
-    @furthr_wrap
+    @_create_instances_decorator
+    @furthr_wrap(force_list=False)
     def _get_class_method(cls, id):
         url = cls.__class__._get_url(id)
         return cls.fm.session.get(url)
