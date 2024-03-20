@@ -14,7 +14,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
     linked_experiments: List[Self] = []
     groups: List["Group"] = []
     linked_researchitems: Dict[str, List["ResearchItem"]] = []
-    datatables = []
+    datatables: List["DataTable"] = []
 
 
     _attr_definition = {

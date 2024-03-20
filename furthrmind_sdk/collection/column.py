@@ -22,6 +22,22 @@ class Column(BaseClass):
     def get_all(cls, project_id=None) -> List[Self]:
         raise ValueError("Not implemented for datatables")
 
+    @classmethod
+    @BaseClass._create_instances_decorator
+    @furthr_wrap(force_list=True)
+    def get_many(cls, id_list, project_id=None) -> List[Self]:
+        """
+        Method to get many columns
+        :param id_list: list of column ids that should be retrieved
+        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
+        :return: list of column objects
+        """
+        column_id_string = ",".join(id_list)
+        project_url = Column.fm.get_project_url(project_id)
+        url = f"{project_url}/columns/{column_id_string}"
+        columns = Column.fm.session.get(url)
+        return columns
+
     def _get_url_instance(self, project_id=None):
         project_url = Column.fm.get_project_url(project_id)
         url = f"{project_url}/column/{self.id}"

@@ -61,6 +61,7 @@ class BaseClass:
             results = f(*args, **kws)
             self = args[0]
             self._update_attributes(results)
+            return self
 
         return decorated
 

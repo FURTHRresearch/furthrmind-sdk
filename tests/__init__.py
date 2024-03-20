@@ -57,5 +57,6 @@ if __name__ == "__main__":
     datatable = exp.datatables[0]
     column = datatable.columns[0]
     c = column.get()
-    c = Column.get('6319f87701c844a436e21ea1')
+    columns = datatable.get_columns()
+    df = datatable.get_pandas_dataframe()
     print(1)

@@ -1,13 +1,14 @@
 from ..utils import furthr_wrap
 from furthrmind_sdk.collection.baseclass import BaseClass
 from typing_extensions import Self, List, TYPE_CHECKING
+from pandas import DataFrame
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import Column
 
 class DataTable(BaseClass):
     id = ""
     name = ""
-    columns = []
+    columns: List["Column"] = []
 
 
     _attr_definition = {
@@ -44,6 +45,14 @@ class DataTable(BaseClass):
         return url
 
     def get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
+        """
+        Method to get columns and their data
+        If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
+        to the datatable
+        :param column_id_list: list of column_ids to retrieve
+        :param column_name_list: list of column names to retrieve
+        :return: list of column objects
+        """
         columns = self._get_columns(column_id_list, column_name_list)
         new_column_mapping = {c.id: c for c in columns}
         new_column_list = []
@@ -55,10 +64,24 @@ class DataTable(BaseClass):
         self.columns = new_column_list
         return columns
 
+    def get_pandas_dataframe(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> DataFrame:
+        """
+        Method to get columns and their data as a pandas dataframe
+        If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
+        to the datatable
+        :param column_id_list: list of column_ids to retrieve
+        :param column_name_list: list of column names to retrieve
+        :return: pandas dataframe
+        """
+        columns = self._get_columns(column_id_list, column_name_list)
+        data_dict = {}
+        for c in columns:
+            data_dict[c.name] = c.values
+        df = DataFrame.from_dict(data_dict)
+        return df
 
-    @BaseClass._create_instances_decorator
-    @furthr_wrap(force_list=True)
     def _get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
+        from furthrmind_sdk.collection import Column
         if column_id_list:
             pass
         elif column_name_list:
@@ -68,11 +91,7 @@ class DataTable(BaseClass):
                     column_id_list.append(column.id)
         else:
             column_id_list = [c.id for c in self.columns]
-
-        column_id_string = ",".join(column_id_list)
-        project_url = self.fm.get_project_url()
-        url = f"{project_url}/columns/{column_id_string}"
-        columns = self.fm.session.get(url)
+        columns = Column.get_many(column_id_list)
         return columns
 
     @classmethod
