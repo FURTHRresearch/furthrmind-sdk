@@ -1,12 +1,16 @@
 from ..utils import furthr_wrap
 from functools import wraps
 from furthrmind_sdk.collection.baseclass import BaseClass
+import os
+from typing import TYPE_CHECKING
+from typing_extensions import Self
+
 
 class File(BaseClass):
     id = ""
     name = ""
 
-    attr_definition = {
+    _attr_definition = {
     }
 
     def __init__(self, id=None, data=None):
@@ -21,19 +25,26 @@ class File(BaseClass):
         raise TypeError("Not implemented")
 
 
-    #todo implement as class and instance method
-    @classmethod
-    def download(cls, id=None):
-        pass
+    def download(self, folder, overwrite=False):
+        """
+        Method to download a file
+        :param folder: the folder where the file should be saved
+        """
+        from furthrmind_sdk.file_loader import FileLoader
+        fl = FileLoader(self.fm.host, self.fm.api_key)
 
-    @classmethod
-    def upload(cls):
-        pass
+        if not os.path.isdir(folder):
+            raise ValueError("Folder does not exist")
+        fl.downloadFile(self.id, folder, overwrite)
 
-    #todo implement as class and instance method
-    @classmethod
-    def update_file(cls, id=None):
-        pass
+    def update_file(self, file_path, file_name=None):
+        from furthrmind_sdk.file_loader import FileLoader
+        fl = FileLoader(self.fm.host, self.fm.api_key)
+
+        if not os.path.isfile(file_path):
+            raise ValueError("File does not exist")
+
+        fl.updateFile(self.id, file_path, file_name)
 
 
 

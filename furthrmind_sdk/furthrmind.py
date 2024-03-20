@@ -1,6 +1,5 @@
 import requests
 # from get import Get
-from furthrmind_sdk.collection.baseclass import BaseClass
 from furthrmind_sdk.collection.project import Project
 
 class FURTHRmind:
@@ -11,12 +10,12 @@ class FURTHRmind:
             host = f"https://{host}"
         self.host = host
         self.base_url = f"{host}/api2"
-        self.project_url = f"{self.base_url}/projects/{project_id}"
         self.session = requests.session()
         self.session.headers.update({"X-API-KEY": api_key})
+        self.api_key = api_key
         self.project_id = project_id
         # self.get = Get(self)
-        BaseClass.fm = self
+        self._write_fm_to_base_class()
 
         if project_name is not None:
             projects = Project.get_all()
@@ -25,6 +24,7 @@ class FURTHRmind:
                     self.project_id = project["id"]
                     print(f"Project ID: {self.project_id}")
                     break
+        self.project_url = f"{self.base_url}/projects/{self.project_id}"
 
 
     def get_project_url(self, project_id=None):
@@ -36,6 +36,10 @@ class FURTHRmind:
 
     def get_projects(self):
         return self.get.project()
+
+    def _write_fm_to_base_class(self):
+        from furthrmind_sdk.collection.baseclass import BaseClass
+        BaseClass.fm = self
 
 
 
