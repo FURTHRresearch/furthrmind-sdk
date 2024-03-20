@@ -25,7 +25,7 @@ def add_fiels(item):
         {"field_name": "Num", "field_type": "Numeric", "value": 10, "unit": "cm"},
         {"field_name": "Num", "field_type": "Numeric", "value": 20, "unit": "m"},
     ]
-    item.add_fields(fielddata_list)
+    item.add_many_fields(fielddata_list)
 
 def create_experiment():
     exp = Experiment.create("myexperiment2", group_name="Default group")

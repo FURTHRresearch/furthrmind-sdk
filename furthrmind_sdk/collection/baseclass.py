@@ -289,7 +289,7 @@ class BaseClassWithFieldData(BaseClass):
         self.post(data)
         return fielddata
 
-    def add_fields(self, data_list: List[Dict] ) -> List["FieldData"]:
+    def add_many_fields(self, data_list: List[Dict] ) -> List["FieldData"]:
         """
         Method to add many fields to an item. Each field is defined by and dict in the data_list parameter
         :param data_list: dict with the following key
