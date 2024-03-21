@@ -45,13 +45,15 @@ class ComboBoxEntry(BaseClassWithFieldData):
     def create(cls, name: str, field_name: str = None, field_id=None, project_id=None) -> Self:
         """
         Method to create a new combobox entry
+
         :param name: name of the combobox entry
         :param field_name: Name of the field, where the combobox entry should belong to. Either the field name or id
-                           must be provided
+           must be provided
         :param field_id: id of the field, where the combobox entry should belong to. Either the field name or id must
-                        be provided
+            be provided
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of column comboboxentry class
+
         """
         if not name:
             raise ValueError("Name must be specified")
@@ -78,14 +80,16 @@ class ComboBoxEntry(BaseClassWithFieldData):
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create a new data column
+
         :param data_list: dict with the following keys:
             - name of the combobox entry
             - field_name: Name of the field, where the combobox entry should belong to. Either the field name or id
-                           must be provided
+            must be provided
             - field_id: id of the field, where the combobox entry should belong to. Either the field name or id must
-                        be provided
+            be provided
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: List with instances of comboboxentry class
+
         """
 
         look_for_field_ids = False

@@ -50,6 +50,8 @@ class FieldData(BaseClass):
 
     def update_value(self, value):
         """
+        Method to update the value of fielddata
+
         :param value:
             - Numeric: float or int, or a string convertable to a float
             - Date: datetime, or date object, or unix timestamp or string with iso format
@@ -138,6 +140,8 @@ class FieldData(BaseClass):
 
     def update_unit(self, unit):
         """
+        Method to update the unit of fielddata
+
         :param unit:
             - dict with id or name, or name as string, or id as string
         :return: id
@@ -174,6 +178,7 @@ class FieldData(BaseClass):
     def create(cls, field_name, field_type, field_id, value, unit, project_id=None):
         """
         Method to create a new fielddata
+
         :param field_name: name of the field. Either field name and field_type must be specified, or field_id
                            must be specified
         :param field_type: type of the field. Must be out of:
@@ -225,29 +230,35 @@ class FieldData(BaseClass):
     def create_many(cls, data_list, project_id=None):
         """
         Method to create many new fielddata
-        :param data_list: List with dicts with the following keys:
-            - field_name: name of the field. Either field name and field_type must be specified, or field_id
-                           must be specified
-            -  field_type: type of the field. Must be out of:
-                - Numeric
-                - Date
-                - SingleLine
-                - ComboBoxEntry
-                - MultiLine
-                - CheckBox
-                - Calculation
-            - field_id: id of the field
-            - value:
-                - Numeric: float or int, or a string convertable to a float
-                - Date: datetime, or date object, or unix timestamp or string with iso format
-                - SingleLine: string
-                - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-                - MultiLine: dict with content as key, or string
-                - CheckBox: boolean
-            - unit: dict with id or name, or name as string, or id as string
+
+        :param data_list: List with dicts with the following kneys:
+        - field_name: name of the field. Either field name and field_type must be specified, or field_id
+            must be specified
+        -  field_type: type of the field. Must be out of:
+            - Numeric
+            - Date
+            - SingleLine
+            - ComboBoxEntry
+            - MultiLine
+            - CheckBox
+            - Calculation
+
+        - field_id: id of the field
+        - value:
+            - Numeric: float or int, or a string convertable to a float
+            - Date: datetime, or date object, or unix timestamp or string with iso format
+            - SingleLine: string
+            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
+            - MultiLine: dict with content as key, or string
+            - CheckBox: boolean
+
+        - unit: dict with id or name, or name as string, or id as string
+
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: list with instances of fielddata class
+
         """
+
         from furthrmind_sdk.collection import Field
 
         post_data_list = []

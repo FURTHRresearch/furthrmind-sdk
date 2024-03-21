@@ -45,6 +45,7 @@ class Field(BaseClass):
     def create(cls, name, type, project_id=None) -> Self:
         """
         Method to create a new sample
+
         :param name: the name of the field to be created
         :param type: field type of the field. Must be out of:
             - Numeric
@@ -54,9 +55,12 @@ class Field(BaseClass):
             - MultiLine
             - CheckBox
             - Calculation
+
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return instance of the sample class
+
         """
+
         if not name:
             raise ValueError("Name cannot be empty")
 
@@ -73,16 +77,18 @@ class Field(BaseClass):
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create multiple samples
+
         :param data_list: dict with the following keys:
-            - name: the name of the field to be created
-            - type: field type of the field. Must be out of:
-                - Numeric
-                - Date
-                - SingleLine
-                - ComboBoxEntry
-                - MultiLine
-                - CheckBox
-                - Calculation
+        - name: the name of the field to be created
+        - type: field type of the field. Must be out of:
+            - Numeric
+            - Date
+            - SingleLine
+            - ComboBoxEntry
+            - MultiLine
+            - CheckBox
+            - Calculation
+
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return list with instance of the sample class
         """

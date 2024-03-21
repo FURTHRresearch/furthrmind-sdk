@@ -42,10 +42,11 @@ class Unit(BaseClass):
     def create(cls, name: str, definition: str = None, project_id=None) -> Self:
         """
         Method to create a new unit
+
         :param name: name of the new unit
         :param definition: Unit definition in SI units to convert the new unit to an SI Value. E.g. for unit cm², the
-                           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
-                           You will find there a list of valid units. A definition can als contain scalar values.
+           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
+           You will find there a list of valid units. A definition can als contain scalar values.
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
 
         :return: instance of the unit class
@@ -64,14 +65,16 @@ class Unit(BaseClass):
     def create_many(cls, data_list, project_id=None) -> Self:
         """
         Method to create a new unit
+
         :param data_list: List of dictionaries with the following keys:
-            - name: name of the new unit
-            - definition: Unit definition in SI units to convert the new unit to an SI Value. E.g. for unit cm², the
-                           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
-                           You will find there a list of valid units. A definition can als contain scalar values.
+        - name: name of the new unit
+        - definition: Unit definition in SI units to convert the new unit to an SI Value. E.g. for unit cm², the
+           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
+           You will find there a list of valid units. A definition can als contain scalar values.
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
 
         :return: instance of the unit class
+
         """
 
         new_data_list = []

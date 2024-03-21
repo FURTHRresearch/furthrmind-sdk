@@ -49,10 +49,13 @@ class DataTable(BaseClass):
         Method to get columns and their data
         If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
         to the datatable
+
         :param column_id_list: list of column_ids to retrieve
         :param column_name_list: list of column names to retrieve
         :return: list of column objects
+
         """
+
         columns = self._get_columns(column_id_list, column_name_list)
         new_column_mapping = {c.id: c for c in columns}
         new_column_list = []
@@ -69,10 +72,13 @@ class DataTable(BaseClass):
         Method to get columns and their data as a pandas dataframe
         If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
         to the datatable
+
         :param column_id_list: list of column_ids to retrieve
         :param column_name_list: list of column names to retrieve
         :return: pandas dataframe
+
         """
+
         columns = self._get_columns(column_id_list, column_name_list)
         data_dict = {}
         for c in columns:
@@ -99,6 +105,7 @@ class DataTable(BaseClass):
     def create(cls, name: str = "Data table", experiment_id=None, sample_id=None, researchitem_id=None, columns=None, project_id=None) -> Self:
         """
         Method to create a new datatable
+
         :param name: name of the datatable
         :param experiment_id: id of the experiment where the datatable belongs to
         :param sample_id: id of the sample where the datatable belongs to
@@ -106,12 +113,14 @@ class DataTable(BaseClass):
         :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
             - name: name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-                    will be converted to string and for Numeric all data is converted to float (if possible)
+            will be converted to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of datatable class
+
         """
+
         from furthrmind_sdk.collection import Column
 
         if not name:

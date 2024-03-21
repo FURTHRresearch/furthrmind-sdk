@@ -61,15 +61,18 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
     def create(cls,name, group_name = None, group_id=None, category_name=None, category_id = None, project_id=None) -> Self:
         """
         Method to create a new researchitem
+
         :param name: the name of the item to be created
         :param group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
+            for groups that are not subgroups. Either group_name or group_id must be specified
         :param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
         :category_name: the name of the category that the new item will belong to. Either category_name or category_id must be specified
         :category_id: the id of the category that the new item will belong to. Either category_name or category_id must be specified
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return instance of the researchitem class
+
         """
+
         from furthrmind_sdk.collection import Category
         if not category_name and not category_id:
             raise ValueError("Either category name or id must be specified")
@@ -99,15 +102,17 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create multiple experiments
+
         :param data_list: dict with the following keys:
             - name: the name of the item to be created
             - group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
+            for groups that are not subgroups. Either group_name or group_id must be specified
             - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
             - category_name: the name of the category that the new item will belong to. Either category_name or category_id must be specified
             - category_id: the id of the category that the new item will belong to. Either category_name or category_id must be specified
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return list with instance of the experiment class
+
         """
 
         new_list = []
@@ -148,15 +153,17 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
     def add_datatable(self, name: str, columns: List[Dict], project_id=None ) -> "DataTable":
         """
         Method to create a new datatable within this experiment
+
         :param name: name of the datatable
         :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
             - name: name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-                    will be converted to string and for Numeric all data is converted to float (if possible)
+            will be converted to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of column datatable class
+
         """
 
         from furthrmind_sdk.collection import DataTable

@@ -58,13 +58,16 @@ class Sample(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
     def create(cls, name, group_name=None, group_id=None, project_id=None) -> Self:
         """
         Method to create a new sample
+
         :param name: the name of the item to be created
         :param group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
+            for groups that are not subgroups. Either group_name or group_id must be specified
         :param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return instance of the sample class
+
         """
+
         return Sample._create(name, group_name, group_id, project_id)
 
     @classmethod
@@ -72,28 +75,33 @@ class Sample(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create multiple samples
+
         :param data_list: dict with the following keys:
             - name: the name of the item to be created
             - group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
+            for groups that are not subgroups. Either group_name or group_id must be specified
             - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return list with instance of the sample class
+
         """
+
         return Sample._create_many(data_list, project_id)
 
     def add_datatable(self, name: str, columns: List[Dict], project_id=None ) -> "DataTable":
         """
         Method to create a new datatable within this experiment
+
         :param name: name of the datatable
         :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
             - name: name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-                    will be converted to string and for Numeric all data is converted to float (if possible)
+            will be converted to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of column datatable class
+
         """
 
         from furthrmind_sdk.collection import DataTable

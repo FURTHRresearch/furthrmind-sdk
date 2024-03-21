@@ -227,6 +227,7 @@ class BaseClassWithFieldData(BaseClass):
         :param field_id: id of field that should be updated. Either field_name or field_id must be specified
         :return: id
         """
+
         fielddata = None
         for fielddata in self.fielddata:
             if fielddata:
@@ -256,6 +257,7 @@ class BaseClassWithFieldData(BaseClass):
         :param field_id: id of field that should be updated. Either field_name or field_id must be specified
         :return: id
         """
+
         fielddata = None
         for fielddata in self.fielddata:
             if field_id:
@@ -288,6 +290,7 @@ class BaseClassWithFieldData(BaseClass):
         :param unit: dict with id or name, or name as string, or id as string
         :return: fielddata object
         """
+
         from .fielddata import FieldData
 
         fielddata = FieldData.create(field_name, field_type, field_id, value, unit)
@@ -299,22 +302,26 @@ class BaseClassWithFieldData(BaseClass):
     def add_many_fields(self, data_list: List[Dict] ) -> List["FieldData"]:
         """
         Method to add many fields to an item. Each field is defined by and dict in the data_list parameter
+
         :param data_list: dict with the following key
-            - field_name: Name of field that should be added. If fieldname provided,
-                            also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
-            - field_type: Type of field: Must be out of: Numeric, Date, SingleLine
-                                                        ComboBoxEntry, MultiLine, CheckBox
-            - field_id: id of field that should be added.
-                - value:
-                - Numeric: float or int, or a string convertable to a float
-                - Date: datetime, or date object, or unix timestamp or string with iso format
-                - SingleLine: string
-                - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-                - MultiLine: dict with content as key, or string
-                - CheckBox: boolean
-            - unit: dict with id or name, or name as string, or id as string
+        - field_name: Name of field that should be added. If fieldname provided,
+            also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
+        - field_type: Type of field: Must be out of: Numeric, Date, SingleLine
+            ComboBoxEntry, MultiLine, CheckBox
+        - field_id: id of field that should be added.
+        - value:
+            - Numeric: float or int, or a string convertable to a float
+            - Date: datetime, or date object, or unix timestamp or string with iso format
+            - SingleLine: string
+            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
+            - MultiLine: dict with content as key, or string
+            - CheckBox: boolean
+        - unit: dict with id or name, or name as string, or id as string
+
         :return: list with fielddata object
+
         """
+
         from .fielddata import FieldData
 
         fielddata_list = FieldData.create_many(data_list)
@@ -326,10 +333,13 @@ class BaseClassWithFieldData(BaseClass):
 
     def remove_field(self, fieldname=None, fieldid=None):
         """
+
         :param fieldname: Name of field that should be removed. Either id or fieldname must be specified
         :param fieldid: id of field that should be removed.
         :return id of item
+
         """
+
         new_fielddata_list = []
         fielddata_to_be_removed = None
         for fielddata in self.fielddata:
@@ -370,6 +380,7 @@ class BaseClassWithFiles(BaseClass):
 
         :return: file object
         """
+
         from furthrmind_sdk.file_loader import FileLoader
         from .file import File
 
@@ -397,6 +408,7 @@ class BaseClassWithFiles(BaseClass):
 
         :return: file object
         """
+
         new_file_list = []
         file_to_be_removed = None
         for file in self.files:

@@ -28,9 +28,11 @@ class Column(BaseClass):
     def get_many(cls, id_list, project_id=None) -> List[Self]:
         """
         Method to get many columns
+
         :param id_list: list of column ids that should be retrieved
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: list of column objects
+
         """
         column_id_string = ",".join(id_list)
         project_url = Column.fm.get_project_url(project_id)
@@ -87,13 +89,15 @@ class Column(BaseClass):
     def create(cls, name: str, type: str, data: list, unit=None, project_id=None) -> Self:
         """
         Method to create a new data column
+
         :param name: Name of the column
         :param type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-                            will be converted to string and for Numeric all data is converted to float (if possible)
-            :param data: List of column values, must fit to column_type
-            :param unit: dict with id or name, or name as string, or id as string
+            will be converted to string and for Numeric all data is converted to float (if possible)
+        :param data: List of column values, must fit to column_type
+        :param unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: Instance of column class
+
         """
 
         data = cls._type_check(type, data)
@@ -108,14 +112,16 @@ class Column(BaseClass):
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create a new data column
+
         :param data_list: dict with the following keys:
             - name: Name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-                    will be converted to string and for Numeric all data is converted to float (if possible)
+            will be converted to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: List with instances of column class
+
         """
 
         new_data_list = []
