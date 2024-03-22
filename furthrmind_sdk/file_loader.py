@@ -4,6 +4,7 @@ import requests
 import mimetypes
 from pathvalidate import sanitize_filename
 import sys
+from io import BytesIO
 
 
 class FileLoader:
@@ -169,32 +170,46 @@ class FileLoader:
         return True
 
 
-    def downloadFile(self, fileID, folderPath, overwrite=False):
-        if not os.path.isdir(folderPath):
-            print("This is not valid folder")
-            return False, None
+    def downloadFile(self, fileID, folderPath=None, bytesIO: bool=False, overwrite=False):
 
-        response = self.session.get(f"{self.host}/api2/file/{fileID}")
-        file = response.json()
-        file_name = file["name"]
-        file_name = sanitize_filename(file_name)
-
-        filePath = f"{folderPath}/{file_name}"
-
-        if os.path.isfile(filePath):
-            if overwrite is False:
-                print("File already present!")
-                return False, None
 
         response = self.session.get(f"{self.host}/files/{fileID}")
-        with open(filePath, "wb+") as newFile:
+
+        if not bytesIO:
+            if not os.path.isdir(folderPath):
+                print("This is not valid folder")
+                return False, None
+
+            file_response = self.session.get(f"{self.host}/api2/file/{fileID}")
+            file = file_response.json()
+            file_name = file["name"]
+            file_name = sanitize_filename(file_name)
+            filePath = f"{folderPath}/{file_name}"
+            if os.path.isfile(filePath):
+                if overwrite is False:
+                    print("File already present!")
+                    return False, None
+
+            with open(filePath, "wb+") as newFile:
+                for chunk in response.iter_content(chunk_size=self.chunkSize):
+                    if chunk:  # filter out keep-alive new chunks
+                        newFile.write(chunk)
+
+            print(f"Download successful, file_id: {fileID}")
+
+            return True, filePath
+
+        else:
+            bytesIO = BytesIO()
             for chunk in response.iter_content(chunk_size=self.chunkSize):
-                if chunk:  # filter out keep-alive new chunks
-                    newFile.write(chunk)
+                if chunk:
+                    bytesIO.write(chunk)
 
-        print(f"Download successful, file_id: {fileID}")
+            print(f"Download successful, file_id: {fileID}")
 
-        return True, filePath
+            return True, bytesIO
+
+
 
 
     def getMD5(self, byteData):
@@ -247,7 +262,7 @@ if __name__ == "__main__":
         fl.updateFile(file_id, file_path, file_name)
 
     elif command == "download":
-        fl.downloadFile(file_id, download_folder, overwrite)
+        fl.downloadFile(file_id, download_folder, overwrite=overwrite)
 
     else:
         print("Unknown command")

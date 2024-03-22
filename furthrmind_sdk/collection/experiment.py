@@ -8,7 +8,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
     name = ""
     neglect = False
     shortid = ""
-    files = []
+    files: List["File"] = []
     fielddata: List["FieldData"] = []
     linked_samples: List["Sample"] = []
     linked_experiments: List[Self] = []

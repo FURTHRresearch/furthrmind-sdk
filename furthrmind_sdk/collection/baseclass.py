@@ -468,19 +468,22 @@ class BaseClassWithGroup(BaseClass):
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         : return list with instances of the item class: experiment, or sample
         """
+        from furthrmind_sdk.collection import Group
 
         new_list = []
+        groups = Group.get_all()
         for data in data_list:
             new_list.append(cls._prepare_data_for_create(name=data.get("name"), group_name=data.get("group_name"),
-                                                         group_id=data.get("group_id"), project_id=project_id))
+                                                         group_id=data.get("group_id"), project_id=project_id,
+                                                         groups=groups))
 
-        id_list = cls.post(new_list, data_list)
+        id_list = cls.post(new_list, project_id)
         for data, id in zip(new_list, id_list):
             data["id"] = id
         return new_list
 
     @classmethod
-    def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None):
+    def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None, groups=None):
         from furthrmind_sdk.collection import Group
         if not name:
             raise ValueError("Name must be specified")
@@ -488,7 +491,8 @@ class BaseClassWithGroup(BaseClass):
             raise ValueError("Either group_name or group_id must be specified")
 
         if group_name:
-            groups = Group.get_all(project_id)
+            if not groups:
+                groups = Group.get_all(project_id)
             for group in groups:
                 if group.parent_group:
                     continue

@@ -1,5 +1,6 @@
 from furthrmind_sdk.collection.baseclass import BaseClass
 import os
+from io import BytesIO
 
 class File(BaseClass):
     id = ""
@@ -31,6 +32,17 @@ class File(BaseClass):
         if not os.path.isdir(folder):
             raise ValueError("Folder does not exist")
         fl.downloadFile(self.id, folder, overwrite)
+
+    def download_bytes(self) -> BytesIO:
+        """
+        Method to download a file and save to BytesIO object
+        :param folder: the folder where the file should be saved
+        """
+        from furthrmind_sdk.file_loader import FileLoader
+        fl = FileLoader(self.fm.host, self.fm.api_key)
+
+        flag, bytesIO = fl.downloadFile(self.id, bytesIO=True)
+        return bytesIO
 
     def update_file(self, file_path, file_name=None):
         from furthrmind_sdk.file_loader import FileLoader

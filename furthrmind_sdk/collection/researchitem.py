@@ -114,16 +114,20 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         :return list with instance of the experiment class
 
         """
+        from furthrmind_sdk.collection import Group
 
         new_list = []
         category_id_not_present = False
+
+        groups = Group.get_all()
         for data in data_list:
             category_name = data.get('category_name')
             category_id = data.get('category_id')
             if not category_name and not category_id:
                 raise ValueError("Either category name or id must be specified")
 
-            temp_data = cls._prepare_data_for_create(data.get("name"), data.get("group_name"), data.get("group_id"), project_id)
+            temp_data = cls._prepare_data_for_create(data.get("name"), data.get("group_name"), data.get("group_id"),
+                                                     project_id, groups)
 
             category_dict = {}
             if category_name:
