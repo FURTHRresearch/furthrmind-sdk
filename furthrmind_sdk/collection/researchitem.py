@@ -1,7 +1,8 @@
 from ..utils import furthr_wrap
-from functools import wraps
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
+from inspect import isclass
+
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 
@@ -16,8 +17,8 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
     linked_samples: List["Sample"] = []
     linked_researchitems: Dict[str, List["ResearchItem"]] = {}
     groups: List["Group"] = []
-    category = {}
-    datatables = []
+    category: "Category" = None
+    datatables: List["DataTable"] = []
 
     _attr_definition = {
         "files": {"class": "File"},
@@ -55,6 +56,47 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/researchitems"
         return url
+    
+    @classmethod
+    def get(cls, id=None) -> Self:
+        """
+        Method to get all one researchitem by it's id or short_id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id or short_id of requested researchitem 
+        :return Self: Instance of researchitem class
+        """
+
+        if isclass(cls):
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all researchitems belonging to one project
+        :param str project_id: Optionally to get researchitems from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of researchitem class
+        """
+        return super().get_all(project_id)
+
+    @classmethod
+    def get_by_name(cls, name, category_name, project_id=None):
+        return cls._get_by_name_class_method(name, category_name, project_id)
+
+    @classmethod
+    @BaseClass._create_instances_decorator
+    @furthr_wrap(force_list=False)
+    def _get_by_name_class_method(cls, name, category_name, project_id):
+        all_data = cls.get_all(project_id)
+        for d in all_data:
+            if d.category.name.lower() == category_name.lower():
+                if d.name.lower() == name.lower():
+                    return d
+        
+        raise ValueError("No item with this name found")
 
     @classmethod
     @BaseClass._create_instances_decorator

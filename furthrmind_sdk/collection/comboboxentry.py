@@ -1,5 +1,6 @@
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClass
 from typing_extensions import List, Self, Dict, TYPE_CHECKING
+from inspect import isclass
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 
@@ -40,6 +41,30 @@ class ComboBoxEntry(BaseClassWithFieldData):
         url = f"{project_url}/comboboxentry"
         return url
 
+    @classmethod
+    def get(cls, id=None) -> Self:
+        """
+        Method to get all one comboboxentry by it's id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id of requested comboboxentry 
+        :return Self: Instance of comboboxentry class
+        """
+        if isclass(cls):
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all comboboxentries belonging to one project
+        :param str project_id: Optionally to get comboboxentries from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of comboboxentry class
+        """
+        return super().get_all(project_id)
+    
     @classmethod
     @BaseClass._create_instances_decorator
     def create(cls, name: str, field_name: str = None, field_id=None, project_id=None) -> Self:

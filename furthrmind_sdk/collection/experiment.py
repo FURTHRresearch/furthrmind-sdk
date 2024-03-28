@@ -1,7 +1,8 @@
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
 from typing_extensions import Self, List, Dict, TYPE_CHECKING
+from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import FieldData, Sample, Group, ResearchItem, DataTable
+    from furthrmind_sdk.collection import FieldData, Sample, Group, ResearchItem, DataTable, File
 
 class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
     id = ""
@@ -52,6 +53,35 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/experiments"
         return url
+
+    @classmethod
+    def get(cls, id=None, name=None) -> Self:
+        """
+        Method to get all one experiment by it's id or short_id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id or short_id of requested experiment 
+        :param str name: name of requested experiment 
+        :return Self: Instance of experiment class
+        """
+        
+        if isclass(cls):
+            if id is None:
+                id = name
+            assert id is not None or name is not None, "Either id or name must be specified"
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all experiment belonging to one project
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of experiment class
+        """
+        return super().get_all(project_id)
 
     @classmethod
     @BaseClass._create_instances_decorator

@@ -79,9 +79,15 @@ def download_file(exps: List[Experiment]):
                 f.write(bytesIO.getvalue())
             print(1)
 
+def get_all_samples():
+    samples = Sample.get_all()
+    print(1)
+
+
 
 if __name__ == "__main__":
-    fm = FURTHRmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
+    # fm = FURTHRmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
+    fm = FURTHRmind("https://furthrmind.avt.rwth-aachen.de", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
     # fm = FURTHRmind("http://127.0.0.1:5000", "4R25HIKQ0FXE7MFD4KSY3JJYO54E61J3", project_id="6319f6fb01c844a436e07971")
     exps = get_all_experiments()
     # exp = exps[0]
@@ -95,6 +101,7 @@ if __name__ == "__main__":
     # c = column.get()
     # columns = datatable.get_columns()
     # df = datatable.get_pandas_dataframe()
-    download_file(exps)
+    # download_file(exps)
 
+    get_all_samples()
     print(1)

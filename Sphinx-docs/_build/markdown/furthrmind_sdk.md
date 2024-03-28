@@ -35,6 +35,8 @@
       * [`Category.__init__()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.__init__)
       * [`Category.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.create)
       * [`Category.description`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.description)
+      * [`Category.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.get)
+      * [`Category.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.get_all)
       * [`Category.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.id)
       * [`Category.name`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.name)
       * [`Category.project`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.category.Category.project)
@@ -43,6 +45,7 @@
       * [`Column.__init__()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.__init__)
       * [`Column.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.create)
       * [`Column.create_many()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.create_many)
+      * [`Column.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.get)
       * [`Column.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.get_all)
       * [`Column.get_many()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.get_many)
       * [`Column.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.column.Column.id)
@@ -56,6 +59,8 @@
       * [`ComboBoxEntry.create_many()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.create_many)
       * [`ComboBoxEntry.fielddata`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.fielddata)
       * [`ComboBoxEntry.files`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.files)
+      * [`ComboBoxEntry.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.get)
+      * [`ComboBoxEntry.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.get_all)
       * [`ComboBoxEntry.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.id)
       * [`ComboBoxEntry.name`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.comboboxentry.ComboBoxEntry.name)
   * [furthrmind_sdk.collection.datatable module](furthrmind_sdk.collection.md#module-furthrmind_sdk.collection.datatable)
@@ -63,6 +68,7 @@
       * [`DataTable.__init__()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.__init__)
       * [`DataTable.columns`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.columns)
       * [`DataTable.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.create)
+      * [`DataTable.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.get)
       * [`DataTable.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.get_all)
       * [`DataTable.get_columns()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.get_columns)
       * [`DataTable.get_pandas_dataframe()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.datatable.DataTable.get_pandas_dataframe)
@@ -77,6 +83,8 @@
       * [`Experiment.datatables`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.datatables)
       * [`Experiment.fielddata`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.fielddata)
       * [`Experiment.files`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.files)
+      * [`Experiment.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.get)
+      * [`Experiment.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.get_all)
       * [`Experiment.groups`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.groups)
       * [`Experiment.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.id)
       * [`Experiment.linked_experiments`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.experiment.Experiment.linked_experiments)
@@ -91,6 +99,8 @@
       * [`Field.comboboxentries`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.comboboxentries)
       * [`Field.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.create)
       * [`Field.create_many()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.create_many)
+      * [`Field.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.get)
+      * [`Field.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.get_all)
       * [`Field.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.id)
       * [`Field.name`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.name)
       * [`Field.script`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.field.Field.script)
@@ -116,6 +126,7 @@
     * [`File`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File)
       * [`File.__init__()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.__init__)
       * [`File.download()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.download)
+      * [`File.download_bytes()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.download_bytes)
       * [`File.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.get)
       * [`File.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.get_all)
       * [`File.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.file.File.id)
@@ -129,6 +140,8 @@
       * [`Group.experiments`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.experiments)
       * [`Group.fielddata`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.fielddata)
       * [`Group.files`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.files)
+      * [`Group.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.get)
+      * [`Group.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.get_all)
       * [`Group.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.id)
       * [`Group.name`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.name)
       * [`Group.neglect`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.group.Group.neglect)
@@ -144,6 +157,8 @@
       * [`Project.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.create)
       * [`Project.experiments`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.experiments)
       * [`Project.fields`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.fields)
+      * [`Project.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.get)
+      * [`Project.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.get_all)
       * [`Project.groups`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.groups)
       * [`Project.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.id)
       * [`Project.info`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.project.Project.info)
@@ -163,6 +178,9 @@
       * [`ResearchItem.datatables`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.datatables)
       * [`ResearchItem.fielddata`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.fielddata)
       * [`ResearchItem.files`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.files)
+      * [`ResearchItem.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.get)
+      * [`ResearchItem.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.get_all)
+      * [`ResearchItem.get_by_name()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.get_by_name)
       * [`ResearchItem.groups`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.groups)
       * [`ResearchItem.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.id)
       * [`ResearchItem.linked_experiments`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.researchitem.ResearchItem.linked_experiments)
@@ -180,6 +198,8 @@
       * [`Sample.datatables`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.datatables)
       * [`Sample.fielddata`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.fielddata)
       * [`Sample.files`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.files)
+      * [`Sample.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.get)
+      * [`Sample.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.get_all)
       * [`Sample.groups`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.groups)
       * [`Sample.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.id)
       * [`Sample.linked_experiments`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.sample.Sample.linked_experiments)
@@ -194,6 +214,8 @@
       * [`Unit.create()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.create)
       * [`Unit.create_many()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.create_many)
       * [`Unit.definition`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.definition)
+      * [`Unit.get()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.get)
+      * [`Unit.get_all()`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.get_all)
       * [`Unit.id`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.id)
       * [`Unit.longname`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.longname)
       * [`Unit.name`](furthrmind_sdk.collection.md#furthrmind_sdk.collection.unit.Unit.name)
@@ -214,7 +236,7 @@ Bases: `object`
 
 #### chunkUpload(fileID, fileName, filePath)
 
-#### downloadFile(fileID, folderPath, overwrite=False)
+#### downloadFile(fileID, folderPath=None, bytesIO=False, overwrite=False)
 
 #### getMD5(byteData)
 
@@ -226,11 +248,11 @@ Bases: `object`
 
 ## furthrmind_sdk.furthrmind module
 
-### *class* furthrmind_sdk.furthrmind.FURTHRmind(host, api_key, project_id=None, project_name=None)
+### *class* furthrmind_sdk.furthrmind.FURTHRmind(host, api_key=None, api_key_file=None, project_id=None, project_name=None)
 
 Bases: `object`
 
-#### \_\_init_\_(host, api_key, project_id=None, project_name=None)
+#### \_\_init_\_(host, api_key=None, api_key_file=None, project_id=None, project_name=None)
 
 #### get_project_url(project_id=None)
 

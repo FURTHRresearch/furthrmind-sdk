@@ -1,5 +1,5 @@
 from typing_extensions import Self, List, Dict
-
+from inspect import isclass
 from ..utils import furthr_wrap
 from furthrmind_sdk.collection.baseclass import BaseClass
 from furthrmind_sdk.collection.fielddata import FieldData
@@ -19,6 +19,23 @@ class Column(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
+    @classmethod
+    def get(cls, id=None) -> Self:
+        """
+        Method to get all one column by it's id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id of requested column 
+        :return Self: Instance of column class
+        """
+
+        if isclass(cls):
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         raise ValueError("Not implemented for datatables")
 

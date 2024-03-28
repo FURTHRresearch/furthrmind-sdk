@@ -1,5 +1,6 @@
 from furthrmind_sdk.collection.baseclass import BaseClass
 from typing_extensions import List, Self, Dict, TYPE_CHECKING
+from inspect import isclass
 if TYPE_CHECKING:
     from furthrmind_sdk.collection.comboboxentry import ComboBoxEntry
 
@@ -40,6 +41,36 @@ class Field(BaseClass):
         url = f"{project_url}/fields"
         return url
 
+    @classmethod
+    def get(cls, id=None, name=None) -> Self:
+        """
+        Method to get all one field by it's id
+        :param str id: id of requested field 
+        :param str name: name of requested field 
+        :return Self: Instance of field class
+        """
+        
+
+        if isclass(cls):
+            if id is None:
+                id = name
+            assert id is not None or name is not None, "Either id or name must be specified"
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all fields belonging to one project
+        If called on an instance of the class, the id of the class is used
+        :param str project_id: Optionally to get fields from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of field class
+        """
+        return super().get_all(project_id)
+    
     @classmethod
     @BaseClass._create_instances_decorator
     def create(cls, name, type, project_id=None) -> Self:

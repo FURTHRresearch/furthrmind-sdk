@@ -2,6 +2,7 @@ from ..utils import furthr_wrap
 from furthrmind_sdk.collection.baseclass import BaseClass
 from typing_extensions import Self, List, TYPE_CHECKING
 from pandas import DataFrame
+from inspect import isclass
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import Column
 
@@ -43,6 +44,30 @@ class DataTable(BaseClass):
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/rawdata"
         return url
+    
+    @classmethod
+    def get(cls, id=None) -> Self:
+        """
+        Method to get all one datatable by it's id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id of requested datatable 
+        :return Self: Instance of datatable class
+        """
+        if isclass(cls):
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all datatables belonging to one project
+        :param str project_id: Optionally to get datatables from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of datatable class
+        """
+        return super().get_all(project_id)
 
     def get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
         """

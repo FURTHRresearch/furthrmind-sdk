@@ -70,6 +70,8 @@ class BaseClass:
         @wraps(f)
         def decorated(*args, **kws):
             results = f(*args, **kws)
+            if results is None:
+                return
             if isclass(args[0]):
                 cls = args[0]
             else:
@@ -96,7 +98,7 @@ class BaseClass:
             cls = get_collection_class(classname)
             if isinstance(_data, list):
                 item_list = []
-                for item in data[key]:
+                for item in _data:
                     item = cls(self.fm, data=item)
                     item_list.append(item)
                 item = item_list
@@ -185,6 +187,7 @@ class BaseClass:
         else:
             url = cls._get_all_url(project_id)
         return BaseClass.fm.session.get(url)
+      
 
     @classmethod
     def post(cls, data, project_id=None):
@@ -304,8 +307,7 @@ class BaseClassWithFieldData(BaseClass):
         Method to add many fields to an item. Each field is defined by and dict in the data_list parameter
 
         :param data_list: dict with the following key
-        - field_name: Name of field that should be added. If fieldname provided,
-            also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
+        - field_name: Name of field that should be added. If fieldname provided, also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
         - field_type: Type of field: Must be out of: Numeric, Date, SingleLine
             ComboBoxEntry, MultiLine, CheckBox
         - field_id: id of field that should be added.

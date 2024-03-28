@@ -1,5 +1,6 @@
 from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
+from inspect import isclass
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 
@@ -54,6 +55,36 @@ class Group(BaseClassWithFieldData):
         return url
 
     @classmethod
+    def get(cls, id=None, name=None) -> Self:
+        """
+        Method to get all one group by it's id or short_id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id or short_id of requested group 
+        :param str name: name of requested group 
+        :return Self: Instance of group class
+        """
+
+
+        if isclass(cls):
+            if id is None:
+                id = name
+            assert id is not None or name is not None, "Either id or name must be specified"
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all groups belonging to one project
+        :param str project_id: Optionally to get groups from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of group class
+        """
+        return super().get_all(project_id)
+    
+    @classmethod
     @BaseClass._create_instances_decorator
     def create(cls, name, project_id=None) -> Self:
         """
@@ -69,9 +100,9 @@ class Group(BaseClassWithFieldData):
 
     @classmethod
     @BaseClass._create_instances_decorator
-    def create_many(cls, name_list: List[Dict], project_id=None) -> Self:
+    def create_many(cls, name_list: List[str], project_id=None) -> List[Self]:
         """
-        Method to create multiple samples
+        Method to create multiple groups
         :param name_list: list with names of the groups to be created
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return list with instance of the group class

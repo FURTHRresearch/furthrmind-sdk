@@ -1,5 +1,6 @@
 from furthrmind_sdk.collection.baseclass import BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
+from inspect import isclass
 if TYPE_CHECKING:
     from furthrmind_sdk.collection import *
 
@@ -44,6 +45,34 @@ class Project(BaseClass):
     @classmethod
     def _post_url(cls):
         return f"{cls.fm.base_url}/projects"
+    
+    @classmethod
+    def get(cls, id=None, name=None) -> Self:
+        """
+        Method to get all one project by it's id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id or short_id of requested project 
+        :param str name: name of requested project 
+        :return Self: Instance of project class
+        """
+
+        if isclass(cls):
+            if id is None:
+                id = name
+            assert id is not None or name is not None, "Either id or name must be specified"
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls) -> List[Self]:
+        """
+        Method to get all projects belonging to one project
+        :return List[Self]: List with instances of project class
+        """
+        return super().get_all()
 
     @classmethod
     @BaseClass._create_instances_decorator

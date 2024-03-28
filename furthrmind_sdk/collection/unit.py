@@ -1,6 +1,6 @@
-
 from furthrmind_sdk.collection.baseclass import BaseClass
-from typing_extensions import Self
+from typing_extensions import Self, List
+from inspect import isclass
 
 class Unit(BaseClass):
     id = ""
@@ -36,6 +36,30 @@ class Unit(BaseClass):
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/units"
         return url
+    
+    @classmethod
+    def get(cls, id=None) -> Self:
+        """
+        Method to get all one unit by it's id
+        If called on an instance of the class, the id of the class is used
+        :param str id: id of requested category 
+        :return Self: Instance of unit class
+        """
+        if isclass(cls):
+            return cls._get_class_method(id)
+        else:
+            self = cls
+            data = self._get_instance_method()
+            return data
+    
+    @classmethod
+    def get_all(cls, project_id=None) -> List[Self]:
+        """
+        Method to get all units belonging to one project
+        :param str project_id: Optionally to get units from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of unit class
+        """
+        return super().get_all(project_id)
 
     @classmethod
     @BaseClass._create_instances_decorator
