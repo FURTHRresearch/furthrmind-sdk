@@ -1,69 +1,73 @@
-from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
-from typing_extensions import Self, List, Dict, TYPE_CHECKING
+from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
+from typing_extensions import Self, Dict, List, TYPE_CHECKING
+from furthrmind.utils import instance_overload
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import FieldData, Sample, Group, ResearchItem, DataTable, File
+    from furthrmind.collection import *
 
-class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
+
+class Sample(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
     id = ""
     name = ""
     neglect = False
     shortid = ""
     files: List["File"] = []
     fielddata: List["FieldData"] = []
-    linked_samples: List["Sample"] = []
-    linked_experiments: List[Self] = []
+    linked_experiments: List["Experiment"] = []
+    linked_samples: List[Self] = []
+    linked_researchitems: Dict[str, List["ResearchItem"]] = {}
     groups: List["Group"] = []
-    linked_researchitems: Dict[str, List["ResearchItem"]] = []
     datatables: List["DataTable"] = []
-
 
     _attr_definition = {
         "files": {"class": "File"},
         "fielddata": {"class": "FieldData"},
+        "groups": {"class": "Group"},
         "linked_samples": {"class": "Sample"},
         "linked_experiments": {"class": "Experiment"},
-        "groups": {"class": "Group"},
         "linked_researchitems": {"class": "ResearchItem", "nested_dict": True},
         "datatables": {"class": "DataTable"}
     }
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
+        # create instance methods for certain class_methods
+        instance_methods = ["get"]
+        instance_overload(self, instance_methods)
 
     def _get_url_instance(self, project_id=None):
-        project_url = Experiment.fm.get_project_url(project_id)
-        url = f"{project_url}/experiments/{self.id}"
+        project_url = Sample.fm.get_project_url(project_id)
+        url = f"{project_url}/samples/{self.id}"
         return url
 
     @classmethod
     def _get_url_class(cls, id, project_id=None):
         project_url = cls.fm.get_project_url(project_id)
-        url = f"{project_url}/experiments/{id}"
+        url = f"{project_url}/samples/{id}"
         return url
 
     @classmethod
-    def _get_all_url(cls, project_id:str = None) -> str:
+    def _get_all_url(cls, project_id=None):
         project_url = cls.fm.get_project_url(project_id)
-        url = f"{project_url}/experiments"
+        url = f"{project_url}/samples"
         return url
 
     @classmethod
     def _post_url(cls, project_id=None):
         project_url = cls.fm.get_project_url(project_id)
-        url = f"{project_url}/experiments"
+        url = f"{project_url}/samples"
         return url
 
     @classmethod
     def get(cls, id=None, name=None) -> Self:
         """
-        Method to get all one experiment by it's id or short_id
+        Method to get all one sample by it's id or short_id
         If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested experiment 
-        :param str name: name of requested experiment 
-        :return Self: Instance of experiment class
+        :param str id: id or short_id of requested sample 
+        :param str name: name of requested sample 
+        :return Self: Instance of sample class
         """
-        
+
         if isclass(cls):
             if id is None:
                 id = name
@@ -77,49 +81,48 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """
-        Method to get all experiment belonging to one project
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
+        Method to get all samples belonging to one project
+        :param str project_id: Optionally to get samples from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of sample class
         """
         return super().get_all(project_id)
-
+    
     @classmethod
     @BaseClass._create_instances_decorator
-    def create(cls, name, group_name = None, group_id=None, project_id=None) -> Self:
+    def create(cls, name, group_name=None, group_id=None, project_id=None) -> Self:
         """
-        Method to create a new experiment
+        Method to create a new sample
 
         :param name: the name of the item to be created
         :param group_name: The name of the group where the new item will belong to. group name can be only considered
             for groups that are not subgroups. Either group_name or group_id must be specified
         :param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return instance of the experiment class
+        :return instance of the sample class
 
         """
 
-        return Experiment._create(name, group_name, group_id, project_id)
+        return Sample._create(name, group_name, group_id, project_id)
 
     @classmethod
     @BaseClass._create_instances_decorator
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
-        Method to create multiple experiments
+        Method to create multiple samples
 
         :param data_list: dict with the following keys:
             - name: the name of the item to be created
             - group_name: The name of the group where the new item will belong to. group name can be only considered
             for groups that are not subgroups. Either group_name or group_id must be specified
             - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return list with instance of the experiment class
+        :return list with instance of the sample class
 
         """
 
-        return Experiment._create_many(data_list, project_id)
+        return Sample._create_many(data_list, project_id)
 
-    def add_datatable(self, name: str, columns: List[Dict], project_id=None ) -> "DataTable":
+    def add_datatable(self, name: str, columns: List[Dict]=None, project_id=None ) -> "DataTable":
         """
         Method to create a new datatable within this experiment
 
@@ -130,13 +133,14 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
             will be converted to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type
             - unit: dict with id or name, or name as string, or id as string
-
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of column datatable class
 
         """
 
-        from furthrmind_sdk.collection import DataTable
-        datatable = DataTable.create(name, experiment_id=self.id, columns=columns, project_id=project_id)
+        from furthrmind.collection import DataTable
+        datatable = DataTable.create(name, sample_id=self.id, columns=columns, project_id=project_id)
         return datatable
+
+
 

@@ -1,11 +1,11 @@
-# furthrmind-sdk
+# furthrmind
 
-This package allows to easily interact with your FURTHRmind application in order to retrieve data or to write new
-data.
+This package allows to easily interact with your FURTHRmind application in order to 
+retrieve data or to write new data.
 
 ## Install
 ```
-pip install furthrmind-sdk
+pip install furthrmind
 ```
 
 ## Basic usage
@@ -14,21 +14,41 @@ Create an instance of the furthrmind class and pass the url to your server, your
 Optionally you can pass the project name or id of the project you would like to work with.
 
 ```
-from furthrmind_sdk.furthrmind import FURTHRmind
+from furthrmind import Furthrmind
 fm = FURTHRmind(host, api_key, project_name="my project")
 ```
 
-In order to retrieve data, you have to import the corresponding collection class and call the
-get or get_all method. The method will return an instance / a list with instances of the 
-Experiment class. The instance of the experiment class will contain all data that belong to
-your experiment. Additionally, the experiment object has some convenient method for:
-add_field, add_many_fields, remove_field, update_field_value, update_field_unit, add_file, 
-remove_file, add_datatable
+In order to retrieve data, you have to import the corresponding collection class. You can 
+get this class either from your furthrmind instance or by importing it. 
 
 ```
-furthrmind_sdk.collection import Experiment
+Experiment = fm.Experiment
+from furthrmind.collection import Experiment
+```
+
+In order to get one experiment you can call the get method of the Experiment class and 
+pass the id of the experiment you would like to retrieve. 
+
+```
+exp = fm.Experiment.get(exp_id)
+```
+ or 
+```
+exp = Experiment.get(exp_id)
+```
+is exactly the same, if the Experiment class was imported before.
+
+In oreder to get all experiments of one project, call the get_all method. 
+The method will return a list with instances of the 
+Experiment class. 
+
+```
 exp_list = Experiment.get_all()
 ```
+The instance of the experiment class will contain all data that belong to
+your experiment. Additionally, the experiment object has some convenient method for:
+add_field, add_many_fields, remove_field, update_field_value, update_field_unit, add_file, 
+remove_file, add_datatable.
 
 To create a new experiment, you need to call the create() or create_many() method. Please 
 consider the correct input arguments for each collection class. For experiments, the create

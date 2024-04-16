@@ -1,12 +1,12 @@
 from functools import wraps
 
-from furthrmind_sdk.utils import furthr_wrap, instance_overload
+from furthrmind.utils import furthr_wrap, instance_overload
 from typing_extensions import List, Self, Any, Dict, TYPE_CHECKING
 from inspect import isclass
 import os
 
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import File, FieldData, Experiment
+    from furthrmind.collection import File, FieldData, Experiment
 
 class BaseClass:
     _data = {}
@@ -91,7 +91,7 @@ class BaseClass:
         return decorated
 
     def _update_attributes(self, data):
-        from furthrmind_sdk.collection import get_collection_class
+        from furthrmind.collection import get_collection_class
         self._data = data
 
         def _create_instance(classname, _data):
@@ -383,7 +383,7 @@ class BaseClassWithFiles(BaseClass):
         :return: file object
         """
 
-        from furthrmind_sdk.file_loader import FileLoader
+        from furthrmind.file_loader import FileLoader
         from .file import File
 
         if not os.path.isfile(file_path):
@@ -470,7 +470,7 @@ class BaseClassWithGroup(BaseClass):
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         : return list with instances of the item class: experiment, or sample
         """
-        from furthrmind_sdk.collection import Group
+        from furthrmind.collection import Group
 
         new_list = []
         groups = Group.get_all()
@@ -486,7 +486,7 @@ class BaseClassWithGroup(BaseClass):
 
     @classmethod
     def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None, groups=None):
-        from furthrmind_sdk.collection import Group
+        from furthrmind.collection import Group
         if not name:
             raise ValueError("Name must be specified")
         if not group_name and not group_id:

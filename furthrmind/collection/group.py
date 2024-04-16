@@ -1,8 +1,8 @@
-from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClass
+from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import *
+    from furthrmind.collection import *
 
 
 class Group(BaseClassWithFieldData):

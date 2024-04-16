@@ -1,5 +1,5 @@
 from inspect import isclass
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from typing_extensions import TYPE_CHECKING, List, Self
 
 class Category(BaseClass):

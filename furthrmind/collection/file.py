@@ -1,4 +1,4 @@
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 import os
 from io import BytesIO
 
@@ -26,7 +26,7 @@ class File(BaseClass):
         Method to download a file
         :param folder: the folder where the file should be saved
         """
-        from furthrmind_sdk.file_loader import FileLoader
+        from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 
         if not os.path.isdir(folder):
@@ -38,14 +38,14 @@ class File(BaseClass):
         Method to download a file and save to BytesIO object
         :param folder: the folder where the file should be saved
         """
-        from furthrmind_sdk.file_loader import FileLoader
+        from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 
         flag, bytesIO = fl.downloadFile(self.id, bytesIO=True)
         return bytesIO
 
     def update_file(self, file_path, file_name=None):
-        from furthrmind_sdk.file_loader import FileLoader
+        from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 
         if not os.path.isfile(file_path):

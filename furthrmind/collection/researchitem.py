@@ -1,10 +1,10 @@
 from ..utils import furthr_wrap
-from furthrmind_sdk.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
+from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import *
+    from furthrmind.collection import *
 
 class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass):
     id = ""
@@ -115,7 +115,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
 
         """
 
-        from furthrmind_sdk.collection import Category
+        from furthrmind.collection import Category
         if not category_name and not category_id:
             raise ValueError("Either category name or id must be specified")
         data = cls._prepare_data_for_create(name, group_name, group_id, project_id)
@@ -156,7 +156,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         :return list with instance of the experiment class
 
         """
-        from furthrmind_sdk.collection import Group
+        from furthrmind.collection import Group
 
         new_list = []
         category_id_not_present = False
@@ -212,7 +212,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
 
         """
 
-        from furthrmind_sdk.collection import DataTable
+        from furthrmind.collection import DataTable
         datatable = DataTable.create(name, researchitem_id=self.id, columns=columns, project_id=project_id)
         return datatable
 

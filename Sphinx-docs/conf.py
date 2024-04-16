@@ -9,9 +9,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../furthrmind_sdk'))
+sys.path.insert(0, os.path.abspath('../furthrmind'))
 
-project = 'furthrmind-sdk'
+project = 'furthrmind'
 copyright = '2024, FURTHRresearch GmbH & Co. KG.'
 author = 'Daniel Menne'
 

@@ -1,8 +1,8 @@
 from typing_extensions import Self, List, Dict
 from inspect import isclass
 from ..utils import furthr_wrap
-from furthrmind_sdk.collection.baseclass import BaseClass
-from furthrmind_sdk.collection.fielddata import FieldData
+from furthrmind.collection.baseclass import BaseClass
+from furthrmind.collection.fielddata import FieldData
 
 
 class Column(BaseClass):

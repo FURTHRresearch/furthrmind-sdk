@@ -1,10 +1,10 @@
 from ..utils import furthr_wrap
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from typing_extensions import Self, List, TYPE_CHECKING
 from pandas import DataFrame
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import Column
+    from furthrmind.collection import Column
 
 class DataTable(BaseClass):
     id = ""
@@ -112,7 +112,7 @@ class DataTable(BaseClass):
         return df
 
     def _get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
-        from furthrmind_sdk.collection import Column
+        from furthrmind.collection import Column
         if column_id_list:
             pass
         elif column_name_list:
@@ -146,7 +146,7 @@ class DataTable(BaseClass):
 
         """
 
-        from furthrmind_sdk.collection import Column
+        from furthrmind.collection import Column
 
         if not name:
             raise ValueError("Name must be specified")

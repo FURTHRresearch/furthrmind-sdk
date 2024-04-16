@@ -1,8 +1,8 @@
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from typing_extensions import List, Self, Dict, TYPE_CHECKING
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection.comboboxentry import ComboBoxEntry
+    from furthrmind.collection.comboboxentry import ComboBoxEntry
 
 class Field(BaseClass):
     id = ""

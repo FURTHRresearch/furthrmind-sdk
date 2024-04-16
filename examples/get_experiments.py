@@ -1,5 +1,5 @@
-from furthrmind_sdk.furthrmind import FURTHRmind
-from furthrmind_sdk.collection import Experiment
+from furthrmind.furthrmind import FURTHRmind
+from furthrmind.collection import Experiment
 import os
  
 home_path = os.path.expanduser("~")

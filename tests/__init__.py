@@ -1,7 +1,7 @@
 import os.path
 
-from furthrmind_sdk.collection import Experiment, Sample, ResearchItem
-from furthrmind_sdk.furthrmind import FURTHRmind
+from furthrmind.collection import Experiment, Sample, ResearchItem
+from furthrmind import Furthrmind
 from typing_extensions import List
 
 
@@ -86,9 +86,7 @@ def get_all_samples():
 
 
 if __name__ == "__main__":
-    # fm = FURTHRmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
-    fm = FURTHRmind("https://furthrmind.avt.rwth-aachen.de", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
-    # fm = FURTHRmind("http://127.0.0.1:5000", "4R25HIKQ0FXE7MFD4KSY3JJYO54E61J3", project_id="6319f6fb01c844a436e07971")
+    fm = Furthrmind("http://localhost:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
     exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()

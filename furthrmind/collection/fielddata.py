@@ -1,12 +1,12 @@
 from ..utils import furthr_wrap
 from functools import wraps
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from datetime import datetime, date
 from bson import ObjectId
-from furthrmind_sdk.utils import instance_overload
+from furthrmind.utils import instance_overload
 from typing_extensions import List, TYPE_CHECKING
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection.unit import Unit
+    from furthrmind.collection.unit import Unit
 
 
 class FieldData(BaseClass):
@@ -201,7 +201,7 @@ class FieldData(BaseClass):
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of fielddata class
         """
-        from furthrmind_sdk.collection import Field
+        from furthrmind.collection import Field
 
         if field_id:
             data = {"fieldid": field_id}
@@ -259,7 +259,7 @@ class FieldData(BaseClass):
 
         """
 
-        from furthrmind_sdk.collection import Field
+        from furthrmind.collection import Field
 
         post_data_list = []
         for data in data_list:

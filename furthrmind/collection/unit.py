@@ -1,4 +1,4 @@
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from typing_extensions import Self, List
 from inspect import isclass
 

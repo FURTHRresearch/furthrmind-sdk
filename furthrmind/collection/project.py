@@ -1,8 +1,8 @@
-from furthrmind_sdk.collection.baseclass import BaseClass
+from furthrmind.collection.baseclass import BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind_sdk.collection import *
+    from furthrmind.collection import *
 
 class Project(BaseClass):
     id = ""

@@ -1,8 +1,23 @@
 import requests
-from furthrmind_sdk.collection.project import Project
+from furthrmind.collection.project import Project
 import os
+from furthrmind import collection
 
-class FURTHRmind:
+
+class Furthrmind:
+    Experiment = collection.Experiment
+    File = collection.File
+    FieldData = collection.FieldData
+    ResearchItem = collection.ResearchItem
+    Sample = collection.Sample
+    Unit = collection.Unit
+    ComboBoxEntry = collection.ComboBoxEntry
+    Field = collection.Field
+    DataTable = collection.DataTable
+    Group = collection.Group
+    Column = collection.Column
+    Project = collection.Project
+    Category = collection.Category
 
     def __init__(self, host, api_key=None, api_key_file=None, project_id=None, project_name=None):
 
@@ -12,8 +27,10 @@ class FURTHRmind:
         self.base_url = f"{host}/api2"
         self.session = requests.session()
 
+
+
         assert api_key is not None or api_key_file is not None, "Either api_key or api_key_file must be specified"
-                
+
         if api_key_file:
             assert os.path.isfile(api_key_file), "Api key file is not a valid file"
             with open(api_key_file, "r") as f:
@@ -24,7 +41,7 @@ class FURTHRmind:
         self.api_key = api_key
         self.project_id = project_id
         self._write_fm_to_base_class()
-        
+
         # write project_url with wrong project_id to enable get request if name is provided
         self.project_url = f"{self.base_url}/projects/{self.project_id}"
 
@@ -32,13 +49,11 @@ class FURTHRmind:
             project = Project.get(name=project_name)
             if project:
                 self.project_id = project.id
-            
+
             assert self.project_id is not None, f"Project '{project_name} was not found. Check the spelling"
-        
+
         # rewrite project_url after project is successully found
         self.project_url = f"{self.base_url}/projects/{self.project_id}"
-
-
 
     def get_project_url(self, project_id=None):
         if project_id is None:
@@ -51,7 +66,7 @@ class FURTHRmind:
         return self.get.project()
 
     def _write_fm_to_base_class(self):
-        from furthrmind_sdk.collection.baseclass import BaseClass
+        from furthrmind.collection.baseclass import BaseClass
         BaseClass.fm = self
 
 

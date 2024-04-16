@@ -1,5 +1,5 @@
-from furthrmind_sdk.furthrmind import FURTHRmind
-from furthrmind_sdk.collection import Experiment, ResearchItem
+from furthrmind.furthrmind import FURTHRmind
+from furthrmind.collection import Experiment, ResearchItem
 
 def calc(config):
     host = config["callbackUrl"]
