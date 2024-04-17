@@ -84,10 +84,16 @@ def get_all_samples():
     print(1)
 
 
+def set_calculation_result(exp_id, field_name):
+    exp = fm.Experiment.get(exp_id)
+    result = {"key": "value",
+              "key2": "value2"}
+    exp.set_calculation_result(result, field_name=field_name)
+
 
 if __name__ == "__main__":
-    fm = Furthrmind("http://localhost:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
-    exps = get_all_experiments()
+    fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test2")
+    # exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()
     # create_many_experiments()
@@ -101,5 +107,6 @@ if __name__ == "__main__":
     # df = datatable.get_pandas_dataframe()
     # download_file(exps)
 
-    get_all_samples()
+    # get_all_samples()
+    set_calculation_result(exp_id="exp-grn9fb", field_name="calc5")
     print(1)

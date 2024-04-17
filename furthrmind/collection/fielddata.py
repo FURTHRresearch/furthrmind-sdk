@@ -1,10 +1,11 @@
-from ..utils import furthr_wrap
-from functools import wraps
-from furthrmind.collection.baseclass import BaseClass
 from datetime import datetime, date
+
 from bson import ObjectId
-from furthrmind.utils import instance_overload
 from typing_extensions import List, TYPE_CHECKING
+
+from furthrmind.collection.baseclass import BaseClass
+from furthrmind.utils import instance_overload
+
 if TYPE_CHECKING:
     from furthrmind.collection.unit import Unit
 
@@ -18,7 +19,6 @@ class FieldData(BaseClass):
     unit: List["Unit"] = None
     author = None
     value = None
-
 
     _attr_definition = {
         "unit": {"class": "Unit"},
@@ -61,12 +61,27 @@ class FieldData(BaseClass):
             - CheckBox: boolean
         :return: id
         """
-        value = self.__class__._check_value_type(value, self.fieldtype)
+        value = self.__class__._check_value_type(value, self.field_type)
         data = {"id": self.id,
                 "value": value}
         id = self.post(data)
         self.value = value
         return id
+
+    def set_calculation_result(self, value: dict):
+        """
+        Method to set a calculation result
+        :param value: dict
+        :return: id
+        """
+        if not self.field_type in ["Calculation", "RawDataCalc"]:
+            raise TypeError("Only applicable for calculation field")
+
+        url = f"{self.fm.base_url}/set-result/{self.id}"
+        response = self.fm.session.post(url, json=value)
+        if response.status_code != 200:
+            raise ValueError("Setting calculation result failed")
+        return self.id
 
     @classmethod
     def _check_value_type(cls, value, fieldtype=None):
@@ -278,7 +293,7 @@ class FieldData(BaseClass):
                 if not field_name or not field_type:
                     raise ValueError("field_name and field_type must be specified")
                 _data = {"fieldname": field_name,
-                        "fieldtype": field_type}
+                         "fieldtype": field_type}
 
             value = FieldData._check_value_type(value, field_type)
             _data["value"] = value
@@ -287,7 +302,6 @@ class FieldData(BaseClass):
                 unit = FieldData._check_unit(unit)
                 _data["unit"] = unit
             post_data_list.append(_data)
-
 
         id_list = FieldData.post(post_data_list, project_id)
         for data, id in zip(data_list, id_list):

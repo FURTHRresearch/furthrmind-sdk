@@ -211,13 +211,13 @@ class BaseClass:
 
 class BaseClassWithFieldData(BaseClass):
     id = None
-    fielddata = []
+    fielddata: List["FieldData"] = []
 
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def update_field_value(self, value, fieldname=None, fieldid=None):
+    def update_field_value(self, value, field_name=None, field_id=None):
         """
         :param value:
             - Numeric: float or int, or a string convertable to a float
@@ -232,18 +232,18 @@ class BaseClassWithFieldData(BaseClass):
         """
 
         fielddata = None
-        for fielddata in self.fielddata:
-            if fielddata:
+        for item in self.fielddata:
+            if item:
                 break
-            if fieldid:
-                if fielddata.fieldid == fieldid:
-                    fielddata = fielddata
-            elif fieldname:
-                if fielddata.fieldname == fieldname:
-                    fielddata = fielddata
+            if field_id:
+                if item.fieldid == field_id:
+                    fielddata = item
+            elif field_name:
+                if item.field_name == field_name:
+                    fielddata = item
 
         if not fielddata:
-            raise ValueError("No field found with the given fieldid or fieldname")
+            raise ValueError("No field found with the given field_id or field_name")
 
         return fielddata.update_value(value)
 
@@ -262,18 +262,48 @@ class BaseClassWithFieldData(BaseClass):
         """
 
         fielddata = None
-        for fielddata in self.fielddata:
+        for item in self.fielddata:
+            if fielddata is not None:
+                break
             if field_id:
-                if fielddata.fieldid == field_id:
-                    fielddata = fielddata
+                if item.fieldid == field_id:
+                    fielddata = item
             elif field_name:
-                if fielddata.fieldname == field_name:
-                    fielddata = fielddata
+                if item.field_name == field_name:
+                    fielddata = item
 
         if not fielddata:
-            raise ValueError("No field found with the given fieldid or fieldname")
+            raise ValueError("No field found with the given field_id or field_name")
 
         return fielddata.update_unit(unit)
+
+    def set_calculation_result(self, value: dict, field_name=None, field_id=None, fielddata_id=None):
+        """
+        :param value
+        :param field_name: Name of field that should be updated. Either field_name, field_id, fielddata_id must be specified
+        :param field_id: id of field that should be updated. Either field_name, field_id, or fielddata_id must be specified
+        :param field_data_id: id of the fielddata that should be updated. Either field_name, field_id, or fielddata_id must be specified
+        :return: id
+        """
+
+        fielddata = None
+        for item in self.fielddata:
+            if fielddata:
+                break
+            if fielddata_id:
+                if item.id == fielddata_id:
+                    fielddata = item
+            if field_id:
+                if item.fieldid == field_id:
+                    fielddata = item
+            elif field_name:
+                if item.field_name == field_name:
+                    fielddata = item
+
+        if not fielddata:
+            raise ValueError("No field found with the given field_id or field_name")
+
+        return fielddata.set_calculation_result(value)
 
     def add_field(self, field_name=None, field_type=None, field_id=None,
                   value=None, unit=None) -> "FieldData":
@@ -352,7 +382,7 @@ class BaseClassWithFieldData(BaseClass):
                     fielddata_to_be_removed = fielddata
             elif fieldname:
                 found = True
-                if fielddata.fieldname == fieldname:
+                if fielddata.field_name == fieldname:
                     fielddata_to_be_removed = fielddata
             if not found:
                 new_fielddata_list.append(fielddata)

@@ -27,8 +27,6 @@ class Furthrmind:
         self.base_url = f"{host}/api2"
         self.session = requests.session()
 
-
-
         assert api_key is not None or api_key_file is not None, "Either api_key or api_key_file must be specified"
 
         if api_key_file:
