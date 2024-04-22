@@ -233,10 +233,10 @@ class BaseClassWithFieldData(BaseClass):
 
         fielddata = None
         for item in self.fielddata:
-            if item:
+            if fielddata:
                 break
             if field_id:
-                if item.fieldid == field_id:
+                if item.field_id == field_id:
                     fielddata = item
             elif field_name:
                 if item.field_name == field_name:
