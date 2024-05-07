@@ -113,7 +113,7 @@ class FieldData(BaseClass):
                     return int(value.timestamp())
                 except ValueError:
                     raise TypeError("No iso time format")
-            if isinstance(value, int):
+            if isinstance(value, (int, float)):
                 return value
         elif fieldtype == "SingleLine":
             if isinstance(value, str):
