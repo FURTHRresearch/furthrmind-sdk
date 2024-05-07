@@ -1,4 +1,6 @@
-from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
+from furthrmind.collection.baseclass import (BaseClassWithFieldData, BaseClassWithFiles,
+                                             BaseClassWithGroup, BaseClass,
+                                             BaseClassWithLinking)
 from typing_extensions import Self, Dict, List, TYPE_CHECKING
 from furthrmind.utils import instance_overload
 from inspect import isclass
@@ -6,7 +8,9 @@ if TYPE_CHECKING:
     from furthrmind.collection import *
 
 
-class Sample(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
+class Sample(BaseClassWithFieldData,
+             BaseClassWithFiles, BaseClassWithGroup,
+             BaseClassWithLinking, BaseClass):
     id = ""
     name = ""
     neglect = False

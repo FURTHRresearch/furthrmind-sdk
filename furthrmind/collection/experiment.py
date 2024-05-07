@@ -1,10 +1,20 @@
-from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
-from typing_extensions import Self, List, Dict, TYPE_CHECKING
 from inspect import isclass
+
+from typing_extensions import Self, List, Dict, TYPE_CHECKING
+
+from furthrmind.collection.baseclass import (BaseClassWithFieldData,
+                                             BaseClassWithFiles,
+                                             BaseClassWithGroup,
+                                             BaseClassWithLinking,
+                                             BaseClass
+                                             )
+
 if TYPE_CHECKING:
     from furthrmind.collection import FieldData, Sample, Group, ResearchItem, DataTable, File
 
-class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup):
+
+class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
+                 BaseClassWithGroup, BaseClassWithLinking):
     id = ""
     name = ""
     neglect = False
@@ -16,7 +26,6 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
     groups: List["Group"] = []
     linked_researchitems: Dict[str, List["ResearchItem"]] = []
     datatables: List["DataTable"] = []
-
 
     _attr_definition = {
         "files": {"class": "File"},
@@ -43,7 +52,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
         return url
 
     @classmethod
-    def _get_all_url(cls, project_id:str = None) -> str:
+    def _get_all_url(cls, project_id: str = None) -> str:
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/experiments"
         return url
@@ -63,7 +72,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
         :param str name: name of requested experiment 
         :return Self: Instance of experiment class
         """
-        
+
         if isclass(cls):
             if id is None:
                 id = name
@@ -73,7 +82,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
             self = cls
             data = self._get_instance_method()
             return data
-    
+
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """
@@ -85,7 +94,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
 
     @classmethod
     @BaseClass._create_instances_decorator
-    def create(cls, name, group_name = None, group_id=None, project_id=None) -> Self:
+    def create(cls, name, group_name=None, group_id=None, project_id=None) -> Self:
         """
         Method to create a new experiment
 
@@ -119,7 +128,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
 
         return Experiment._create_many(data_list, project_id)
 
-    def add_datatable(self, name: str, columns: List[Dict], project_id=None ) -> "DataTable":
+    def add_datatable(self, name: str, columns: List[Dict], project_id=None) -> "DataTable":
         """
         Method to create a new datatable within this experiment
 
@@ -139,4 +148,3 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup)
         from furthrmind.collection import DataTable
         datatable = DataTable.create(name, experiment_id=self.id, columns=columns, project_id=project_id)
         return datatable
-

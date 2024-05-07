@@ -40,6 +40,7 @@ def add_fiels(item):
 def create_experiment():
     exp = Experiment.create("myexperiment2", group_name="Default group")
     print(exp)
+    return exp
 
 
 def create_many_experiments():
@@ -90,10 +91,87 @@ def set_calculation_result(exp_id, field_name):
               "key2": "value2"}
     exp.set_calculation_result(result, field_name=field_name)
 
+def test_link_exp():
+    # exp = Experiment.get(name="myexperiment2")
+    # exp.add_linked_experiment(experiment_name="bla")
+
+    # sample = Sample.get(name="s2")
+    # sample.add_linked_experiment(experiment_name="bla")
+
+    ri = ResearchItem.get_by_name("test_new", "new")
+    ri.add_linked_experiment(experiment_name="bla")
+
+def test_link_sample():
+    # exp = Experiment.get(name="myexperiment2")
+    # exp.add_linked_sample(sample_name="s2")
+
+    # sample = Sample.get(name="s2")
+    # sample.add_linked_sample(sample_name="test_sample")
+
+    ri = ResearchItem.get_by_name("test_new", "new")
+    ri.add_linked_sample(sample_name="test_sample")
+
+def test_link_ri():
+    # exp = Experiment.get(name="myexperiment2")
+    # ri = ResearchItem.get_by_name("test_new", "new")
+    # print(ri)
+    # exp.add_linked_researchitem(ri.id)
+
+    # sample = Sample.get(name="s2")
+    # ri = ResearchItem.get_by_name("test_new", "new")
+    # print(ri)
+    # sample.add_linked_researchitem(ri.id)
+
+    ri = ResearchItem.get_by_name("test_new", "new")
+    ri2 = ResearchItem.get_by_name("n2", "new")
+
+    ri.add_linked_researchitem(ri2.id)
+
+def remove_link_exp():
+    # exp = Experiment.get(name="myexperiment2")
+    # exp.remove_linked_experiment(experiment_name="bla")
+
+    # s = Sample.get(name="s2")
+    # s.remove_linked_experiment(experiment_name="myexperiment2")
+
+    ri = ResearchItem.get_by_name("test_new", "new")
+    ri.remove_linked_experiment(experiment_name="myexperiment2")
+
+def remove_link_sample():
+    # exp = Experiment.get(name="myexperiment2")
+    # exp.remove_linked_sample(sample_name="s2")
+
+    # s = Sample.get(name="test_sample")
+    # s.remove_linked_sample(sample_name="s2")
+
+    ri = ResearchItem.get_by_name("test_new", "new")
+    ri.remove_linked_sample(sample_name="s2")
+
+def remove_link_ri():
+    ri = ResearchItem.get_by_name("test_new", "new")
+
+    # exp = Experiment.get(name="myexperiment2")
+    # exp.remove_linked_researchitem(ri.id)
+
+    # s = Sample.get(name="test_sample")
+    # s.remove_linked_researchitem(ri.id)
+
+    ri_2 = ResearchItem.get_by_name("n2", "new")
+    ri_2.remove_linked_researchitem(ri.id)
+
+def get_groups():
+    groups = fm.Group.get_all()
+    print(groups)
+
+def get_project_to_dict():
+    projects = fm.Project.get_all()
+    project = projects[0]
+    data = project.to_dict()
+    print(1)
 
 if __name__ == "__main__":
     fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test2")
-    exps = get_all_experiments()
+    # exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()
     # create_many_experiments()
@@ -109,4 +187,12 @@ if __name__ == "__main__":
 
     # get_all_samples()
     # set_calculation_result(exp_id="exp-grn9fb", field_name="calc5")
+    # test_link_exp()
+    # test_link_sample()
+    # test_link_ri()
+    # remove_link_exp()
+    # remove_link_sample()
+    # remove_link_ri()
+    # get_groups()
+    get_project_to_dict()
     print(1)

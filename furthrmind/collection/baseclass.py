@@ -6,7 +6,7 @@ from inspect import isclass
 import os
 
 if TYPE_CHECKING:
-    from furthrmind.collection import File, FieldData, Experiment
+    from furthrmind.collection import File, FieldData, Experiment, Sample, ResearchItem
 
 class BaseClass:
     _data = {}
@@ -208,6 +208,51 @@ class BaseClass:
     def _post_class_method(cls, data, project_id=None):
         url = cls._post_url(project_id)
         return cls.fm.session.post(url, json=data)
+
+    def to_dict(self):
+        from furthrmind import Furthrmind
+        data = {}
+        for attr in dir(self):
+            if attr.startswith('_'):
+                continue
+            value = getattr(self, attr)
+            if callable(value):
+                continue
+            if isinstance(value, Furthrmind):
+                continue
+            data[attr] = self._convert(value)
+        return data
+
+    def _convert(self, item):
+        if isinstance(item, dict):
+            new_item = {}
+            for key, value in item.items():
+                if isinstance(value, (dict, list)):
+                    value = self._convert(value)
+                    new_item[key] = value
+                elif isinstance(value, BaseClass):
+                    value = value.to_dict()
+                    new_item[key] = value
+                else:
+                    new_item[key] = value
+        elif isinstance(item, list):
+            new_item = []
+            for value in item:
+                if isinstance(value, (dict, list)):
+                    value = self._convert(value)
+                    new_item.append(value)
+                elif isinstance(value, BaseClass):
+                    value = value.to_dict()
+                    new_item.append(value)
+                else:
+                    new_item.append(value)
+        elif isinstance(item, BaseClass):
+            new_item = item.to_dict()
+
+        else:
+            new_item = item
+
+        return new_item
 
 class BaseClassWithFieldData(BaseClass):
     id = None
@@ -538,3 +583,224 @@ class BaseClassWithGroup(BaseClass):
         data = {"name": name, "groups": [{"id": group_id}]}
 
         return data
+
+class BaseClassWithLinking(BaseClass):
+    id: str = ""
+    linked_samples: List["Sample"] = []
+    linked_experiments: List["Experiment"] = []
+    linked_researchitems: Dict[str, List["ResearchItem"]] = []
+
+    def __init__(self, id=None, data=None):
+        super().__init__(id, data)
+
+    def add_linked_experiment(self, experiment_id=None, experiment_name=None):
+        """
+        This method is to link an experiment to the current item
+        Args:
+            experiment_id: id to the experiment you want to link, either id or name must be given
+            experiment_name: name of the experiment you want to link, either name or name must be given
+
+        Returns:
+            the id of the item
+        """
+        from furthrmind.collection import Experiment
+        assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
+
+        if experiment_name:
+            exp = Experiment.get(name = experiment_name)
+            if not exp:
+                raise ValueError("No exp found with the given name")
+            experiment_id = exp.id
+        else:
+            exp = Experiment.get(experiment_id)
+
+        experiment_id_list = [item.id for item in self.linked_experiments]
+        if experiment_id not in experiment_id_list:
+            experiment_id_list.append(experiment_id)
+
+        linked_experiment = [{"id": exp_id} for exp_id in experiment_id_list]
+        data = {
+            "id": self.id,
+                "experiments": linked_experiment
+        }
+
+        self.post(data=data)
+        self.linked_experiments.append(exp)
+        return self.id
+
+    def remove_linked_experiment(self, experiment_id=None, experiment_name=None):
+        """
+        This method is to remove link a linked experiment from the current item
+        Args:
+            experiment_id: id to the experiment you want to remove the linkage, either id or name must be given
+            experiment_name: name of the experiment you want to remove the linkage, either name or name must be given
+
+        Returns:
+            the id of the item
+        """
+        from furthrmind.collection import Experiment
+        assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
+
+        if experiment_name:
+            exp = Experiment.get(name = experiment_name)
+            if not exp:
+                raise ValueError("No exp found with the given name")
+            experiment_id = exp.id
+
+        experiment_id_list = []
+        new_linked_items = []
+        for item in self.linked_experiments:
+            if item.id == experiment_id:
+                continue
+            new_linked_items.append(item)
+            experiment_id_list.append(item.id)
+
+        linked_experiment = [{"id": exp_id} for exp_id in experiment_id_list]
+        data = {
+            "id": self.id,
+                "experiments": linked_experiment
+        }
+
+        self.post(data=data)
+        self.linked_experiments = new_linked_items
+        return self.id
+
+    def add_linked_sample(self, sample_id=None, sample_name=None):
+        """
+        This method is to link a sample to the current item
+        Args:
+            sample_id: id to the sample you want to link, either id or name must be given
+            sample_name: name of the sample you want to link, either name or name must be given
+
+        Returns:
+            the id of the item
+        """
+        from furthrmind.collection import Sample
+        assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        if sample_name:
+            s = Sample.get(name=sample_name)
+            if not s:
+                raise ValueError("No sample found with the given name")
+            sample_id = s.id
+        else:
+            s = Sample.get(sample_id)
+
+        sample_id_list = [item.id for item in self.linked_samples]
+        if sample_id not in sample_id_list:
+            sample_id_list.append(sample_id)
+
+        linked_samples = [{"id": s_id} for s_id in sample_id_list]
+
+        data = {
+            "id": self.id,
+            "samples": linked_samples
+        }
+
+        self.post(data=data)
+        self.linked_samples.append(s)
+        return self.id
+
+    def remove_linked_sample(self, sample_id=None, sample_name=None):
+        """
+        This method is to remove a linked sample from the current item
+        Args:
+            sample_id: id of the sample you want to remove the linkage, either id or name must be given
+            sample_name: name of the sample you want to remove linkage, either name or name must be given
+
+        Returns:
+            the id of the item
+        """
+        from furthrmind.collection import Sample
+        assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        if sample_name:
+            s = Sample.get(name=sample_name)
+            if not s:
+                raise ValueError("No sample found with the given name")
+            sample_id = s.id
+
+        sample_id_list = []
+        new_linked_items = []
+        for item in self.linked_samples:
+            if item.id == sample_id:
+                continue
+            new_linked_items.append(item)
+            sample_id_list.append(item.id)
+
+        linked_samples = [{"id": s_id} for s_id in sample_id_list]
+
+        data = {
+            "id": self.id,
+            "samples": linked_samples
+        }
+        self.post(data=data)
+        self.linked_samples = new_linked_items
+        return self.id
+
+    def add_linked_researchitem(self, researchitem_id=None):
+        """
+        This method is to link an experiment to the current item
+        Args:
+            researchitem_id: id to the researchitem you want to link
+
+        Returns:
+            the id of the item
+        """
+        assert researchitem_id, "Either experiment_id or experiment_name must be specified"
+
+        researchitem_id_list = []
+        for cat in self.linked_researchitems:
+            researchitem_id_list.extend([ri_id for ri_id in self.linked_researchitems[cat]])
+
+        if researchitem_id not in researchitem_id_list:
+            researchitem_id_list.append(researchitem_id)
+
+        linked_researchitems = [{"id": ri_id} for ri_id in researchitem_id_list]
+
+
+        data = {
+            "id": self.id,
+            "researchitems": linked_researchitems
+        }
+
+        self.post(data=data)
+        ri = ResearchItem.get(id=researchitem_id)
+        self.linked_researchitems[ri.category.name].append(ri)
+        return self.id
+
+    def remove_linked_researchitem(self, researchitem_id=None):
+        """
+        This method is to link an experiment to the current item
+        Args:
+            researchitem_id: id to the researchitem you want to remove the linkage
+
+        Returns:
+            the id of the item
+        """
+        assert researchitem_id, "Either experiment_id or experiment_name must be specified"
+
+        researchitem_id_list = []
+        new_linked_items = {}
+        for cat in self.linked_researchitems:
+            for item in self.linked_researchitems[cat]:
+                if item.id == researchitem_id:
+                    continue
+                if cat not in new_linked_items:
+                    new_linked_items[cat] = []
+                new_linked_items[cat].append(item)
+                researchitem_id_list.append(item.id)
+
+        if researchitem_id in researchitem_id_list:
+            researchitem_id_list.remove(researchitem_id)
+
+        linked_researchitems = [{"id": ri_id} for ri_id in researchitem_id_list]
+
+        data = {
+            "id": self.id,
+            "researchitems": linked_researchitems
+        }
+
+        self.post(data=data)
+        self.linked_researchitems = new_linked_items
+        return self.id

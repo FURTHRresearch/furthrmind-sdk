@@ -12,7 +12,7 @@ class Group(BaseClassWithFieldData):
     shortid = ""
     files: List["File"] = []
     fielddata: List["FieldData"] = []
-    experiments: List= []
+    experiments: List["Experiment"] = []
     samples: List["Sample"] = []
     researchitems: Dict[str, List["ResearchItem"]] = {}
     sub_groups: List[Self] = []

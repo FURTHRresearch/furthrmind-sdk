@@ -1,12 +1,14 @@
 from ..utils import furthr_wrap
-from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass
+from furthrmind.collection.baseclass import (BaseClassWithFieldData, BaseClassWithFiles,
+                                             BaseClassWithGroup, BaseClass,
+                                             BaseClassWithLinking)
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 
 if TYPE_CHECKING:
     from furthrmind.collection import *
 
-class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClass):
+class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClassWithLinking, BaseClass ):
     id = ""
     name = ""
     neglect = False
@@ -83,12 +85,10 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         return super().get_all(project_id)
 
     @classmethod
-    def get_by_name(cls, name, category_name, project_id=None):
+    def get_by_name(cls, name, category_name, project_id=None) -> Self:
         return cls._get_by_name_class_method(name, category_name, project_id)
 
     @classmethod
-    @BaseClass._create_instances_decorator
-    @furthr_wrap(force_list=False)
     def _get_by_name_class_method(cls, name, category_name, project_id):
         all_data = cls.get_all(project_id)
         for d in all_data:
