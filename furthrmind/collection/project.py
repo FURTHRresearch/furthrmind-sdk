@@ -34,12 +34,12 @@ class Project(BaseClass):
         return project_url
 
     @classmethod
-    def _get_url_class(cls, id):
+    def _get_url_class(cls, id, project_id=None):
         project_url = cls.fm.get_project_url(id)
         return project_url
 
     @classmethod
-    def _get_all_url(cls):
+    def _get_all_url(cls, project_id=None):
         return f"{cls.fm.base_url}/projects"
 
     @classmethod
@@ -57,15 +57,25 @@ class Project(BaseClass):
         """
 
         if isclass(cls):
-            if id is None:
-                id = name
-            assert id is not None or name is not None, "Either id or name must be specified"
-            return cls._get_class_method(id)
+            assert id or name, "Either id or name must be specified"
+            return cls._get_class_method(id, name=name)
         else:
             self = cls
             data = self._get_instance_method()
             return data
-    
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), names: List[str]= ()) -> List[
+        Self]:
+        """
+        Method to get many columns belonging to one project
+        :param List[str] ids: List with ids
+        :param List[str] names: List names
+        :return List[Self]: List with instances of experiment class
+        """
+        assert ids or names, "Either ids or names must be specified"
+        return super().get_many(ids, names)
+
     @classmethod
     def get_all(cls) -> List[Self]:
         """

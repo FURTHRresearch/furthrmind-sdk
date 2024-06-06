@@ -174,8 +174,31 @@ def test_create_field_data():
     data = [{'field_name': 'Date & Time', 'field_type': 'Date', 'value': 1715082365.784481}]
     FieldData.create_many(data)
 
+def test_get_many_groups():
+    from furthrmind.collection import Group
+    groups = Group.get_many(ids=["664da7ac527fd07f5514837e", "664da7ac527fd07f55148380"])
+    for g in groups:
+        print(g.id)
+
+def test_get_short_id():
+    from furthrmind.collection import Group
+    group = Group.get(id="664da7ac527fd07f5514837e")
+    print(group)
+
+def test_research_item_name():
+    from furthrmind.collection import ResearchItem
+    ri = ResearchItem.get(name="test_cat", category_name="cat")
+    print(ri)
+    print(ri.id, ri.name)
+
+def delete_group(id):
+    from furthrmind.collection import Group
+    Group.delete(id)
+
 if __name__ == "__main__":
-    fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test2")
+    fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
+    # fm = Furthrmind("http://127.0.0.1:5000", "0ZJYO4UJEMQ76P8DCZJV1PAXROYB87PI",
+    #                 project_name="ma - sergio")
     # exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()
@@ -200,5 +223,11 @@ if __name__ == "__main__":
     # remove_link_ri()
     # get_groups()
     # get_project_to_dict()
-    test_create_field_data()
+    # test_create_field_data()
+    # test_get_many_groups()
+    # test_get_short_id()
+    test_research_item_name()
+    # group_id = "6650812a4766a76ef5ebc557"
+    # delete_group(group_id)
     print(1)
+

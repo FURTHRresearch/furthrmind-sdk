@@ -19,9 +19,6 @@ class DataTable(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def get_all(cls, project_id=None) -> List[Self]:
-        raise ValueError("Not implemented for datatables")
-
     def _get_url_instance(self, project_id=None):
         project_url = DataTable.fm.get_project_url(project_id)
         url = f"{project_url}/rawdata/{self.id}"
@@ -46,20 +43,34 @@ class DataTable(BaseClass):
         return url
     
     @classmethod
-    def get(cls, id=None) -> Self:
+    def get(cls, id=None, project_id=None) -> Self:
         """
-        Method to get all one datatable by it's id
+        Method to get all one datatable by its id
         If called on an instance of the class, the id of the class is used
-        :param str id: id of requested datatable 
+        :param str id: id of requested datatable
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
         :return Self: Instance of datatable class
         """
         if isclass(cls):
-            return cls._get_class_method(id)
+            assert id, "id must be specified"
+            return cls._get_class_method(id, project_id=project_id)
         else:
             self = cls
             data = self._get_instance_method()
             return data
-    
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), project_id=None) -> List[
+        Self]:
+        """
+        Method to get many datatables belonging to one project
+        :param List[str] ids: List with ids
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of experiment class
+        """
+        assert ids, "ids must be specified"
+        return super().get_many(ids, project_id=project_id)
+
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """
@@ -122,7 +133,7 @@ class DataTable(BaseClass):
                     column_id_list.append(column.id)
         else:
             column_id_list = [c.id for c in self.columns]
-        columns = Column.get_many(column_id_list)
+        columns = Column.get_many(ids=column_id_list)
         return columns
 
     @classmethod

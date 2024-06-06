@@ -4,6 +4,7 @@ from furthrmind.utils import furthr_wrap, instance_overload
 from typing_extensions import List, Self, Any, Dict, TYPE_CHECKING
 from inspect import isclass
 import os
+from urllib import parse
 
 if TYPE_CHECKING:
     from furthrmind.collection import File, FieldData, Experiment, Sample, ResearchItem
@@ -29,7 +30,7 @@ class BaseClass:
             raise ValueError("No id provided")
 
         # create instance methods for certain class_methods
-        instance_methods = ["get", "get_all", "post"]
+        instance_methods = ["get", "get_all", "get_many","post", "delete"]
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
@@ -37,6 +38,14 @@ class BaseClass:
             return getattr(self, item)
         else:
             raise ValueError("No such attribute")
+
+    def __str__(self):
+        class_name = type(self).__name__
+        id = self._id
+        name = ""
+        if hasattr(self, "name"):
+            name = self.name
+        return f"{class_name} id: {id}, name: {name}"
 
 
     def _get_url_instance(self, project_id=None):
@@ -137,9 +146,9 @@ class BaseClass:
                             break
 
     @classmethod
-    def get(cls, id=None):
+    def get(cls, id=None, project_id=None):
         if isclass(cls):
-            return cls._get_class_method(id)
+            return cls._get_class_method(id, project_id=None)
         else:
             self = cls
             data = self._get_instance_method()
@@ -155,9 +164,59 @@ class BaseClass:
     @classmethod
     @_create_instances_decorator
     @furthr_wrap(force_list=False)
-    def _get_class_method(cls, id):
-        url = cls._get_url_class(id)
+    def _get_class_method(cls, id=None, shortid=None, name=None, category_name=None, category_id=None,
+                          parent_group_name=None, parent_group_id=None, project_id=None):
+        if id:
+            if len(id) == 10:
+                shortid = id
+                id = None
+
+        if shortid or name or category_name or category_id:
+            query = []
+            if shortid:
+                query.append(("shortid", shortid))
+            if name:
+                query.append(("name", name))
+            if category_name:
+                query.append(("category_name", category_name))
+            if category_id:
+                query.append(("category_id", category_id))
+            if parent_group_id:
+                query.append(("parent_group_id", parent_group_id))
+
+            url_query = parse.urlencode(query)
+            url = cls._get_all_url()
+            url = f"{url}?{url_query}"
+        else:
+            url = cls._get_url_class(id, project_id=project_id)
+
         return cls.fm.session.get(url)
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
+                 category_name=None, category_id=None,
+                 project_id=None) -> List[Self]:
+        query = []
+        if ids:
+            for id in ids:
+                query.append(("id", id))
+        if shortids:
+            for shortid in shortids:
+                query.append(("shortid", shortid))
+        if names:
+            for name in names:
+                query.append(("name", name))
+        if category_name:
+            query.append(("category_name", category_name))
+        if category_id:
+            query.append(("category_id", category_id))
+
+        url_query = parse.urlencode(query)
+        if isclass(cls):
+            return cls._get_all_class_method(project_id, url_query)
+        else:
+            self = cls
+            return self._get_all_instance_method(project_id, url_query)
 
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
@@ -169,25 +228,31 @@ class BaseClass:
 
     @_create_instances_decorator
     @furthr_wrap(force_list=True)
-    def _get_all_instance_method(self, project_id):
+    def _get_all_instance_method(self, project_id, url_query=""):
         from .project import Project
         if isinstance(self, Project):
             url = self.__class__._get_all_url()
         else:
             url = self.__class__._get_all_url(project_id)
+
+        if url_query:
+            url = f"{url}?{url_query}"
         return self.fm.session.get(url)
 
     @classmethod
     @_create_instances_decorator
     @furthr_wrap(force_list=True)
-    def _get_all_class_method(cls, project_id):
+    def _get_all_class_method(cls, project_id, url_query=""):
         from .project import Project
         if cls in [Project]:
             url = cls._get_all_url()
         else:
             url = cls._get_all_url(project_id)
+
+        if url_query:
+            url = f"{url}?{url_query}"
         return BaseClass.fm.session.get(url)
-      
+
 
     @classmethod
     def post(cls, data, project_id=None):
@@ -208,6 +273,31 @@ class BaseClass:
     def _post_class_method(cls, data, project_id=None):
         url = cls._post_url(project_id)
         return cls.fm.session.post(url, json=data)
+
+    @classmethod
+    def delete(cls, id: str, project_id: str = None) -> str:
+        """
+        Deletes a single resources
+        param: id - The id of the resource to delete
+        param: project_id - Optionally to delete an item in another project as the furthrmind sdk was initiated with
+        return: the id of the item
+        """
+        if isclass(cls):
+            return cls._delete_class_method(id, project_id)
+        else:
+            self = cls
+            return self._delete_instance_method(project_id)
+
+    @classmethod
+    @furthr_wrap(force_list=False)
+    def _delete_class_method(cls, id, project_id=None):
+        url = cls._get_url_class(id, project_id)
+        return cls.fm.session.delete(url)
+
+    @furthr_wrap(force_list=False)
+    def _delete_instance_method(self, project_id=None):
+        url = self.__class__._get_url_instance(project_id)
+        return self.fm.session.delete(url)
 
     def to_dict(self):
         from furthrmind import Furthrmind
@@ -372,7 +462,11 @@ class BaseClassWithFieldData(BaseClass):
         from .fielddata import FieldData
 
         fielddata = FieldData.create(field_name, field_type, field_id, value, unit)
-        self.fielddata.append(fielddata)
+
+        new_field_data_list = list(self.fielddata)
+        new_field_data_list.append(fielddata)
+        self.fielddata = new_field_data_list
+
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
         self.post(data)
         return fielddata
@@ -402,7 +496,11 @@ class BaseClassWithFieldData(BaseClass):
         from .fielddata import FieldData
 
         fielddata_list = FieldData.create_many(data_list)
-        self.fielddata.extend(fielddata_list)
+
+        new_field_data_list = list(self.fielddata)
+        new_field_data_list.extend(fielddata_list)
+        self.fielddata = new_field_data_list
+
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
         self.post(data)
         return fielddata_list
@@ -474,7 +572,9 @@ class BaseClassWithFiles(BaseClass):
 
         id = self.post(post_data)
         file = File(data=file_data)
-        self.files.append(file)
+        new_file_list = list(self.files)
+        new_file_list.append(file)
+        self.files = new_file_list
         return file
 
     def remove_file(self, file_id=None, file_name=None):
@@ -548,11 +648,9 @@ class BaseClassWithGroup(BaseClass):
         from furthrmind.collection import Group
 
         new_list = []
-        groups = Group.get_all()
         for data in data_list:
             new_list.append(cls._prepare_data_for_create(name=data.get("name"), group_name=data.get("group_name"),
-                                                         group_id=data.get("group_id"), project_id=project_id,
-                                                         groups=groups))
+                                                         group_id=data.get("group_id"), project_id=project_id))
 
         id_list = cls.post(new_list, project_id)
         for data, id in zip(new_list, id_list):
@@ -560,7 +658,7 @@ class BaseClassWithGroup(BaseClass):
         return new_list
 
     @classmethod
-    def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None, groups=None):
+    def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None):
         from furthrmind.collection import Group
         if not name:
             raise ValueError("Name must be specified")
@@ -568,14 +666,9 @@ class BaseClassWithGroup(BaseClass):
             raise ValueError("Either group_name or group_id must be specified")
 
         if group_name:
-            if not groups:
-                groups = Group.get_all(project_id)
-            for group in groups:
-                if group.parent_group:
-                    continue
-                if group.name == group_name:
-                    group_id = group.id
-                    break
+            group = Group.get(name=group_name, project_id=project_id)
+            if group:
+                group_id = group.id
 
             if not group_id:
                 raise ValueError("No group with Name was found")
@@ -625,7 +718,9 @@ class BaseClassWithLinking(BaseClass):
         }
 
         self.post(data=data)
-        self.linked_experiments.append(exp)
+        new_linked_experiments = list(self.linked_experiments)
+        new_linked_experiments.append(exp)
+        self.linked_experiments = new_linked_experiments
         return self.id
 
     def remove_linked_experiment(self, experiment_id=None, experiment_name=None):
@@ -698,7 +793,9 @@ class BaseClassWithLinking(BaseClass):
         }
 
         self.post(data=data)
-        self.linked_samples.append(s)
+        new_linked_samples = list(self.linked_samples)
+        new_linked_samples.append(s)
+        self.linked_samples = new_linked_samples
         return self.id
 
     def remove_linked_sample(self, sample_id=None, sample_name=None):
@@ -766,7 +863,16 @@ class BaseClassWithLinking(BaseClass):
 
         self.post(data=data)
         ri = ResearchItem.get(id=researchitem_id)
-        self.linked_researchitems[ri.category.name].append(ri)
+        research_item_dict = dict(self.linked_researchitems)
+        if ri.category.name in self.linked_researchitems:
+            new_linked_researchitems = list(self.linked_researchitems[ri.category.name])
+        else:
+            new_linked_researchitems = []
+
+        new_linked_researchitems.append(ri)
+        research_item_dict[ri.category.name] = new_linked_researchitems
+        self.linked_researchitems = research_item_dict
+
         return self.id
 
     def remove_linked_researchitem(self, researchitem_id=None):

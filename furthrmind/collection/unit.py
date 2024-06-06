@@ -45,13 +45,26 @@ class Unit(BaseClass):
         :param str id: id of requested category 
         :return Self: Instance of unit class
         """
+
         if isclass(cls):
+            assert id, "id must be specified"
             return cls._get_class_method(id)
         else:
             self = cls
             data = self._get_instance_method()
             return data
-    
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), project_id=None) -> List[
+        Self]:
+        """
+        Method to get many units belonging to one project
+        :param List[str] ids: List with ids
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of experiment class
+        """
+        return super().get_many(ids, project_id=project_id)
+
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """

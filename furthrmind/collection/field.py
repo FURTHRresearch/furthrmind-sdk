@@ -42,25 +42,36 @@ class Field(BaseClass):
         return url
 
     @classmethod
-    def get(cls, id=None, name=None) -> Self:
+    def get(cls, id=None, name=None, project_id=None) -> Self:
         """
-        Method to get all one field by it's id
+        Method to get all one field by its id or name
         :param str id: id of requested field 
-        :param str name: name of requested field 
+        :param str name: name of requested field
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
         :return Self: Instance of field class
         """
-        
 
         if isclass(cls):
-            if id is None:
-                id = name
-            assert id is not None or name is not None, "Either id or name must be specified"
-            return cls._get_class_method(id)
+            assert id or name, "Either id or name must be specified"
+            return cls._get_class_method(id, name=name, project_id=project_id)
         else:
             self = cls
             data = self._get_instance_method()
             return data
-    
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), names: List[str] = (), project_id=None) -> List[
+        Self]:
+        """
+        Method to get many fields belonging to one project
+        :param List[str] ids: List with ids
+        :param List[str] names: List with names
+        :param str project_id: Optionally to get fields from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of experiment class
+        """
+        assert ids or names, "Either ids or names must be specified"
+        return super().get_many(ids, names=names, project_id=project_id)
+
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """

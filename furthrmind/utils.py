@@ -12,7 +12,7 @@ def furthr_wrap(force_list=False):
             data = response.json()
             if data["status"] == "error":
                 print("error", data["message"])
-                raise ValueError(data["message"])
+                return
             else:
                 if force_list:
                     return data["results"]

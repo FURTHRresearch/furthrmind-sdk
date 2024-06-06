@@ -60,21 +60,52 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         return url
     
     @classmethod
-    def get(cls, id=None) -> Self:
+    def get(cls, id=None, shortid=None, name=None, category_name=None, category_id=None, project_id=None) -> Self:
         """
-        Method to get all one researchitem by it's id or short_id
+        Method to get all one researchitem by its id or short_id
         If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested researchitem 
+        :param str id: id or short_id of requested researchitem
+        :param str shortid: shortid of requested researchitem
+        :param str name: name of requested researchitem
+        :param str category_name: name of category the research item belongs to
+        :param str category_id: id of category the research item belongs to
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
         :return Self: Instance of researchitem class
         """
-
+        assert id or shortid or name, AssertionError("Either id, shortid or name must be given")
+        if name:
+            assert category_name or category_id, AssertionError("Either category name or id must be given")
         if isclass(cls):
-            return cls._get_class_method(id)
+            return cls._get_class_method(id=id, shortid=shortid, name=name,
+                                         category_name=category_name, category_id=category_id)
         else:
             self = cls
             data = self._get_instance_method()
             return data
-    
+
+    @classmethod
+    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
+                 category_name=None, category_id=None, project_id=None) -> List[
+        Self]:
+        """
+        Method to get all experiment belonging to one project
+        :param List[str] ids: List with ids
+        :param List[str] shortids: List with short_ids
+        :param List[str] names: List names
+        :param str category_name: name of category the research item belongs to
+        :param str category_id: id of category the research item belongs to
+        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
+        :return List[Self]: List with instances of experiment class
+        """
+        return cls._get_many(ids, shortids, names, category_name, category_id, project_id=project_id)
+
+    @classmethod
+    def _get_many(cls, ids, shortids, names, category_name, category_id, project_id=None):
+        assert ids or shortids or names, AssertionError("Either id, shortid or name must be given")
+        if names:
+            assert category_name or category_id, AssertionError("Either category name or id must be given")
+        return super().get_many(ids, shortids, names, category_name, category_id, project_id=project_id)
+
     @classmethod
     def get_all(cls, project_id=None) -> List[Self]:
         """
@@ -161,7 +192,6 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         new_list = []
         category_id_not_present = False
 
-        groups = Group.get_all()
         for data in data_list:
             category_name = data.get('category_name')
             category_id = data.get('category_id')
@@ -169,7 +199,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
                 raise ValueError("Either category name or id must be specified")
 
             temp_data = cls._prepare_data_for_create(data.get("name"), data.get("group_name"), data.get("group_id"),
-                                                     project_id, groups)
+                                                     project_id)
 
             category_dict = {}
             if category_name:
@@ -214,5 +244,10 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
 
         from furthrmind.collection import DataTable
         datatable = DataTable.create(name, researchitem_id=self.id, columns=columns, project_id=project_id)
+
+        new_datatable = list(self.datatables)
+        new_datatable.append(datatable)
+        self.datatables = new_datatable
+
         return datatable
 

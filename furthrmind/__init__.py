@@ -60,12 +60,18 @@ class Furthrmind:
             project_url = self.project_url.replace(str(self.project_id), project_id)
             return project_url
 
-    def get_projects(self):
-        return self.get.project()
-
     def _write_fm_to_base_class(self):
         from furthrmind.collection.baseclass import BaseClass
         BaseClass.fm = self
+
+    def send_email(self, mail_to: str, mail_subject: str, mail_body: str):
+        url = f"{self.base_url}/send-email"
+        data = {
+            "mail_to": mail_to,
+            "mail_subject": mail_subject,
+            "mail_body": mail_body,
+        }
+        self.session.post(url, json=data)
 
 
 
