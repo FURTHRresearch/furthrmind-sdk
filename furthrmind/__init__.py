@@ -26,6 +26,7 @@ class Furthrmind:
         self.host = host
         self.base_url = f"{host}/api2"
         self.session = requests.session()
+        self.project_url = None
 
         assert api_key is not None or api_key_file is not None, "Either api_key or api_key_file must be specified"
 
@@ -40,24 +41,32 @@ class Furthrmind:
         self.project_id = project_id
         self._write_fm_to_base_class()
 
-        # write project_url with wrong project_id to enable get request if name is provided
-        self.project_url = f"{self.base_url}/projects/{self.project_id}"
+        self.set_project(project_id, project_name)
 
-        if project_name is not None:
-            project = Project.get(name=project_name)
-            if project:
-                self.project_id = project.id
 
-            assert self.project_id is not None, f"Project '{project_name} was not found. Check the spelling"
-
-        # rewrite project_url after project is successully found
-        self.project_url = f"{self.base_url}/projects/{self.project_id}"
+    def set_project(self, id=None, name=None):
+        if not id and not name:
+            return
+        if id:
+            self.project_id = id
+            self.project_url = f"{self.base_url}/projects/{self.project_id}"
+            return
+        if name:
+            projects = Project.get_all()
+            for project in projects:
+                if project.name == name.lower():
+                    self.project_id = project.id
+                    self.project_url = f"{self.base_url}/projects/{self.project_id}"
+                    return
+            raise ValueError("Project not found")
 
     def get_project_url(self, project_id=None):
         if project_id is None:
+            if self.project_url is None:
+                raise ValueError("Project URL not set")
             return self.project_url
         else:
-            project_url = self.project_url.replace(str(self.project_id), project_id)
+            project_url = f"{self.base_url}/projects/{project_id}"
             return project_url
 
     def _write_fm_to_base_class(self):

@@ -30,7 +30,7 @@ class Project(BaseClass):
         super().__init__(id, data)
 
     def _get_url_instance(self):
-        project_url = Column.fm.get_project_url(self.id)
+        project_url = self.fm.get_project_url(self.id)
         return project_url
 
     @classmethod
