@@ -196,9 +196,12 @@ def delete_group(id):
     Group.delete(id)
 
 if __name__ == "__main__":
-    fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
-    # fm = Furthrmind("http://127.0.0.1:5000", "0ZJYO4UJEMQ76P8DCZJV1PAXROYB87PI",
-    #                 project_name="ma - sergio")
+    # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
+    # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66")
+    fm = Furthrmind("http://127.0.0.1:5000", "0ZJYO4UJEMQ76P8DCZJV1PAXROYB87PI",
+                    project_name="ma - sergio")
+    groups = fm.Group.get_all()
+    print(1)
     # exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()
@@ -226,7 +229,7 @@ if __name__ == "__main__":
     # test_create_field_data()
     # test_get_many_groups()
     # test_get_short_id()
-    test_research_item_name()
+    # test_research_item_name()
     # group_id = "6650812a4766a76ef5ebc557"
     # delete_group(group_id)
     print(1)

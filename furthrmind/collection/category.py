@@ -78,7 +78,12 @@ class Category(BaseClass):
         return super().get_all(project_id)
     
     @staticmethod
-    def create():
+    def create(name:str, project_id=None) -> Self:
+        """
+        Method to create a new category
+        :param str name: Name of new category
+        :param str project_id: Optionally to create a category in another project as the furthrmind sdk was initiated with, defaults to None
+        """
         pass
 
 

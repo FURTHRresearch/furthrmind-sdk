@@ -54,7 +54,7 @@ class Furthrmind:
         if name:
             projects = Project.get_all()
             for project in projects:
-                if project.name == name.lower():
+                if project.name.lower() == name.lower():
                     self.project_id = project.id
                     self.project_url = f"{self.base_url}/projects/{self.project_id}"
                     return

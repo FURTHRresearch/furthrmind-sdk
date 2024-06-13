@@ -844,11 +844,12 @@ class BaseClassWithLinking(BaseClass):
         Returns:
             the id of the item
         """
+        from furthrmind.collection import ResearchItem
         assert researchitem_id, "Either experiment_id or experiment_name must be specified"
 
         researchitem_id_list = []
         for cat in self.linked_researchitems:
-            researchitem_id_list.extend([ri_id for ri_id in self.linked_researchitems[cat]])
+            researchitem_id_list.extend([ri_id.id for ri_id in self.linked_researchitems[cat]])
 
         if researchitem_id not in researchitem_id_list:
             researchitem_id_list.append(researchitem_id)

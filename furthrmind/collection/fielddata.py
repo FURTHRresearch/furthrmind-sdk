@@ -220,8 +220,7 @@ class FieldData(BaseClass):
 
         if field_id:
             data = {"fieldid": field_id}
-            field = Field(id=field_id)
-            field.get()
+            field = Field.get(id=field_id)
             field_type = field.type
         else:
             if not field_name or not field_type:
