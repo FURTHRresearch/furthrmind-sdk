@@ -122,7 +122,7 @@ class FieldData(BaseClass):
                 return str(value)
             raise TypeError("Type must be string")
 
-        elif fieldtype == "ComboBoxEntry":
+        elif fieldtype == "ComboBox":
             if isinstance(value, dict):
                 if "id" in value:
                     return value

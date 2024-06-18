@@ -1,8 +1,10 @@
-from ..utils import furthr_wrap
-from furthrmind.collection.baseclass import BaseClass
-from typing_extensions import Self, List, TYPE_CHECKING
-from pandas import DataFrame
 from inspect import isclass
+
+from pandas import DataFrame
+from typing_extensions import Self, List, TYPE_CHECKING
+
+from furthrmind.collection.baseclass import BaseClass
+
 if TYPE_CHECKING:
     from furthrmind.collection import Column
 
@@ -150,7 +152,7 @@ class DataTable(BaseClass):
             - name: name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
             will be converted to string and for Numeric all data is converted to float (if possible)
-            - data: List of column values, must fit to column_type
+            - data: List of column values, must fit to column_type, can also be a pandas data series
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: instance of datatable class

@@ -374,7 +374,7 @@ class BaseClassWithFieldData(BaseClass):
                 if item.field_id == field_id:
                     fielddata = item
             elif field_name:
-                if item.field_name == field_name:
+                if item.field_name.lower() == field_name.lower():
                     fielddata = item
 
         if not fielddata:
@@ -401,10 +401,10 @@ class BaseClassWithFieldData(BaseClass):
             if fielddata is not None:
                 break
             if field_id:
-                if item.fieldid == field_id:
+                if item.field_id == field_id:
                     fielddata = item
             elif field_name:
-                if item.field_name == field_name:
+                if item.field_name.lower() == field_name.lower():
                     fielddata = item
 
         if not fielddata:
@@ -432,7 +432,7 @@ class BaseClassWithFieldData(BaseClass):
                 if item.fieldid == field_id:
                     fielddata = item
             elif field_name:
-                if item.field_name == field_name:
+                if item.field_name.lower() == field_name.lower():
                     fielddata = item
 
         if not fielddata:
@@ -708,8 +708,10 @@ class BaseClassWithLinking(BaseClass):
             exp = Experiment.get(experiment_id)
 
         experiment_id_list = [item.id for item in self.linked_experiments]
-        if experiment_id not in experiment_id_list:
-            experiment_id_list.append(experiment_id)
+        if experiment_id in experiment_id_list:
+            return self.id
+
+        experiment_id_list.append(experiment_id)
 
         linked_experiment = [{"id": exp_id} for exp_id in experiment_id_list]
         data = {
@@ -782,8 +784,10 @@ class BaseClassWithLinking(BaseClass):
             s = Sample.get(sample_id)
 
         sample_id_list = [item.id for item in self.linked_samples]
-        if sample_id not in sample_id_list:
-            sample_id_list.append(sample_id)
+        if sample_id in sample_id_list:
+            return self.id
+
+        sample_id_list.append(sample_id)
 
         linked_samples = [{"id": s_id} for s_id in sample_id_list]
 
@@ -851,8 +855,10 @@ class BaseClassWithLinking(BaseClass):
         for cat in self.linked_researchitems:
             researchitem_id_list.extend([ri_id.id for ri_id in self.linked_researchitems[cat]])
 
-        if researchitem_id not in researchitem_id_list:
-            researchitem_id_list.append(researchitem_id)
+        if researchitem_id in researchitem_id_list:
+            return self.id
+
+        researchitem_id_list.append(researchitem_id)
 
         linked_researchitems = [{"id": ri_id} for ri_id in researchitem_id_list]
 

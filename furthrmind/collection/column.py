@@ -1,3 +1,7 @@
+import math
+
+import numpy as np
+import pandas
 from typing_extensions import Self, List, Dict
 from inspect import isclass
 from ..utils import furthr_wrap
@@ -80,17 +84,32 @@ class Column(BaseClass):
     def _type_check(cls, column_type, data):
         if not column_type in ["Text", "Numeric"]:
             raise ValueError("Column type must be Text/Numeric")
+        if isinstance(data, pandas.Series):
+            data = data.tolist()
 
+        new_data = []
+        for d in data:
+            try:
+                if math.isnan(d):
+                    new_data.append(None)
+                else:
+                    new_data.append(d)
+            except:
+                new_data.append(d)
+            # data = [d if not math.isnan(d) else None for d in data]
+        data = new_data
         if column_type == "Text":
-            if all([isinstance(d, str) for d in data]):
+            if all([isinstance(d, (str, type(None))) for d in data]):
                 return data
             return [str(d) for d in data]
 
         elif column_type == "Numeric":
-            if all([isinstance(d, (int, float)) for d in data]):
+            if all([isinstance(d, (int, float, type(None))) for d in data]):
                 return data
             new_data = []
             for d in data:
+                if d is None:
+                    new_data.append(d)
                 try:
                     new_data.append(float(d))
                 except:
@@ -130,7 +149,7 @@ class Column(BaseClass):
             - name: Name of the column
             - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
             will be converted to string and for Numeric all data is converted to float (if possible)
-            - data: List of column values, must fit to column_type
+            - data: List of column values, must fit to column_type, can also be a pandas data series
             - unit: dict with id or name, or name as string, or id as string
         :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
         :return: List with instances of column class
