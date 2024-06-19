@@ -30,7 +30,7 @@ class BaseClass:
             raise ValueError("No id provided")
 
         # create instance methods for certain class_methods
-        instance_methods = ["get", "get_all", "get_many","post", "delete"]
+        instance_methods = ["get", "get_all", "get_many", "post", "delete"]
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
@@ -275,7 +275,7 @@ class BaseClass:
         return cls.fm.session.post(url, json=data)
 
     @classmethod
-    def delete(cls, id: str, project_id: str = None) -> str:
+    def delete(cls, id: str=None, project_id: str = None) -> str:
         """
         Deletes a single resources
         param: id - The id of the resource to delete
@@ -296,7 +296,7 @@ class BaseClass:
 
     @furthr_wrap(force_list=False)
     def _delete_instance_method(self, project_id=None):
-        url = self.__class__._get_url_instance(project_id)
+        url = self._get_url_instance(project_id)
         return self.fm.session.delete(url)
 
     def to_dict(self):
