@@ -55,81 +55,146 @@ class Group(BaseClassWithFieldData):
         return url
 
     @classmethod
-    def get(cls, id=None, name=None, shortid=None, parent_group_id=None, project_id=None) -> Self:
+    def get(cls, id: str = "", name: str = "", shortid: str = "", parent_group_id: str = "", project_id: str = "") -> Self:
         """
-        Method to get all one group by its id, name, or shortid
-        If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested group 
-        :param str name: name of requested group
-        :param str parent_group_id: id of parent group, If a subgroup is requested, either parent_group_name or parent_group_id is required
-        :param shortid: shortid of requested group
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of group class
+        Method to get one group by its id, name, or shortid.
+        If called on an instance of the class, the id of the class is used.
+
+        Parameters
+        ----------
+        id : str
+            id or short_id of requested group
+        name : str
+            name of requested group. For subgroups, see parent_group_id parameter
+        shortid : str
+            shortid of requested group
+        parent_group_id : str
+            id of parent group.
+            If a subgroup is requested, the name and the parent_group_id is required
+        project_id : str, optional
+            Optionally to get a group from another project as the furthrmind sdk was initiated with.
+            Defaults to None
+
+        Returns
+        -------
+        Self
+            Instance of group class
+
+        Raises
+        ------
+        AssertionError
+            When used as a class method, id, name, or shortid must be specified.
+
         """
+
         if isclass(cls):
             assert id or name or shortid, "Either id or name must be specified"
-            return cls._get_class_method(id, shortid, name, parent_group_id=parent_group_id, project_id=project_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+
+        return cls._get(id, shortid, name, parent_group_id=parent_group_id, project_id=project_id)
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (), project_id=None) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
+                 project_id: str = "") -> List[Self]:
         """
-        Method to get many groups belonging to one project
-        :param List[str] ids: List with ids
-        :param List[str] shortids: List with short_ids
-        :param List[str] names: List names
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of group class
+        Method to get many groups
+
+        Parameters
+        ----------
+        ids : List[str]
+            List of ids to filter the groups.
+        shortids : List[str]
+            List of short_ids to filter the groups.
+        names : List[str]
+            List of names to filter the groups.
+        project_id : str, optional
+            Optionally to get groups from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the Group class.
+
+        Raises
+        ------
+        AssertionError
+            If none of the parameters (ids, shortids, or names) are specified.
+
         """
+
         assert ids or names or shortids, "Either ids, shortids, or names must be specified"
-        return super().get_many(ids, shortids, names, project_id=project_id)
+        return cls._get_many(ids, shortids, names, project_id=project_id)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def get_all(cls, project_id: str = "") -> List[Self]:
         """
         Method to get all groups belonging to one project
-        :param str project_id: Optionally to get groups from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of group class
+
+        Parameters
+        ----------
+        project_id : str, optional
+            Optionally to get groups from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            A list of instances of the group class.
+
         """
-        return super().get_all(project_id)
+
+        return super()._get_all(project_id)
     
     @classmethod
-    @BaseClass._create_instances_decorator
-    def create(cls, name, parent_group_id=None, project_id=None) -> Self:
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create(cls, name: str, parent_group_id: str = "", project_id: str = "") -> Self:
         """
-        Method to create a new sample
-        :param name: the name of the item to be created
-        :param parent_group_id: the id of the parent_group, where the new group should belong to
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return instance of the group class
+        Method to create a new group.
+
+        Parameters
+        ----------
+        name: str
+            The name of the item to be created.
+        parent_group_id: str, optional
+            The ID of the parent group where the new group should belong to. Defaults to an empty string.
+        project_id: str, optional
+            Optionally, create a group in another project as the furthrmind SDK was initiated with
+
+        Returns
+        -------
+        instance of the group class
         """
+
         data = {"name": name}
         if parent_group_id:
             data["parent_group"] = {"id": parent_group_id}
-        id = cls.post(data, project_id)
+        id = cls._post(data, project_id)
         data["id"] = id
         return data
 
     @classmethod
-    @BaseClass._create_instances_decorator
-    def create_many(cls, name_list: List[str], project_id=None) -> List[Self]:
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create_many(cls, name_list: List[str], project_id: str = "") -> List[Self]:
         """
         Method to create multiple groups
-        :param name_list: list with names of the groups to be created
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return list with instance of the group class
+
+        Parameters
+        ----------
+        name_list: List[str]
+            A list containing names of the groups to be created.
+        project_id: str, optional
+            Optionally to create groups in another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            A list containing instances of the group class corresponding to the groups created.
+
         """
+
         data_list = [{"name": name} for name in name_list]
 
-        id_list = cls.post(data_list, project_id)
+        id_list = cls._post(data_list, project_id)
 
         for data, id in zip(data_list, id_list):
             data["id"] = id
 
         return data_list
-
-

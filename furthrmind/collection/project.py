@@ -47,56 +47,103 @@ class Project(BaseClass):
         return f"{cls.fm.base_url}/projects"
     
     @classmethod
-    def get(cls, id=None, name=None) -> Self:
+    def get(cls, id: str = "", name: str = "") -> Self:
         """
-        Method to get all one project by it's id
-        If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested project 
-        :param str name: name of requested project 
-        :return Self: Instance of project class
+        This method is used to get one project by its id or name.
+        If called on an instance of the class, the id of the class is used.
+        Either id or name must be specified.
+
+        Parameters
+        ----------
+        id : str, optional
+            id or short_id of the requested project.
+            Default value is an empty string.
+        name : str, optional
+            name of the requested project.
+            Default value is an empty string.
+
+        Returns
+        -------
+        Self
+            Instance of the project class.
+
         """
 
         if isclass(cls):
             assert id or name, "Either id or name must be specified"
-            return cls._get_class_method(id, name=name)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+
+        return cls._get(id=id, name=name)
+
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), names: List[str]= ()) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), names: List[str] = ()) -> List[Self]:
         """
-        Method to get many columns belonging to one project
-        :param List[str] ids: List with ids
-        :param List[str] names: List names
-        :return List[Self]: List with instances of experiment class
+        Method to get many projects
+
+        Parameters
+        ----------
+        ids : List[str]
+            List of ids.
+
+        names : List[str]
+            List of names.
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the class.
+
+        Raises
+        ------
+        AssertionError
+            If neither ids nor names are specified.
         """
+        pass
+
         assert ids or names, "Either ids or names must be specified"
-        return super().get_many(ids, names)
+        return cls._get_many(ids, names)
 
     @classmethod
     def get_all(cls) -> List[Self]:
         """
-        Method to get all projects belonging to one project
-        :return List[Self]: List with instances of project class
+        Method to get all projects
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the class.
+
         """
-        return super().get_all()
+
+        return super()._get_all()
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create(cls, name: str) -> Self:
         """
         Method to create a new project
-        :param name: Name of the new project
-        :return: instance of the project class
+
+        Parameters
+        ----------
+        name : str
+            Name of the new project
+
+        Returns
+        -------
+        Self
+            Instance of the project class
+
+        Raises
+        ------
+        ValueError
+            If name is empty or None
+
         """
 
         if not name:
             raise ValueError("Name is required")
         data = {"name": name}
-        id = cls.post(data)
+        id = cls._post(data)
         data["id"] = id
         return data
 

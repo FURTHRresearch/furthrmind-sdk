@@ -17,15 +17,21 @@ class File(BaseClass):
         raise TypeError("Not implemented")
 
     @classmethod
-    def get_all(cls):
+    def _get_all(cls):
         raise TypeError("Not implemented")
 
-
-    def download(self, folder, overwrite=False):
+    def download(self, folder: str, overwrite: bool = False):
         """
         Method to download a file
-        :param folder: the folder where the file should be saved
+
+        Parameters
+        ----------
+        folder : str
+            The folder where the file should be saved
+        overwrite : bool, optional
+            Whether to overwrite the existing file in the folder if it already exists (default is False)
         """
+
         from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 
@@ -36,15 +42,34 @@ class File(BaseClass):
     def download_bytes(self) -> BytesIO:
         """
         Method to download a file and save to BytesIO object
-        :param folder: the folder where the file should be saved
+
+        Returns:
+            BytesIO: The downloaded file stored as BytesIO object
         """
+
         from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 
-        flag, bytesIO = fl.downloadFile(self.id, bytesIO=True)
-        return bytesIO
+        flag, bytes_io = fl.downloadFile(self.id, bytesIO=True)
+        return bytes_io
 
-    def update_file(self, file_path, file_name=None):
+    def update_file(self, file_path: str, file_name: str = ""):
+        """
+        Update a file.
+
+        Parameters
+        ----------
+        file_path : str
+            The path to the file.
+        file_name : str, optional
+            The new file name. Defaults to "". If not set, the file_name is taken from the file_path.
+
+        Raises
+        ------
+        ValueError
+            If the file does not exist.
+
+        """
         from furthrmind.file_loader import FileLoader
         fl = FileLoader(self.fm.host, self.fm.api_key)
 

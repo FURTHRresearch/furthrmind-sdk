@@ -26,4 +26,5 @@ def furthr_wrap(force_list=False):
 def instance_overload(self, methods):
     """ Adds instance overloads for one or more classmethods"""
     for name in methods:
-        setattr(self, name, MethodType(getattr(self, name).__func__, self))
+        if hasattr(self, name):
+            setattr(self, name, MethodType(getattr(self, name).__func__, self))

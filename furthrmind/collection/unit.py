@@ -55,7 +55,7 @@ class Unit(BaseClass):
             return data
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), project_id=None) -> List[
+    def _get_many(cls, ids: List[str] = (), project_id=None) -> List[
         Self]:
         """
         Method to get many units belonging to one project
@@ -63,19 +63,19 @@ class Unit(BaseClass):
         :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
         :return List[Self]: List with instances of experiment class
         """
-        return super().get_many(ids, project_id=project_id)
+        return super()._get_many(ids, project_id=project_id)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def _get_all(cls, project_id=None) -> List[Self]:
         """
         Method to get all units belonging to one project
         :param str project_id: Optionally to get units from another project as the furthrmind sdk was initiated with, defaults to None
         :return List[Self]: List with instances of unit class
         """
-        return super().get_all(project_id)
+        return super()._get_all(project_id)
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create(cls, name: str, definition: str = None, project_id=None) -> Self:
         """
         Method to create a new unit
@@ -93,12 +93,12 @@ class Unit(BaseClass):
             raise ValueError("Name is required")
 
         data = {"name": name, "definition": definition}
-        id = cls.post(data, project_id)
+        id = cls._post(data, project_id)
         data["id"] = id
         return data
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create_many(cls, data_list, project_id=None) -> Self:
         """
         Method to create a new unit
@@ -124,7 +124,7 @@ class Unit(BaseClass):
             data = {"name": name, "definition": definition}
             new_data_list.append(data)
 
-        id_list = cls.post(new_data_list, project_id)
+        id_list = cls._post(new_data_list, project_id)
         for data, id in zip(new_data_list, id_list):
             data["id"] = id
 

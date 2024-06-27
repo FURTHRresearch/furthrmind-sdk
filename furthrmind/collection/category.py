@@ -1,6 +1,7 @@
 from inspect import isclass
 from furthrmind.collection.baseclass import BaseClass
-from typing_extensions import TYPE_CHECKING, List, Self
+from typing_extensions import List, Self
+
 
 class Category(BaseClass):
     id = ""
@@ -39,51 +40,106 @@ class Category(BaseClass):
         return url
 
     @classmethod
-    def get(cls, id=None, project_id=None) -> Self:
+    def get(cls, id: str = "", project_id: str = "") -> Self:
         """
-        Method to get all one category by its id
-        If called on an instance of the class, the id of the class is used
-        :param str id: id of requested category
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of category class
+        Parameters
+        ----------
+        id : str
+            The id of the requested category. Only needed if used on as a class method
+        project_id : str
+            The project_id parameter is optional and can be used to retrieve categories
+            from another project as the furthrmind sdk was initiated with.
+
+        Returns
+        -------
+        Self
+            An instance of the category class.
+
+        Raises
+        ------
+        AssertionError
+            If used as a class method and id is not specified.
+
+        Example Usage
+        -------------
+        # Get a category by id
+        category = Category.get(id='category_id')
+
+        # Get a category by id using class method
+        category = Category.get('category_id')
+
+        # Get a category using the id of the instance
+        category = category.get()
         """
 
         if isclass(cls):
             assert id, "id must be specified"
-            return cls._get_class_method(id, project_id=project_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+        return super().get(id=id, project_id=project_id)
+
+
+    # noinspection PyMethodOverriding
+    @classmethod
+    def get_many(cls, ids: List[str] = (), names: List[str] = (), project_id: str = "") -> List[Self]:
+        """
+        Parameters
+        ----------
+        ids : List[str]
+            List with ids.
+        names : List[str]
+            List with names.
+        project_id : str, optional
+            Optionally, to get experiments from another project as the furthrmind sdk was initiated with. Defaults to None.
+
+        Returns
+        -------
+        List[Self]
+            List with instances of the category class.
+
+        Raises
+        ------
+        AssertionError
+            If ids or names are not specified.
+        """
+
+        assert ids or names, "ids or names must be specified"
+        return cls._get_many(ids, names, project_id=project_id)
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), names: List[str] = (), project_id=None) -> List[Self]:
+    def get_all(cls, project_id: str = "") -> List[Self]:
         """
-        Method to get many categories belonging to one project
-        :param List[str] ids: List with ids
-        :param List[str] names: List names
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
-        """
-        assert ids, "ids must be specified"
-        return super().get_many(ids, names, project_id=project_id)
+        Parameters
+        ----------
+        project_id : str (optional)
+            Optionally to get categories from another project as the furthrmind sdk was initiated with, defaults to None
 
-    @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+        Returns
+        -------
+        List[Self]
+            List with instances of category class
         """
-        Method to get all categories belonging to one project
-        :param str project_id: Optionally to get categories from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of category class
-        """
-        return super().get_all(project_id)
+
+        return cls._get_all(project_id=project_id)
     
     @staticmethod
-    def create(name:str, project_id=None) -> Self:
+    def create(name: str, project_id: str = "") -> Self:
         """
         Method to create a new category
-        :param str name: Name of new category
-        :param str project_id: Optionally to create a category in another project as the furthrmind sdk was initiated with, defaults to None
+
+        Parameters
+        ----------
+        name : str
+            Name of the new category
+
+        project_id : str, optional
+            Identifier of another project where the category should be created,
+            defaults to an empty string
+
+        Returns
+        -------
+        Self
+            The newly created category object
         """
+
         pass
 
 

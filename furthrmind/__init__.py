@@ -52,7 +52,7 @@ class Furthrmind:
             self.project_url = f"{self.base_url}/projects/{self.project_id}"
             return
         if name:
-            projects = Project.get_all()
+            projects = Project._get_all()
             for project in projects:
                 if project.name.lower() == name.lower():
                     self.project_id = project.id
@@ -61,7 +61,7 @@ class Furthrmind:
             raise ValueError("Project not found")
 
     def get_project_url(self, project_id=None):
-        if project_id is None:
+        if not project_id:
             if self.project_url is None:
                 raise ValueError("Project URL not set")
             return self.project_url

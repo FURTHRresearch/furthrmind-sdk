@@ -24,38 +24,66 @@ class Column(BaseClass):
         super().__init__(id, data)
 
     @classmethod
-    def get(cls, id=None, project_id=None) -> Self:
+    def get(cls, id: str = "", project_id: str = "") -> Self:
+
         """
-        Method to get all one column by its id
-        If called on an instance of the class, the id of the class is used
-        :param str id: id of requested column
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of column class
+        Method to get one column by its id
+        If called on an instance of the class, the id of the instance is used
+
+        Parameters
+        ----------
+        id : str
+            id of requested column
+        project_id : str, optional
+            Optionally to get a column from another project as the furthrmind sdk was initiated with, defaults to ""
+
+        Returns
+        -------
+        Self
+            Instance of column class
+
+        Raises
+        ------
+        AssertionError
+            If used as a class method and id is not specified.
         """
 
         if isclass(cls):
             assert id, "id must be specified"
-            return cls._get_class_method(id, project_id=project_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
 
+        cls._get(id, project_id=project_id)
+
+    # noinspection PyMethodOverriding
     @classmethod
-    def get_many(cls, ids: List[str] = (), project_id=None) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), project_id: str = "") -> List[Self]:
         """
         Method to get many columns belonging to one project
-        :param List[str] ids: List with ids
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
+
+        Parameters
+        ----------
+        ids : List[str]
+            List with ids.
+
+        project_id : str
+            Optionally, the id of the project from which to get the experiments. Defaults to an empty string.
+
+        Returns
+        -------
+        List[Self]
+            List with instances of the experiment class.
+
+        Raises
+        ------
+        AssertionError
+            If `ids` is not specified.
         """
+
         assert ids, "ids must be specified"
-        return super().get_many(ids, project_id=project_id)
+        return cls._get_many(ids, project_id=project_id)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
-        raise ValueError("Not implemented for datatables")
+    def _get_all(cls, project_id=None) -> List[Self]:
+        raise ValueError("Not implemented for columns")
 
     def _get_url_instance(self, project_id=None):
         project_url = Column.fm.get_project_url(project_id)
@@ -117,42 +145,61 @@ class Column(BaseClass):
             return new_data
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create(cls, name: str, type: str, data: list, unit=None, project_id=None) -> Self:
         """
-        Method to create a new data column
+        Method to create a new column
 
-        :param name: Name of the column
-        :param type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
+        Parameters
+        ----------
+        name : str
+            Name of the column
+        type : str
+            Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
             will be converted to string and for Numeric all data is converted to float (if possible)
-        :param data: List of column values, must fit to column_type
-        :param unit: dict with id or name, or name as string, or id as string
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return: Instance of column class
+        data : Union[list, pandas.Series]
+            List or pandas series. values, must fit to column_type.
+        unit : Optional[Union[str, int, dict]]
+            Dict with id or name, or name as string, or id as string
+        project_id : Optional[str]
+            Optionally to create an item in another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            Instance of column class
 
         """
-
         data = cls._type_check(type, data)
         unit = FieldData._check_unit(unit)
         data_dict = {"name": name, "type": type, "values": data, "unit": unit}
-        id = cls.post(data_dict, project_id)
+        id = cls._post(data_dict, project_id)
         data_dict["id"] = id
         return data_dict
 
-    @classmethod
-    @BaseClass._create_instances_decorator
-    def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
-        """
-        Method to create a new data column
 
-        :param data_list: dict with the following keys:
-            - name: Name of the column
-            - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-            will be converted to string and for Numeric all data is converted to float (if possible)
-            - data: List of column values, must fit to column_type, can also be a pandas data series
-            - unit: dict with id or name, or name as string, or id as string
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return: List with instances of column class
+    @classmethod
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create_many(cls, data_list: List[Dict], project_id: str = "") -> List[Self]:
+        """
+        Method to create many new columns
+
+        Parameters
+        ----------
+        data_list : List[Dict]
+            A list of dictionaries containing information about the data columns to be created. Each dictionary should have the following keys:
+                - name: Name of the column
+                - type: Type of the column. Allowed values are "Text" or "Numeric".
+                - data: List of column values. The values must match the column type. Can also be a pandas data series.
+                - unit: Optional. Dictionary with id or name, or name as a string, or id as a string.
+
+        project_id : str, optional
+            Optionally to create an columns in another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            A list of instances of the column class.
 
         """
 
@@ -167,7 +214,7 @@ class Column(BaseClass):
             data_dict = {"name": name, "type": type, "values": data, "unit": unit}
             new_data_list.append(data_dict)
 
-        id_list = cls.post(new_data_list, project_id)
+        id_list = cls._post(new_data_list, project_id)
         for item, id in zip(new_data_list, id_list):
             item["id"] = id
 

@@ -37,7 +37,7 @@ class FileLoader:
         if response.status_code != 200:
             return
         fileID = response.json()["results"][0]
-        result = self.updateFile(fileID, filePath, fileName=fileName)
+        result = self.updateFile(fileID, filePath, file_name=fileName)
         if not result:
             print("Upload not successful")
             return
@@ -67,18 +67,18 @@ class FileLoader:
 
         return fileID, fileName
 
-    def updateFile(self, fileID, filePath, fileName=None):
-        if not os.path.isfile(filePath):
+    def updateFile(self, file_id, file_path, file_name=None):
+        if not os.path.isfile(file_path):
             return False
 
-        filePath = filePath.replace("\\", "/")
-        if fileName is None:
-            fileName = filePath.split("/")[-1]
+        file_path = file_path.replace("\\", "/")
+        if not file_name:
+            file_name = file_path.split("/")[-1]
 
         if self.s3Enabled:
-            flag = self.s3Upload(fileID, fileName, filePath)
+            flag = self.s3Upload(file_id, file_name, file_path)
         else:
-            flag = self.chunkUpload(fileID, fileName, filePath)
+            flag = self.chunkUpload(file_id, file_name, file_path)
         return flag
 
     def chunkUpload(self, fileID, fileName, filePath):
@@ -215,55 +215,55 @@ class FileLoader:
     def getMD5(self, byteData):
         return hashlib.md5(byteData).hexdigest()
 
-if __name__ == "__main__":
-    argv = sys.argv[1:]
-    kwargs = {kw[0]: kw[1] for kw in [ar.split('=') for ar in argv if ar.find('=') > 0]}
-    args = [arg for arg in argv if arg.find('=') < 0]
-
-    host = kwargs.get("host")
-    api_key = kwargs.get("api_key")
-    if not host or not api_key:
-        print("Please specify host and api_key")
-        sys.exit()
-
-    fl = FileLoader(host, api_key)
-
-    file_path = kwargs.get("file_path")
-    file_id = kwargs.get("file_id")
-    file_name = kwargs.get("file_name")
-
-    parent_project = kwargs.get("parent_project")
-    parent_type = kwargs.get("parent_type")
-    parent_id = kwargs.get("parent_id")
-    parent = None
-    if parent_project and parent_type and parent_id:
-        parent = {
-            "project": parent_project,
-            "type": parent_type,
-            "id": parent_id
-        }
-    download_folder = kwargs.get("download_folder")
-    overwrite = kwargs.get("overwrite")
-    if overwrite:
-        if overwrite.lower() == "true":
-            overwrite = True
-        else:
-            overwrite = False
-    else:
-        overwrite = False
-
-
-    command = args[0]
-
-    if command == "upload":
-        file_id = fl.uploadFile(file_path, file_name, parent)
-
-    elif command == "update":
-        fl.updateFile(file_id, file_path, file_name)
-
-    elif command == "download":
-        fl.downloadFile(file_id, download_folder, overwrite=overwrite)
-
-    else:
-        print("Unknown command")
+# if __name__ == "__main__":
+#     argv = sys.argv[1:]
+#     kwargs = {kw[0]: kw[1] for kw in [ar.split('=') for ar in argv if ar.find('=') > 0]}
+#     args = [arg for arg in argv if arg.find('=') < 0]
+#
+#     host = kwargs.get("host")
+#     api_key = kwargs.get("api_key")
+#     if not host or not api_key:
+#         print("Please specify host and api_key")
+#         sys.exit()
+#
+#     fl = FileLoader(host, api_key)
+#
+#     file_path = kwargs.get("file_path")
+#     file_id = kwargs.get("file_id")
+#     file_name = kwargs.get("file_name")
+#
+#     parent_project = kwargs.get("parent_project")
+#     parent_type = kwargs.get("parent_type")
+#     parent_id = kwargs.get("parent_id")
+#     parent = None
+#     if parent_project and parent_type and parent_id:
+#         parent = {
+#             "project": parent_project,
+#             "type": parent_type,
+#             "id": parent_id
+#         }
+#     download_folder = kwargs.get("download_folder")
+#     overwrite = kwargs.get("overwrite")
+#     if overwrite:
+#         if overwrite.lower() == "true":
+#             overwrite = True
+#         else:
+#             overwrite = False
+#     else:
+#         overwrite = False
+#
+#
+#     command = args[0]
+#
+#     if command == "upload":
+#         file_id = fl.uploadFile(file_path, file_name, parent)
+#
+#     elif command == "update":
+#         fl.updateFile(file_id, file_path, file_name)
+#
+#     elif command == "download":
+#         fl.downloadFile(file_id, download_folder, overwrite=overwrite)
+#
+#     else:
+#         print("Unknown command")
 

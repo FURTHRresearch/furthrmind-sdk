@@ -60,95 +60,154 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         return url
     
     @classmethod
-    def get(cls, id=None, shortid=None, name=None, category_name=None, category_id=None, project_id=None) -> Self:
+    def get(cls, id: str = "", shortid: str = "", name: str = "", category_name: str = "", category_id: str = "",
+            project_id: str = "") -> Self:
         """
-        Method to get all one researchitem by its id or short_id
+        Method to get  one researchitem by its id, short_id or name. If requested by name, also category_name or
+        category_id is required.
         If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested researchitem
-        :param str shortid: shortid of requested researchitem
-        :param str name: name of requested researchitem
-        :param str category_name: name of category the research item belongs to
-        :param str category_id: id of category the research item belongs to
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of researchitem class
+
+        Parameters
+        ----------
+        id : str, optional
+            The id of the requested research item.
+
+        shortid : str, optional
+            The short id of the requested research item.
+
+        name : str, optional
+            The name of the requested research item.
+
+        category_name : str, optional
+            The name of the category the research item belongs to.
+
+        category_id : str, optional
+            The id of the category the research item belongs to.
+
+        project_id : str, optional
+            Optionally to get a researchitem from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            Instance of the researchitem class.
+
+        Raises
+        ------
+        AssertionError
+            If used as a class method and neither id, shortid, nor name is provided.
+            If used as a class method and name is provided but neither category_name nor category_id is provided.
+
         """
-        assert id or shortid or name, AssertionError("Either id, shortid or name must be given")
-        if name:
-            assert category_name or category_id, AssertionError("Either category name or id must be given")
+
         if isclass(cls):
-            return cls._get_class_method(id=id, shortid=shortid, name=name,
-                                         category_name=category_name, category_id=category_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+            assert id or shortid or name, AssertionError("Either id, shortid or name must be given")
+            if not id and name:
+                assert category_name or category_id, AssertionError("Either category name or id must be given")
+
+        return cls._get(id=id, shortid=shortid, name=name,
+                        category_name=category_name, category_id=category_id, project_id=project_id)
+
 
     @classmethod
     def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
-                 category_name=None, category_id=None, project_id=None) -> List[
-        Self]:
+                 category_name=None, category_id=None, project_id=None) -> List[Self]:
         """
-        Method to get all experiment belonging to one project
-        :param List[str] ids: List with ids
-        :param List[str] shortids: List with short_ids
-        :param List[str] names: List names
-        :param str category_name: name of category the research item belongs to
-        :param str category_id: id of category the research item belongs to
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
+        Method to get many researchitems by ids or shortids. If requested by names, also category_name or category_id
+        is required. If requested by name items from one category can be requested at a time.
+
+        Parameters
+        ----------
+        ids : List[str]
+             List of experiment ids.
+        shortids : List[str]
+             List of experiment short ids.
+        names : List[str]
+             List of experiment names.
+        category_name : str, optional
+             Name of the category the research item belongs to.
+        category_id : str, optional
+             Id of the category the research item belongs to.
+        project_id : str, optional
+             Optionally to get researchitems from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+             List of instances of the researchitem class.
+
+        Raises
+        ------
+        AssertionError
+            ids, shortids, nor names must be provided.
+            If names is provided but neither category_name nor category_id is provided.
+
         """
+
+        assert ids or shortids or names, AssertionError("Either ids, shortids or names must be given")
+        if names:
+            assert category_name or category_id, AssertionError("Either category_name or category_id must be given")
+
         return cls._get_many(ids, shortids, names, category_name, category_id, project_id=project_id)
 
     @classmethod
-    def _get_many(cls, ids, shortids, names, category_name, category_id, project_id=None):
-        assert ids or shortids or names, AssertionError("Either id, shortid or name must be given")
-        if names:
-            assert category_name or category_id, AssertionError("Either category name or id must be given")
-        return super().get_many(ids, shortids, names, category_name, category_id, project_id=project_id)
-
-    @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def get_all(cls, project_id: str = "") -> List[Self]:
         """
         Method to get all researchitems belonging to one project
-        :param str project_id: Optionally to get researchitems from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of researchitem class
+
+        Parameters
+        ----------
+        project_id: str
+            Optionally to get researchitems from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            A list containing instances of the researchitem class.
         """
-        return super().get_all(project_id)
+
+        return cls._get_all(project_id)
+
 
     @classmethod
-    def get_by_name(cls, name, category_name, project_id=None) -> Self:
-        return cls._get_by_name_class_method(name, category_name, project_id)
-
-    @classmethod
-    def _get_by_name_class_method(cls, name, category_name, project_id):
-        all_data = cls.get_all(project_id)
-        for d in all_data:
-            if d.category.name.lower() == category_name.lower():
-                if d.name.lower() == name.lower():
-                    return d
-        
-        raise ValueError("No item with this name found")
-
-    @classmethod
-    @BaseClass._create_instances_decorator
-    def create(cls,name, group_name = None, group_id=None, category_name=None, category_id = None, project_id=None) -> Self:
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create(cls, name: str, group_name: str = "", group_id: str = "", category_name: str = "", category_id: str = "",
+               project_id=None) -> Self:
         """
-        Method to create a new researchitem
+        Parameters
+        ----------
+        name : str
+            The name of the item to be created.
+        group_name : str, optional
+            The name of the group where the new item will belong to. Group name can only be considered for groups that
+            are not subgroups. Either `group_name` or `group_id` must be specified.
+        group_id : str, optional
+            The id of the group where the new item will belong to. Either `group_name` or `group_id` must be specified.
+        category_name : str, optional
+            The name of the category that the new item will belong to. Either `category_name` or `category_id` must be specified.
+        category_id : str, optional
+            The id of the category that the new item will belong to. Either `category_name` or `category_id` must be specified.
+        project_id : object, optional
+            Optionally create a researchitem in another project as the furthrmind sdk was initiated with.
 
-        :param name: the name of the item to be created
-        :param group_name: The name of the group where the new item will belong to. group name can be only considered
-            for groups that are not subgroups. Either group_name or group_id must be specified
-        :param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-        :category_name: the name of the category that the new item will belong to. Either category_name or category_id must be specified
-        :category_id: the id of the category that the new item will belong to. Either category_name or category_id must be specified
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return instance of the researchitem class
+        Returns
+        -------
+        Self
+            instance of the researchitem class
+
+        Raises
+        ------
+        AssertationError
+            If neither group_id nor group_name is provided.
+            If neither `category_name` nor `category_id` are specified.
 
         """
 
         from furthrmind.collection import Category
-        if not category_name and not category_id:
-            raise ValueError("Either category name or id must be specified")
+
+        assert group_name or group_id, "Either group_name or group_id must be specified"
+        assert category_name or category_id, "Either category name or id must be specified"
+
         data = cls._prepare_data_for_create(name, group_name, group_id, project_id)
 
         category_dict = {}
@@ -158,10 +217,10 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
             category_dict["id"] = category_id
 
         data["category"] = category_dict
-        id = cls.post(data, project_id)
+        id = cls._post(data, project_id)
 
         if "id" not in category_dict:
-            categories = Category.get_all(project_id)
+            categories = Category._get_all(project_id)
             for cat in categories:
                 if cat.name == category_name:
                     category_dict["id"] = cat.id
@@ -171,23 +230,42 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         return data
 
     @classmethod
-    @BaseClass._create_instances_decorator
-    def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create_many(cls, data_list: List[Dict], project_id: str = "") -> Self:
         """
-        Method to create multiple experiments
+        Parameters
+        ----------
+        data_list : List[Dict]
+            List of dictionaries containing information about the items to be created. Each dictionary should have the
+            following keys:
+                - name: str
+                    The name of the group to be created.
+                - group_name: str
+                    The name of the group where the new item will belong to. Group name can only be considered for groups
+                    that are not subgroups. Either group_name or group_id must be specified.
+                - group_id: int or None
+                    The ID of the group where the new item will belong to. Either group_name or group_id must be specified.
+                - category_name: str
+                    The name of the category that the new item will belong to. Either category_name or category_id must be specified.
+                - category_id: int or None
+                    The ID of the category that the new item will belong to. Either category_name or category_id must be specified.
+        project_id : str, optional
+            Optionally to create researchitems in another project as the furthrmind sdk was initiated with
 
-        :param data_list: dict with the following keys:
-            - name: the name of the item to be created
-            - group_name: The name of the group where the new item will belong to. group name can be only considered
-            for groups that are not subgroups. Either group_name or group_id must be specified
-            - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-            - category_name: the name of the category that the new item will belong to. Either category_name or category_id must be specified
-            - category_id: the id of the category that the new item will belong to. Either category_name or category_id must be specified
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return list with instance of the experiment class
+        Returns
+        -------
+        List[Self]
+            A list of instances of the researchitem class created.
+
+        Raises
+        ------
+        AssertationError
+            If name not specified
+            If neither category name nor ID is specified.
+            If neither group_id nor group_name is provided.
+
 
         """
-        from furthrmind.collection import Group
 
         new_list = []
         category_id_not_present = False
@@ -195,9 +273,9 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         for data in data_list:
             category_name = data.get('category_name')
             category_id = data.get('category_id')
-            if not category_name and not category_id:
-                raise ValueError("Either category name or id must be specified")
+            assert category_name or category_id, "Either category name or id must be specified"
 
+            # raises an error if name not specified or if neither group_name nor group_id is provided
             temp_data = cls._prepare_data_for_create(data.get("name"), data.get("group_name"), data.get("group_id"),
                                                      project_id)
 
@@ -212,10 +290,10 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
             if not "id" in category_dict:
                 category_id_not_present = True
 
-        id_list = cls.post(new_list, project_id)
+        id_list = cls._post(new_list, project_id)
         category_mapping = {}
         if category_id_not_present:
-            categories = Category.get_all(project_id)
+            categories = Category._get_all(project_id)
             category_mapping = {cat.name: cat for cat in categories}
 
         for data, id in zip(new_list, id_list):
@@ -226,19 +304,35 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
 
         return new_list
 
-    def add_datatable(self, name: str, columns: List[Dict], project_id=None ) -> "DataTable":
+    def add_datatable(self, name: str, columns: List[Dict], project_id: str = "" ) -> "DataTable":
         """
-        Method to create a new datatable within this experiment
+        Method to create a new datatable within this researchitem. Add the created datatable to the datatables attribute
 
-        :param name: name of the datatable
-        :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
-            - name: name of the column
-            - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-            will be converted to string and for Numeric all data is converted to float (if possible)
-            - data: List of column values, must fit to column_type
-            - unit: dict with id or name, or name as string, or id as string
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return: instance of column datatable class
+        Parameters
+        ----------
+        name : str
+            Name of the datatable.
+        columns : List[Dict]
+            A list of columns that should be added to the datatable. Each column is represented as a dictionary with the following keys:
+            - name : str
+                Name of the column.
+            - type : str
+                Type of the column. Either "Text" or "Numeric". Data must fit the specified type.
+            - data : Union[List[Union[str, float]], pandas.Series]
+                List of column values. Data must fit the specified type of the column.
+                For Text columns, the items must be convertable to strings
+                For Numeric columns, the items must be convertable to floats.
+                Can be a list or a pandas.Series.
+            - unit : dict or str
+                Unit of the column. It can be represented as either a dictionary with 'id' or 'name', or a string
+                representing the name or id of the unit.
+        project_id : str, optional
+            Optionally, specify the id of another project to create the datatable in.
+
+        Returns
+        -------
+        DataTable
+            An instance of the DataTable class representing the created datatable.
 
         """
 

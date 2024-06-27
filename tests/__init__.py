@@ -6,7 +6,7 @@ from typing_extensions import List
 
 
 def get_all_experiments():
-    exps = Experiment.get_all()
+    exps = Experiment._get_all()
     return exps
 
 
@@ -61,7 +61,7 @@ def create_researchitem():
 
 
 def get_all_experiment():
-    exp_list = Experiment.get_all()
+    exp_list = Experiment._get_all()
 
     print(1)
 
@@ -81,7 +81,7 @@ def download_file(exps: List[Experiment]):
             print(1)
 
 def get_all_samples():
-    samples = Sample.get_all()
+    samples = Sample._get_all()
     print(1)
 
 
@@ -160,11 +160,11 @@ def remove_link_ri():
     ri_2.remove_linked_researchitem(ri.id)
 
 def get_groups():
-    groups = fm.Group.get_all()
+    groups = fm.Group._get_all()
     print(groups)
 
 def get_project_to_dict():
-    projects = fm.Project.get_all()
+    projects = fm.Project._get_all()
     project = projects[0]
     data = project.to_dict()
     print(1)
@@ -176,7 +176,7 @@ def test_create_field_data():
 
 def test_get_many_groups():
     from furthrmind.collection import Group
-    groups = Group.get_many(ids=["664da7ac527fd07f5514837e", "664da7ac527fd07f55148380"])
+    groups = Group._get_many(ids=["664da7ac527fd07f5514837e", "664da7ac527fd07f55148380"])
     for g in groups:
         print(g.id)
 
@@ -195,13 +195,42 @@ def delete_group(id):
     from furthrmind.collection import Group
     Group.delete(id)
 
+def new_get():
+    from furthrmind.collection import Experiment
+    exp = Experiment.get(shortid="exp-c289bz")
+    exp.get()
+    print(1)
+
+def create_group_and_subgroup():
+    from furthrmind.collection import Group
+    group = Group.create(name="test")
+    subgroup = Group.create(name="subgroup", parent_group_id=group.id)
+    print(1)
+
+def get_new_fetched():
+    from furthrmind.collection import Experiment
+    exp = Experiment.get(name="test")
+    print(1)
+
+def test_combo():
+    from furthrmind.collection import Group
+    from furthrmind.collection import Experiment
+    from furthrmind.collection import Field
+    group = Group.create(name="test")
+    experiment = Experiment.create(name="test", group_id=group.id)
+    # experiment.get()
+    field = Field.create("Messart3", "ComboBox")
+    experiment.add_field(field_name="Messart3", field_type="ComboBox", value="Spektroskopie", unit=None)
+    print(1)
+
+
 if __name__ == "__main__":
     # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
-    # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66")
-    fm = Furthrmind("http://127.0.0.1:5000", "0ZJYO4UJEMQ76P8DCZJV1PAXROYB87PI",
-                    project_name="ma - sergio")
-    groups = fm.Group.get_all()
-    print(1)
+    fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
+    # fm = Furthrmind("http://127.0.0.1:5000", "0ZJYO4UJEMQ76P8DCZJV1PAXROYB87PI",
+    #                 project_name="ma - sergio")
+    # groups = fm.Group.get_all()
+    # print(1)
     # exps = get_all_experiments()
     # exp = exps[0]
     # create_experiment()
@@ -232,5 +261,9 @@ if __name__ == "__main__":
     # test_research_item_name()
     # group_id = "6650812a4766a76ef5ebc557"
     # delete_group(group_id)
+    # new_get()
+    # create_group_and_subgroup()
+    get_new_fetched()
+    test_combo()
     print(1)
 

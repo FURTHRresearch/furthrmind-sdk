@@ -30,7 +30,8 @@ class BaseClass:
             raise ValueError("No id provided")
 
         # create instance methods for certain class_methods
-        instance_methods = ["get", "get_all", "get_many", "post", "delete"]
+        instance_methods = ["get", "get_all", "get_many", "post", "delete",
+                            "_get", "_get_all", "_get_many", "_post", "_delete"]
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
@@ -64,40 +65,47 @@ class BaseClass:
         return ""
 
     @staticmethod
-    def _update_instance_decorator(f):
-        @wraps(f)
-        def decorated(*args, **kws):
-            results = f(*args, **kws)
-            self = args[0]
-            self._update_attributes(results)
-            return self
+    def _update_instance_decorator(_fetched=False):
+        def decorator(function):
+            @wraps(function)
+            def wrapper(*args, **kws):
+                results = function(*args, **kws)
+                results["_fetched"] = _fetched
+                self = args[0]
+                self._update_attributes(results)
+                return self
 
-        return decorated
+            return wrapper
+        return decorator
 
     @staticmethod
-    def _create_instances_decorator(f):
-        @wraps(f)
-        def decorated(*args, **kws):
-            results = f(*args, **kws)
-            if results is None:
-                return
-            if isclass(args[0]):
-                cls = args[0]
-            else:
-                self = args[0]
-                cls = self.__class__
+    def _create_instances_decorator(_fetched=False):
+        def decorator(function):
+            @wraps(function)
+            def wrapper(*args, **kws):
+                results = function(*args, **kws)
+                if results is None:
+                    return
+                if isclass(args[0]):
+                    cls = args[0]
+                else:
+                    self = args[0]
+                    cls = self.__class__
 
-            if isinstance(results, list):
-                item_list = []
-                for r in results:
-                    item = cls(data=r)
-                    item_list.append(item)
-                return item_list
-            else:
-                item = cls(data=results)
-                return item
+                if isinstance(results, list):
+                    item_list = []
+                    for r in results:
+                        r["_fetched"] = _fetched
+                        item = cls(data=r)
+                        item_list.append(item)
+                    return item_list
+                else:
+                    results["_fetched"] = _fetched
+                    item = cls(data=results)
+                    return item
 
-        return decorated
+            return wrapper
+        return decorator
 
     def _update_attributes(self, data):
         from furthrmind.collection import get_collection_class
@@ -146,15 +154,19 @@ class BaseClass:
                             break
 
     @classmethod
-    def get(cls, id=None, project_id=None):
+    def _get(cls, id=None, shortid=None, name=None, category_name=None, category_id=None,
+             parent_group_id=None, project_id=None):
+
         if isclass(cls):
-            return cls._get_class_method(id, project_id=None)
+            data = cls._get_class_method(id, shortid, name, category_name, category_id,
+                                         parent_group_id, project_id)
+            return data
         else:
             self = cls
             data = self._get_instance_method()
             return data
 
-    @_update_instance_decorator
+    @_update_instance_decorator(_fetched=True)
     @furthr_wrap(force_list=False)
     def _get_instance_method(self):
         url = self._get_url_instance()
@@ -162,16 +174,16 @@ class BaseClass:
         return data
 
     @classmethod
-    @_create_instances_decorator
+    @_create_instances_decorator(_fetched=True)
     @furthr_wrap(force_list=False)
     def _get_class_method(cls, id=None, shortid=None, name=None, category_name=None, category_id=None,
-                          parent_group_name=None, parent_group_id=None, project_id=None):
+                          parent_group_id=None, project_id=None):
         if id:
             if len(id) == 10:
                 shortid = id
                 id = None
 
-        if shortid or name or category_name or category_id:
+        if shortid or name or category_name or category_id or parent_group_id:
             query = []
             if shortid:
                 query.append(("shortid", shortid))
@@ -190,12 +202,14 @@ class BaseClass:
         else:
             url = cls._get_url_class(id, project_id=project_id)
 
-        return cls.fm.session.get(url)
+        result = cls.fm.session.get(url)
+
+        return result
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
-                 category_name=None, category_id=None,
-                 project_id=None) -> List[Self]:
+    def _get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
+                  category_name=None, category_id=None,
+                  project_id=None) -> List[Self]:
         query = []
         if ids:
             for id in ids:
@@ -219,14 +233,14 @@ class BaseClass:
             return self._get_all_instance_method(project_id, url_query)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def _get_all(cls, project_id=None) -> List[Self]:
         if isclass(cls):
             return cls._get_all_class_method(project_id)
         else:
             self = cls
             return self._get_all_instance_method(project_id)
 
-    @_create_instances_decorator
+    @_create_instances_decorator(_fetched=True)
     @furthr_wrap(force_list=True)
     def _get_all_instance_method(self, project_id, url_query=""):
         from .project import Project
@@ -240,7 +254,7 @@ class BaseClass:
         return self.fm.session.get(url)
 
     @classmethod
-    @_create_instances_decorator
+    @_create_instances_decorator(_fetched=True)
     @furthr_wrap(force_list=True)
     def _get_all_class_method(cls, project_id, url_query=""):
         from .project import Project
@@ -255,7 +269,7 @@ class BaseClass:
 
 
     @classmethod
-    def post(cls, data, project_id=None):
+    def _post(cls, data, project_id=None):
         if isclass(cls):
             return cls._post_class_method(data, project_id)
         else:
@@ -366,6 +380,9 @@ class BaseClassWithFieldData(BaseClass):
         :return: id
         """
 
+        if not self._fetched:
+            self._get()
+
         fielddata = None
         for item in self.fielddata:
             if fielddata:
@@ -396,6 +413,9 @@ class BaseClassWithFieldData(BaseClass):
         :return: id
         """
 
+        if not self._fetched:
+            self._get()
+
         fielddata = None
         for item in self.fielddata:
             if fielddata is not None:
@@ -420,6 +440,9 @@ class BaseClassWithFieldData(BaseClass):
         :param field_data_id: id of the fielddata that should be updated. Either field_name, field_id, or fielddata_id must be specified
         :return: id
         """
+
+        if not self._fetched:
+            self._get()
 
         fielddata = None
         for item in self.fielddata:
@@ -460,6 +483,8 @@ class BaseClassWithFieldData(BaseClass):
         """
 
         from .fielddata import FieldData
+        if not self._fetched:
+            self._get()
 
         fielddata = FieldData.create(field_name, field_type, field_id, value, unit)
 
@@ -468,7 +493,7 @@ class BaseClassWithFieldData(BaseClass):
         self.fielddata = new_field_data_list
 
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
-        self.post(data)
+        self._post(data)
         return fielddata
 
     def add_many_fields(self, data_list: List[Dict] ) -> List["FieldData"]:
@@ -494,6 +519,8 @@ class BaseClassWithFieldData(BaseClass):
         """
 
         from .fielddata import FieldData
+        if not self._fetched:
+            self._get()
 
         fielddata_list = FieldData.create_many(data_list)
 
@@ -502,7 +529,7 @@ class BaseClassWithFieldData(BaseClass):
         self.fielddata = new_field_data_list
 
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
-        self.post(data)
+        self._post(data)
         return fielddata_list
 
 
@@ -514,6 +541,9 @@ class BaseClassWithFieldData(BaseClass):
         :return id of item
 
         """
+
+        if not self._fetched:
+            self._get()
 
         new_fielddata_list = []
         fielddata_to_be_removed = None
@@ -537,7 +567,7 @@ class BaseClassWithFieldData(BaseClass):
         self.fielddata = new_fielddata_list
         fielddata_list = [{"id": fd.id} for fd in new_fielddata_list]
         post_data = {"id": self.id, "fielddata": fielddata_list}
-        id = self.post(post_data)
+        id = self._post(post_data)
         return id
 
 class BaseClassWithFiles(BaseClass):
@@ -559,6 +589,9 @@ class BaseClassWithFiles(BaseClass):
         from furthrmind.file_loader import FileLoader
         from .file import File
 
+        if not self._fetched:
+            self._get()
+
         if not os.path.isfile(file_path):
             raise ValueError("File does not exist")
 
@@ -570,7 +603,7 @@ class BaseClassWithFiles(BaseClass):
         file_list.append(file_data)
         post_data = {"id": self.id, "files": file_list}
 
-        id = self.post(post_data)
+        id = self._post(post_data)
         file = File(data=file_data)
         new_file_list = list(self.files)
         new_file_list.append(file)
@@ -585,6 +618,9 @@ class BaseClassWithFiles(BaseClass):
 
         :return: file object
         """
+
+        if not self._fetched:
+            self._get()
 
         new_file_list = []
         file_to_be_removed = None
@@ -607,7 +643,7 @@ class BaseClassWithFiles(BaseClass):
         self.files = new_file_list
         file_list = [{"id": f.id} for f in new_file_list]
         post_data = {"id": self.id, "files": file_list}
-        id = self.post(post_data)
+        id = self._post(post_data)
         return id
 
 class BaseClassWithGroup(BaseClass):
@@ -629,7 +665,7 @@ class BaseClassWithGroup(BaseClass):
         : return: instance of the item class: experiment, or sample
         """
         data = cls._prepare_data_for_create(name, group_name, group_id, project_id)
-        id = cls.post(data, project_id)
+        id = cls._post(data, project_id)
         data["id"] = id
         return data
 
@@ -652,7 +688,7 @@ class BaseClassWithGroup(BaseClass):
             new_list.append(cls._prepare_data_for_create(name=data.get("name"), group_name=data.get("group_name"),
                                                          group_id=data.get("group_id"), project_id=project_id))
 
-        id_list = cls.post(new_list, project_id)
+        id_list = cls._post(new_list, project_id)
         for data, id in zip(new_list, id_list):
             data["id"] = id
         return new_list
@@ -660,10 +696,8 @@ class BaseClassWithGroup(BaseClass):
     @classmethod
     def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None):
         from furthrmind.collection import Group
-        if not name:
-            raise ValueError("Name must be specified")
-        if not group_name and not group_id:
-            raise ValueError("Either group_name or group_id must be specified")
+        assert name, "Name must be specified"
+        assert group_name or group_id, "Either group_name or group_id must be specified"
 
         if group_name:
             group = Group.get(name=group_name, project_id=project_id)
@@ -699,6 +733,9 @@ class BaseClassWithLinking(BaseClass):
         from furthrmind.collection import Experiment
         assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
 
+        if not self._fetched:
+            self._get()
+
         if experiment_name:
             exp = Experiment.get(name = experiment_name)
             if not exp:
@@ -719,7 +756,7 @@ class BaseClassWithLinking(BaseClass):
                 "experiments": linked_experiment
         }
 
-        self.post(data=data)
+        self._post(data=data)
         new_linked_experiments = list(self.linked_experiments)
         new_linked_experiments.append(exp)
         self.linked_experiments = new_linked_experiments
@@ -737,6 +774,9 @@ class BaseClassWithLinking(BaseClass):
         """
         from furthrmind.collection import Experiment
         assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
+
+        if not self._fetched:
+            self._get()
 
         if experiment_name:
             exp = Experiment.get(name = experiment_name)
@@ -758,7 +798,7 @@ class BaseClassWithLinking(BaseClass):
                 "experiments": linked_experiment
         }
 
-        self.post(data=data)
+        self._post(data=data)
         self.linked_experiments = new_linked_items
         return self.id
 
@@ -774,6 +814,9 @@ class BaseClassWithLinking(BaseClass):
         """
         from furthrmind.collection import Sample
         assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        if not self._fetched:
+            self._get()
 
         if sample_name:
             s = Sample.get(name=sample_name)
@@ -796,7 +839,7 @@ class BaseClassWithLinking(BaseClass):
             "samples": linked_samples
         }
 
-        self.post(data=data)
+        self._post(data=data)
         new_linked_samples = list(self.linked_samples)
         new_linked_samples.append(s)
         self.linked_samples = new_linked_samples
@@ -814,6 +857,9 @@ class BaseClassWithLinking(BaseClass):
         """
         from furthrmind.collection import Sample
         assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        if not self._fetched:
+            self._get()
 
         if sample_name:
             s = Sample.get(name=sample_name)
@@ -835,7 +881,7 @@ class BaseClassWithLinking(BaseClass):
             "id": self.id,
             "samples": linked_samples
         }
-        self.post(data=data)
+        self._post(data=data)
         self.linked_samples = new_linked_items
         return self.id
 
@@ -850,6 +896,9 @@ class BaseClassWithLinking(BaseClass):
         """
         from furthrmind.collection import ResearchItem
         assert researchitem_id, "Either experiment_id or experiment_name must be specified"
+
+        if not self._fetched:
+            self._get()
 
         researchitem_id_list = []
         for cat in self.linked_researchitems:
@@ -868,7 +917,7 @@ class BaseClassWithLinking(BaseClass):
             "researchitems": linked_researchitems
         }
 
-        self.post(data=data)
+        self._post(data=data)
         ri = ResearchItem.get(id=researchitem_id)
         research_item_dict = dict(self.linked_researchitems)
         if ri.category.name in self.linked_researchitems:
@@ -893,6 +942,9 @@ class BaseClassWithLinking(BaseClass):
         """
         assert researchitem_id, "Either experiment_id or experiment_name must be specified"
 
+        if not self._fetched:
+            self._get()
+
         researchitem_id_list = []
         new_linked_items = {}
         for cat in self.linked_researchitems:
@@ -914,6 +966,6 @@ class BaseClassWithLinking(BaseClass):
             "researchitems": linked_researchitems
         }
 
-        self.post(data=data)
+        self._post(data=data)
         self.linked_researchitems = new_linked_items
         return self.id

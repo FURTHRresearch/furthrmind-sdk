@@ -66,50 +66,91 @@ class Sample(BaseClassWithFieldData,
         return url
 
     @classmethod
-    def get(cls, id: str = None, name: str = None, shortid: str = None, project_id: str = None) -> Self:
+    def get(cls, id: str = "", name: str = "", shortid: str = "", project_id: str = "") -> Self:
         """
-        Method to get all one sample by its id or short_id
+        Method to get one sample by its id, short_id, or name.
         If called on an instance of the class, the id of the class is used
-        :param str id: id or short_id of requested sample 
-        :param str name: name of requested sample
-        :param str shortid: shortid of requested sample
-        :param str project_id: Optionally to get samples from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of sample class
+
+        Parameters
+        ----------
+        id : str
+            The id or short_id of the requested sample.
+        name : str
+            The name of the requested sample.
+        shortid : str
+            The shortid of the requested sample.
+        project_id : str, optional
+            Optionally to get the sample from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            An instance of the sample class.
+
+        Raises
+        ------
+        AssertionError
+            If called as a class method and no id, shortid, or name is specified.
+
         """
 
         if isclass(cls):
-            assert id or name or shortid, "Either id or name must be specified"
-            return cls._get_class_method(id, shortid, name, project_id=project_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+            assert id or name or shortid, "Either id, shortid, or name must be specified"
+
+        return cls._get(id, shortid, name, project_id=project_id)
 
     @classmethod
-    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (), project_id: str = None) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
+                 project_id: str = None) -> List[Self]:
         """
-        Method to get all sample belonging to one project
-        :param List[str] ids: List with ids
-        :param List[str] shortids: List with short_ids
-        :param List[str] names: List with names
-        :param str project_id: Optionally to get samples from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of sample class
+        Method to get many samples by its ids, short_ids, or names.
+
+        Parameters
+        ----------
+        ids : List[str]
+            List of sample ids to filter samples by.
+        shortids : List[str]
+            List of short ids to filter samples by.
+        names : List[str]
+            List of names to filter samples by.
+        project_id : str, optional
+            Optionally to get samples from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the sample class.
+
+        Raises
+        ------
+        AssertionError
+            If neither ids, shortids, nor names are specified.
+
         """
+
         assert ids or names or shortids, "Either ids, shortids, or names must be specified"
-        return super().get_many(ids, shortids, names, project_id=project_id)
+        return cls._get_many(ids, shortids, names, project_id=project_id)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def get_all(cls, project_id: str = "") -> List[Self]:
         """
         Method to get all samples belonging to one project
-        :param str project_id: Optionally to get samples from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of sample class
+
+        Parameters
+        ----------
+        project_id : str, optional
+            Optionally to get samples from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the `Sample` class representing the fetched samples.
         """
-        return super().get_all(project_id)
+
+        return cls._get_all(project_id)
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create(cls, name, group_name=None, group_id=None, project_id=None) -> Self:
         """
         Method to create a new sample
@@ -126,7 +167,7 @@ class Sample(BaseClassWithFieldData,
         return Sample._create(name, group_name, group_id, project_id)
 
     @classmethod
-    @BaseClass._create_instances_decorator
+    @BaseClass._create_instances_decorator(_fetched=False)
     def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
         """
         Method to create multiple samples

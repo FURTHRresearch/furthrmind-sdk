@@ -45,52 +45,108 @@ class DataTable(BaseClass):
         return url
     
     @classmethod
-    def get(cls, id=None, project_id=None) -> Self:
+    def get(cls, id: str = "", project_id: str = "") -> Self:
         """
-        Method to get all one datatable by its id
-        If called on an instance of the class, the id of the class is used
-        :param str id: id of requested datatable
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return Self: Instance of datatable class
+        Method to get one datatable by its id
+        If called on an instance of the class, the id of the instance is used
+        Columns are retrieved with id and column names only. To get the belonging data, the get method of the
+        corresponding column must be called. Alternatively, the 'get_columns' method of the datatable must be
+        called
+
+        Parameters
+        ----------
+        id : str
+            id of the requested datatable, if
+        project_id : str, optional
+            Optionally, to get experiments from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            Instance of the datatable class
+
+        Raises
+        ------
+        AssertionError
+            If used as class method and id not specified
+
         """
+
         if isclass(cls):
             assert id, "id must be specified"
-            return cls._get_class_method(id, project_id=project_id)
-        else:
-            self = cls
-            data = self._get_instance_method()
-            return data
+        return cls.get(id, project_id=project_id)
 
+    # noinspection PyMethodOverriding
     @classmethod
-    def get_many(cls, ids: List[str] = (), project_id=None) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), project_id: str = "") -> List[Self]:
         """
         Method to get many datatables belonging to one project
-        :param List[str] ids: List with ids
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
+        Columns are retrieved with id and column names only. To get the belonging data, the get method of the
+        corresponding column must be called. Alternatively, the 'get_columns' method of the datatable must be
+        called
+
+        Parameters
+        ----------
+        ids : List[str]
+            List of ids.
+        project_id : str, optional
+            Optionally to get datatables from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the experiment class.
+
+        Raises
+        ------
+        AssertionError
+            If ids is not specified.
         """
+        pass
+
         assert ids, "ids must be specified"
-        return super().get_many(ids, project_id=project_id)
+        return cls._get_many(ids, project_id=project_id)
 
     @classmethod
-    def get_all(cls, project_id=None) -> List[Self]:
+    def _get_all(cls, project_id: str = "") -> List[Self]:
+
         """
         Method to get all datatables belonging to one project
-        :param str project_id: Optionally to get datatables from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of datatable class
-        """
-        return super().get_all(project_id)
+        Columns are retrieved with id and column names only. To get the belonging data, the get method of the
+        corresponding column must be called. Alternatively, the 'get_columns' method of the datatable must be
+        called
 
-    def get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
+        Parameters
+        ----------
+        project_id : str, optional
+            Optionally to get datatables from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Self]
+            A list of instances of the DataTable class
+
         """
-        Method to get columns and their data
+        return cls._get_all(project_id=project_id)
+
+    def get_columns(self, column_id_list: List[str] = (), column_name_list: List[str] = ()) -> List["Column"]:
+        """
+        Method to get columns and their data belonging to this datatable
         If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
         to the datatable
+        Updates the columns attribute of the datatable for the retrieved columns that belong to this datatable
 
-        :param column_id_list: list of column_ids to retrieve
-        :param column_name_list: list of column names to retrieve
-        :return: list of column objects
+        Parameters
+        ----------
+        column_id_list : List[str], optional
+            A list of column IDs to retrieve. If not provided, all columns belonging to the datatable will be retrieved.
+        column_name_list : List[str], optional
+            A list of column names to retrieve.
+
+        Returns
+        -------
+        List["Column"]
+            A list of column objects.
 
         """
 
@@ -105,15 +161,23 @@ class DataTable(BaseClass):
         self.columns = new_column_list
         return columns
 
-    def get_pandas_dataframe(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> DataFrame:
+    def get_pandas_dataframe(self, column_id_list: List[str] = (), column_name_list:List[str] = ()) -> DataFrame:
         """
         Method to get columns and their data as a pandas dataframe
         If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
         to the datatable
 
-        :param column_id_list: list of column_ids to retrieve
-        :param column_name_list: list of column names to retrieve
-        :return: pandas dataframe
+        Parameters
+        ----------
+        column_id_list : List[str]
+            List of column IDs to retrieve. If not provided, all columns belonging to the datatable will be retrieved.
+        column_name_list : List[str]
+            List of column names to retrieve. If not provided, all columns belonging to the datatable will be retrieved.
+
+        Returns
+        -------
+        pandas.core.frame.DataFrame
+            Pandas dataframe containing the columns and their data.
 
         """
 
@@ -139,33 +203,46 @@ class DataTable(BaseClass):
         return columns
 
     @classmethod
-    @BaseClass._create_instances_decorator
-    def create(cls, name: str = "Data table", experiment_id=None, sample_id=None, researchitem_id=None, columns=None, project_id=None) -> Self:
+    @BaseClass._create_instances_decorator(_fetched=False)
+    def create(cls, name: str = "Data table", experiment_id: str = "", sample_id: str = "", researchitem_id: str = "",
+               columns: List[dict] = (), project_id: str = "") -> Self:
         """
-        Method to create a new datatable
-
-        :param name: name of the datatable
-        :param experiment_id: id of the experiment where the datatable belongs to
-        :param sample_id: id of the sample where the datatable belongs to
-        :param researchitem_id: id of the researchitem where the datatable belongs to
-        :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
+        Parameters
+        ----------
+        name: str
+            Name of the datatable.
+        experiment_id: str
+            ID of the experiment where the datatable belongs to.
+        sample_id: str
+            ID of the sample where the datatable belongs to.
+        researchitem_id: str
+            ID of the researchitem where the datatable belongs to.
+        columns: List[dict]
+            A list of columns that should be added to the datatable. List with dicts with the following keys:
             - name: name of the column
-            - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-            will be converted to string and for Numeric all data is converted to float (if possible)
+            - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data will be converted
+              to string and for Numeric all data is converted to float (if possible)
             - data: List of column values, must fit to column_type, can also be a pandas data series
             - unit: dict with id or name, or name as string, or id as string
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return: instance of datatable class
+        project_id: str
+            Optionally to create an item in another project as the furthrmind sdk was initiated with
 
+        Returns
+        -------
+        Self
+            Instance of datatable class.
+
+        Raises
+        ------
+        AssertionError
+            If name is not provided.
+            If experiment_id nor sample_id nor researchitem_id is not provided.
         """
 
         from furthrmind.collection import Column
 
-        if not name:
-            raise ValueError("Name must be specified")
-
-        if not experiment_id and not sample_id and not researchitem_id:
-            raise ValueError("Either experiment_id or sample_id or researchitem_id must be specified")
+        assert name, "Name must be specified"
+        assert experiment_id or sample_id or researchitem_id, "Either experiment_id or sample_id or researchitem_id must be specified"
 
         column_id_list = []
         if columns:
@@ -185,7 +262,7 @@ class DataTable(BaseClass):
         if researchitem_id:
             data["researchitem"] = {"id":researchitem_id}
 
-        id = cls.post(data, project_id)
+        id = cls._post(data, project_id)
         data["id"] = id
         return data
 
