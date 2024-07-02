@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "furthrmind"
-version = "0.1b27"
+version = "0.1b30"
 description = "Official python wrapper for the FURTHRmind rest api."
 authors = ["Daniel Menne"]
 license = "GNU GENERAL PUBLIC LICENSE Version 3"
@@ -13,8 +13,7 @@ requests = "*"
 pymongo = "^4.6.2"
 pathvalidate = "^3.2.0"
 typing-extensions = "^4.10.0"
-pandas = "^2.2.1"
-
+pandas = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pydoc-markdown = "^4.8.2"

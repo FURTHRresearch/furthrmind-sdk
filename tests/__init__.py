@@ -224,6 +224,19 @@ def test_combo():
     print(1)
 
 
+def test_add_file_by_id(fm: Furthrmind):
+    file = "/home/daniel/Dokumente/git-repos/furthrmind-sdk/ExampleData/Coil_#22 1 050963-22 1 050962#2022-02-21_20-28-31_Stripe_01_BSBA.csv"
+    from furthrmind.file_loader import FileLoader
+    from furthrmind.collection import Group
+    from furthrmind.collection import Experiment
+
+    fl = FileLoader(fm.host, fm.api_key)
+    file_id, file_name = fl.uploadFile(file)
+    group = Group.create(name="test")
+    experiment = Experiment.create(name="test", group_id=group.id)
+    experiment.add_file(file_id=file_id)
+    print(1)
+
 if __name__ == "__main__":
     # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
     fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
@@ -263,7 +276,8 @@ if __name__ == "__main__":
     # delete_group(group_id)
     # new_get()
     # create_group_and_subgroup()
-    get_new_fetched()
-    test_combo()
+    # get_new_fetched()
+    # test_combo()
+    test_add_file_by_id(fm)
     print(1)
 

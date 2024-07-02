@@ -577,7 +577,7 @@ class BaseClassWithFiles(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def add_file(self, file_path, file_name=None) -> "File":
+    def add_file(self, file_path="", file_name=None, file_id: str = "") -> "File":
         """
 
         :param file_path: file path of the file that should be uploaded
@@ -592,13 +592,18 @@ class BaseClassWithFiles(BaseClass):
         if not self._fetched:
             self._get()
 
-        if not os.path.isfile(file_path):
-            raise ValueError("File does not exist")
+        if not file_id:
+            assert file_path, "File path must be specified"
+            if not os.path.isfile(file_path):
+                raise ValueError("File does not exist")
 
-        fl = FileLoader(self.fm.host, self.fm.api_key)
-        file_id, file_name = fl.uploadFile(file_path, file_name)
-        file_data = {"id": file_id,
-                     "name": file_name}
+            fl = FileLoader(self.fm.host, self.fm.api_key)
+            file_id, file_name = fl.uploadFile(file_path, file_name)
+            file_data = {"id": file_id,
+                         "name": file_name}
+        else:
+            file_data = {"id": file_id}
+
         file_list = [{"id": f.id} for f in self.files]
         file_list.append(file_data)
         post_data = {"id": self.id, "files": file_list}
@@ -895,7 +900,7 @@ class BaseClassWithLinking(BaseClass):
             the id of the item
         """
         from furthrmind.collection import ResearchItem
-        assert researchitem_id, "Either experiment_id or experiment_name must be specified"
+        assert researchitem_id, "Either researchitem_id must be specified"
 
         if not self._fetched:
             self._get()
@@ -940,7 +945,7 @@ class BaseClassWithLinking(BaseClass):
         Returns:
             the id of the item
         """
-        assert researchitem_id, "Either experiment_id or experiment_name must be specified"
+        assert researchitem_id, "Either experiment_id must be specified"
 
         if not self._fetched:
             self._get()
