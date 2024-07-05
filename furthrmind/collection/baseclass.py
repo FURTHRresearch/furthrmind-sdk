@@ -269,9 +269,12 @@ class BaseClass:
 
 
     @classmethod
-    def _post(cls, data, project_id=None):
+    def _post(cls, data, project_id=None, force_list=False):
         if isclass(cls):
-            return cls._post_class_method(data, project_id)
+            if force_list:
+                return cls._post_class_force_list_method(data, project_id)
+            else:
+                return cls._post_class_method(data, project_id)
         else:
             self = cls
             return self._post_instance_method(data, project_id)
@@ -285,6 +288,12 @@ class BaseClass:
     @classmethod
     @furthr_wrap(force_list=False)
     def _post_class_method(cls, data, project_id=None):
+        url = cls._post_url(project_id)
+        return cls.fm.session.post(url, json=data)
+
+    @classmethod
+    @furthr_wrap(force_list=True)
+    def _post_class_force_list_method(cls, data, project_id=None):
         url = cls._post_url(project_id)
         return cls.fm.session.post(url, json=data)
 
@@ -693,7 +702,7 @@ class BaseClassWithGroup(BaseClass):
             new_list.append(cls._prepare_data_for_create(name=data.get("name"), group_name=data.get("group_name"),
                                                          group_id=data.get("group_id"), project_id=project_id))
 
-        id_list = cls._post(new_list, project_id)
+        id_list = cls._post(new_list, project_id, force_list=True)
         for data, id in zip(new_list, id_list):
             data["id"] = id
         return new_list

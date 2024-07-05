@@ -240,7 +240,7 @@ class ComboBoxEntry(BaseClassWithFieldData):
                 "field": {"id": data.get("field_id")}
             })
 
-        id_list = cls._post(new_data_list, project_id)
+        id_list = cls._post(new_data_list, project_id, force_list=True)
         for data, id in zip(new_data_list, id_list):
             data["id"] = id
 

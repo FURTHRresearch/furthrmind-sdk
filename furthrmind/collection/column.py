@@ -214,7 +214,7 @@ class Column(BaseClass):
             data_dict = {"name": name, "type": type, "values": data, "unit": unit}
             new_data_list.append(data_dict)
 
-        id_list = cls._post(new_data_list, project_id)
+        id_list = cls._post(new_data_list, project_id, force_list=True)
         for item, id in zip(new_data_list, id_list):
             item["id"] = id
 

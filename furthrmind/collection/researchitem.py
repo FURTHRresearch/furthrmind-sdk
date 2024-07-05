@@ -290,7 +290,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
             if not "id" in category_dict:
                 category_id_not_present = True
 
-        id_list = cls._post(new_list, project_id)
+        id_list = cls._post(new_list, project_id, force_list=True)
         category_mapping = {}
         if category_id_not_present:
             categories = Category._get_all(project_id)

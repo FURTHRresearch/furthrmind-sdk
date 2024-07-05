@@ -124,7 +124,7 @@ class Unit(BaseClass):
             data = {"name": name, "definition": definition}
             new_data_list.append(data)
 
-        id_list = cls._post(new_data_list, project_id)
+        id_list = cls._post(new_data_list, project_id, force_list=True)
         for data, id in zip(new_data_list, id_list):
             data["id"] = id
 

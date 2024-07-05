@@ -369,7 +369,7 @@ class FieldData(BaseClass):
                 _data["unit"] = unit
             post_data_list.append(_data)
 
-        id_list = FieldData._post(post_data_list, project_id)
+        id_list = FieldData._post(post_data_list, project_id, force_list=True)
         for data, id in zip(data_list, id_list):
             data["id"] = id
         return data_list

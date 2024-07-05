@@ -246,7 +246,7 @@ class Field(BaseClass):
             field_type = cls._check_field_type(data.get("type"))
             data["type"] = field_type
 
-        id_list = cls._post(data_list, project_id)
+        id_list = cls._post(data_list, project_id, force_list=True)
         for data, id in zip(data_list, id_list):
             data["id"] = id
         return data_list

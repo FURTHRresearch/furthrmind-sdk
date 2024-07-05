@@ -192,7 +192,7 @@ class Group(BaseClassWithFieldData):
 
         data_list = [{"name": name} for name in name_list]
 
-        id_list = cls._post(data_list, project_id)
+        id_list = cls._post(data_list, project_id, force_list=True)
 
         for data, id in zip(data_list, id_list):
             data["id"] = id
