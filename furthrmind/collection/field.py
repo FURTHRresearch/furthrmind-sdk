@@ -136,13 +136,13 @@ class Field(BaseClass):
         type : str
             The field type of the field. Must be one of the following. Lower or uppercase is not considered,
                 i.e. Numeric or numeric is both valid:
-                - numeric, numeric-field, numeric_field
-                - date, date_field, date-field, datefield
-                - singleline, singlelinefield, text, text-field, text_field, textfield
-                - combobox, comboboxfield, list, list-field, list_field, listfield
-                - multiline, notebook, notebookfield, notebook-field, notebook_field
-                - checkbox, checkbox-field, checkbox_field, checkboxfield
-                - calculation, calculation-field, calculation_field, calculationfield
+                - Numeric fields: numeric, numeric-field, numeric_field
+                - Date fields: date, date_field, date-field, datefield
+                - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+                - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+                - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+                - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+                - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
         project_id : str, optional
             Optionally, the ID of the project to create an item in. If not provided, the item will be created in the project associated with the furthrmind SDK.
 
@@ -203,13 +203,13 @@ class Field(BaseClass):
             - type : str
                 The field type of the field. Must be one of the following. Lower or uppercase is not considered,
                 i.e. Numeric or numeric is both valid:
-                - numeric, numeric-field, numeric_field
-                - date, date_field, date-field, datefield
-                - singleline, singlelinefield, text, text-field, text_field, textfield
-                - combobox, comboboxfield, list, list-field, list_field, listfield
-                - multiline, notebook, notebookfield, notebook-field, notebook_field
-                - checkbox, checkbox-field, checkbox_field, checkboxfield
-                - calculation, calculation-field, calculation_field, calculationfield
+                - Numeric fields: numeric, numeric-field, numeric_field
+                - Date fields: date, date_field, date-field, datefield
+                - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+                - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+                - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+                - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+                - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
         project_id : int, optional
             Optionally to create fields in another project as the furthrmind sdk was initiated with
 

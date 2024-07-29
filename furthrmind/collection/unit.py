@@ -1,5 +1,5 @@
 from furthrmind.collection.baseclass import BaseClass
-from typing_extensions import Self, List
+from typing_extensions import Self, List, Dict
 from inspect import isclass
 
 class Unit(BaseClass):
@@ -38,12 +38,21 @@ class Unit(BaseClass):
         return url
     
     @classmethod
-    def get(cls, id=None) -> Self:
+    def get(cls, id: str = None) -> Self:
         """
-        Method to get all one unit by it's id
-        If called on an instance of the class, the id of the class is used
-        :param str id: id of requested category 
-        :return Self: Instance of unit class
+        Method to get one unit.
+        If called on an instance of the class, the id of the instance is used
+
+        Parameters
+        ----------
+        id : str, optional
+            The id of the unit to be retrieved. If not specified, the id of the instance is used.
+
+        Returns
+        -------
+        Self
+            An instance of the unit class.
+
         """
 
         if isclass(cls):
@@ -76,21 +85,32 @@ class Unit(BaseClass):
 
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
-    def create(cls, name: str, definition: str = None, project_id=None) -> Self:
+    def create(cls, name: str, definition: str = None, project_id: str = None) -> Self:
         """
-        Method to create a new unit
+        Method to create a new unit.
 
-        :param name: name of the new unit
-        :param definition: Unit definition in SI units to convert the new unit to an SI Value. E.g. for unit cm², the
-           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
-           You will find there a list of valid units. A definition can als contain scalar values.
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
+        Parameters
+        ----------
+        name : str
+            Name of the new unit
+        definition : str, optional
+            Unit definition in SI units to convert the new unit to an SI value. E.g. for unit cm², the definition would be 'cm*cm'.
+            For valid units, please check the web app and open the unit editor. You will find a list of valid units. A definition may also contain scalar values.
+        project_id : any, optional
+            Project ID to create an item in another project
 
-        :return: instance of the unit class
+        Returns
+        -------
+        Self
+            Instance of the unit class
+
+        Raises
+        ------
+        AssertationError
+            If name is not provided
         """
 
-        if not name:
-            raise ValueError("Name is required")
+        assert name, "Name must be provided"
 
         data = {"name": name, "definition": definition}
         id = cls._post(data, project_id)
@@ -99,27 +119,41 @@ class Unit(BaseClass):
 
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
-    def create_many(cls, data_list, project_id=None) -> Self:
+    def create_many(cls, data_list: List[Dict], project_id: str = None) -> Self:
         """
-        Method to create a new unit
+        Parameters
+        ----------
+        data_list : List[Dict]
+            A list of dictionaries containing the information for creating new units.
+            Each dictionary should have the following keys:
+            - name : str
+                Name of the new unit.
+            - definition : str
+                Unit definition in SI units to convert the new unit to an SI Value.
+                For example, for unit cm², the definition would be 'cm * cm'.
+                For valid units, please check the web app unit editor.
+                A definition can also contain scalar values.
 
-        :param data_list: List of dictionaries with the following keys:
-        - name: name of the new unit
-        - definition: Unit definition in SI units to convert the new unit to an SI Value. E.g. for unit cm², the
-           definition would be: 'cm * cm'. For valid units please check the webapp, open the unit editor.
-           You will find there a list of valid units. A definition can als contain scalar values.
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
+        project_id : str, optional
+            Optionally to create an item in another project as the furthrmind sdk was initiated with
 
-        :return: instance of the unit class
+        Returns
+        -------
+        List[Self]
+            A list with instances of the unit class
 
+        Raises
+        ------
+        AssertationError
+            If the name parameter is missing for any unit in the data_list.
         """
 
         new_data_list = []
         for data in data_list:
             name = data.get("name")
             definition = data.get("definition")
-            if not name:
-                raise ValueError("Name is required")
+
+            assert name, "Name is required"
 
             data = {"name": name, "definition": definition}
             new_data_list.append(data)
@@ -129,6 +163,3 @@ class Unit(BaseClass):
             data["id"] = id
 
         return new_data_list
-
-
-

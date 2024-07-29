@@ -69,7 +69,7 @@ class Sample(BaseClassWithFieldData,
     def get(cls, id: str = "", name: str = "", shortid: str = "", project_id: str = "") -> Self:
         """
         Method to get one sample by its id, short_id, or name.
-        If called on an instance of the class, the id of the class is used
+        If called on an instance of the class, the id of the instance is used
 
         Parameters
         ----------
@@ -151,16 +151,34 @@ class Sample(BaseClassWithFieldData,
 
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
-    def create(cls, name, group_name=None, group_id=None, project_id=None) -> Self:
+    def create(cls, name: str, group_name: str = None, group_id: str = None, project_id: str = None) -> Self:
         """
-        Method to create a new sample
+        Method to create a new sample.
 
-        :param name: the name of the item to be created
-        :param group_name: The name of the group where the new item will belong to. group name can be only considered
-            for groups that are not subgroups. Either group_name or group_id must be specified
-        :param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return instance of the sample class
+        Parameters
+        ----------
+        name : str
+            The name of the sample to be created.
+
+        group_name : str, optional
+            The name of the group where the new item will belong to. Group name can only be considered for groups that are not subgroups.
+            Either group_name or group_id must be specified.
+
+        group_id : int, optional
+            The ID of the group where the new item will belong to.
+            Either group_name or group_id must be specified.
+        project_id : str, optional
+            Optionally to get samples from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            An instance of the sample class.
+
+        Raises
+        ------
+        AssertionError
+            If neither group_name nor group_id is specified.
 
         """
 
@@ -168,36 +186,62 @@ class Sample(BaseClassWithFieldData,
 
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
-    def create_many(cls, data_list: List[Dict], project_id=None) -> Self:
+    def create_many(cls, data_list: List[Dict], project_id: str = None) -> Self:
         """
-        Method to create multiple samples
+        Method to create many samples.
 
-        :param data_list: dict with the following keys:
-            - name: the name of the item to be created
-            - group_name: The name of the group where the new item will belong to. group name can be only considered
-            for groups that are not subgroups. Either group_name or group_id must be specified
-            - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return list with instance of the sample class
+        Parameters
+        ----------
+        data_list : List[Dict]
+            A list of dictionaries representing the data for creating multiple samples. Each dictionary should have the following keys:
+            - 'name': The name of the sample to be created.
+            - 'group_name': The name of the group where the new item will belong to. The 'group_name' can only be considered for groups
+                            that are not subgroups. Either 'group_name' or 'group_id' must be specified.
+            - 'group_id': The id of the group where the new item will belong to. Either 'group_name' or 'group_id' must be specified.
+
+        project_id : str, optional
+            Optionally to get samples from another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        List[Sample]
+            A list of instances of the 'Sample' class, representing the created samples.
+
+        Raises
+        ------
+        AssertionError
+            If neither group_name nor group_id is specified.
 
         """
 
         return Sample._create_many(data_list, project_id)
 
-    def add_datatable(self, name: str, columns: List[Dict] = None, project_id=None) -> "DataTable":
+    def add_datatable(self, name: str, columns: List[Dict] = None, project_id: str = None) -> "DataTable":
         """
-        Method to create a new datatable within this sample
+        Method to create a new datatable and add within a sample.
 
-        :param name: name of the datatable
-        :param columns: a list of columns that should be added to the datatable. List with dicts with the following keys:
-            - name: name of the column
-            - type: Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-            will be converted to string and for Numeric all data is converted to float (if possible)
-            - data: List of column values, must fit to column_type
-            - unit: dict with id or name, or name as string, or id as string
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        :return: instance of column datatable class
+        Parameters
+        ----------
+        name: str
+            Name of the datatable
+        columns: List[Dict], optional
+            A list of columns that should be added to the datatable. Each column is represented by a dictionary with the following keys:
+            - name: str
+                Name of the column
+            - type: str
+                Type of the column. Either "Text" or "Numeric". Data must fit the specified type. For Text, all data
+                will be converted to a string and for Numeric, all data will be converted to a float (if possible)
+            - data: List
+                List of column values. Values must fit the specified column type
+            - unit: Union[Dict, str], optional
+                Dictionary with an id or name, or a name as a string, or an id as a string representing the unit
+        project_id: str, optional
+            Optionally create the datatable in another project as the furthrmind sdk was initiated with
 
+        Returns
+        -------
+        DataTable
+            Instance of the datatable class
         """
 
         from furthrmind.collection import DataTable

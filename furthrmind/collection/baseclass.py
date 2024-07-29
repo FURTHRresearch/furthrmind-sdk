@@ -1,7 +1,7 @@
 from functools import wraps
 
 from furthrmind.utils import furthr_wrap, instance_overload
-from typing_extensions import List, Self, Any, Dict, TYPE_CHECKING
+from typing_extensions import List, Self, Any, Dict, TYPE_CHECKING, Union
 from inspect import isclass
 import os
 from urllib import parse
@@ -298,13 +298,24 @@ class BaseClass:
         return cls.fm.session.post(url, json=data)
 
     @classmethod
-    def delete(cls, id: str=None, project_id: str = None) -> str:
+    def delete(cls, id: str = "", project_id: str = "") -> str:
         """
-        Deletes a single resources
-        param: id - The id of the resource to delete
-        param: project_id - Optionally to delete an item in another project as the furthrmind sdk was initiated with
-        return: the id of the item
+        Method to delete an item. Can be called as a classmethod with providing the id to be deleted or on the instance
+        of a class
+
+        Parameters
+        ----------
+        id : str
+            The id of the resource to delete
+        project_id : str, optional
+            Optionally to delete an item in another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        str
+            The id of the item
         """
+
         if isclass(cls):
             return cls._delete_class_method(id, project_id)
         else:
@@ -323,6 +334,15 @@ class BaseClass:
         return self.fm.session.delete(url)
 
     def to_dict(self):
+        """
+        Converts the object's attributes to a dictionary representation.
+
+        Returns
+        -------
+        dict
+            Dictionary containing the object's attributes (excluding private attributes, callable attributes, and attributes of type Furthrmind).
+        """
+
         from furthrmind import Furthrmind
         data = {}
         for attr in dir(self):
@@ -375,18 +395,32 @@ class BaseClassWithFieldData(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def update_field_value(self, value, field_name=None, field_id=None):
+    def update_field_value(self, value, field_name: str = "", field_id: str = ""):
         """
-        :param value:
-            - Numeric: float or int, or a string convertable to a float
-            - Date: datetime, or date object, or unix timestamp or string with iso format
-            - SingleLine: string
-            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-            - MultiLine: dict with content as key, or string
-            - CheckBox: boolean
-        :param field_name: Name of field that should be updated. Either field_name or field_id must be specified
-        :param field_id: id of field that should be updated. Either field_name or field_id must be specified
-        :return: id
+        Parameters
+        ----------
+        value : various data types
+            The value to be updated in the field.
+            - Numeric fields: float or int, or a string convertible to a float
+            - Date fields: datetime, date object, unix timestamp, or string with iso format
+            - Text fields: string
+            - List fields: dictionary with id or name as key, or string with name, or string with id
+            - Notebook fields: dictionary with content as key, or string
+            - Checkbox fields: boolean
+        field_name : str, optional
+            Name of the field that should be updated. Either `field_name` or `field_id` must be specified.
+        field_id : str, optional
+            ID of the field that should be updated. Either `field_name` or `field_id` must be specified.
+
+        Returns
+        -------
+        int
+            The ID of the field that was updated.
+
+        Raises
+        ------
+        ValueError
+            If no field is found with the given `field_id` or `field_name`.
         """
 
         if not self._fetched:
@@ -408,18 +442,29 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.update_value(value)
 
-    def update_field_unit(self, unit, field_name=None, field_id=None):
+    def update_field_unit(self, unit: Union[Dict, str], field_name: str = "", field_id: str = ""):
         """
-        :param value:
-            - Numeric: float or int, or a string convertable to a float
-            - Date: datetime, or date object, or unix timestamp or string with iso format
-            - SingleLine: string
-            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-            - MultiLine: dict with content as key, or string
-            - CheckBox: boolean
-        :param field_name: Name of field that should be updated. Either field_name or field_id must be specified
-        :param field_id: id of field that should be updated. Either field_name or field_id must be specified
-        :return: id
+        Method to update the unit of a field.
+
+        Parameters
+        ----------
+        unit : Union[Dict, str]
+            Dictionary with id or name, or string representing the name, or string representing the id.
+        field_name : str, optional
+            The name of the field that should be updated. Either `field_name` or `field_id` must be specified.
+        field_id : str, optional
+            The ID of the field that should be updated. Either `field_name` or `field_id` must be specified.
+
+        Returns
+        -------
+        id
+            The ID of the updated field.
+
+        Raises
+        ------
+        ValueError
+            If no field is found with the given `field_id` or `field_name`.
+
         """
 
         if not self._fetched:
@@ -441,13 +486,30 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.update_unit(unit)
 
-    def set_calculation_result(self, value: dict, field_name=None, field_id=None, fielddata_id=None):
+    def set_calculation_result(self, value: dict, field_name: str = "", field_id: str = "", fielddata_id: str = ""):
         """
-        :param value
-        :param field_name: Name of field that should be updated. Either field_name, field_id, fielddata_id must be specified
-        :param field_id: id of field that should be updated. Either field_name, field_id, or fielddata_id must be specified
-        :param field_data_id: id of the fielddata that should be updated. Either field_name, field_id, or fielddata_id must be specified
-        :return: id
+        Method to update a calculation result
+
+        Parameters
+        ----------
+        value : dict
+            Dictionary containing the calculation result to be set for the field.
+        field_name : str, optional
+            Name of the field that should be updated. Either `field_name`, `field_id`, or `fielddata_id` must be specified.
+        field_id : str, optional
+            ID of the field that should be updated. Either `field_name`, `field_id`, or `fielddata_id` must be specified.
+        fielddata_id : str, optional
+            ID of the fielddata that should be updated. Either `field_name`, `field_id`, or `fielddata_id` must be specified.
+
+        Returns
+        -------
+        id
+            The ID of the fielddata that was updated.
+
+        Raises
+        ------
+        ValueError
+            If no field is found with the given `field_id` or `field_name`.
         """
 
         if not self._fetched:
@@ -472,23 +534,44 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.set_calculation_result(value)
 
-    def add_field(self, field_name=None, field_type=None, field_id=None,
-                  value=None, unit=None) -> "FieldData":
+    def add_field(self, field_name: str = "", field_type: str = "", field_id: str = "",
+                  value: Any = None, unit: Union[Dict, str] = None) -> "FieldData":
         """
-        :param field_name: Name of field that should be added. If fieldname provided,
-                            also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
-        :param field_type: Type of field: Must be out of: Numeric, Date, SingleLine
-                                                        ComboBoxEntry, MultiLine, CheckBox
-        :param field_id: id of field that should be added.
-        :param value:
-            - Numeric: float or int, or a string convertable to a float
-            - Date: datetime, or date object, or unix timestamp or string with iso format
-            - SingleLine: string
-            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-            - MultiLine: dict with content as key, or string
-            - CheckBox: boolean
-        :param unit: dict with id or name, or name as string, or id as string
-        :return: fielddata object
+        Method to add a field to the current item
+
+        Parameters
+        ----------
+        field_name : str
+            Name of field that should be added. If fieldname provided, also fieldtype must be specified.
+            Either fieldname and fieldtype or field_id must be specified.
+        field_type : str
+            Type of field. Must be one of:
+            - Numeric fields: numeric, numeric-field, numeric_field
+            - Date fields: date, date_field, date-field, datefield
+            - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+            - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+            - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+            - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+            - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
+        field_id : str
+            Id of field that should be added.
+        value : Any
+            Value of the field. The data type of the value depends on the field_type:
+            - Numeric fields: float or int, or a string convertible to a float
+            - Date fields: datetime, date object, unix timestamp, or string with iso format
+            - Text fields: string
+            - List fields: dictionary with id or name as key, or string with name, or string with id
+            - Notebook fields: dictionary with content as key, or string
+            - Checkbox fields: boolean
+
+        unit : Union[Dict, str]
+            Dictionary with id or name, or string representing the name, or string representing the id.
+
+        Returns
+        -------
+        FieldData
+            The new FieldData object that was created.
+
         """
 
         from .fielddata import FieldData
@@ -505,27 +588,41 @@ class BaseClassWithFieldData(BaseClass):
         self._post(data)
         return fielddata
 
-    def add_many_fields(self, data_list: List[Dict] ) -> List["FieldData"]:
+    def add_many_fields(self, data_list: List[Dict]) -> List["FieldData"]:
         """
-        Method to add many fields to an item. Each field is defined by and dict in the data_list parameter
+        Method to add many fields to the current item
 
-        :param data_list: dict with the following key
-        - field_name: Name of field that should be added. If fieldname provided, also fieldtype must be specified. Either fieldname and fieldtype or field_id must be specified
-        - field_type: Type of field: Must be out of: Numeric, Date, SingleLine
-            ComboBoxEntry, MultiLine, CheckBox
-        - field_id: id of field that should be added.
-        - value:
-            - Numeric: float or int, or a string convertable to a float
-            - Date: datetime, or date object, or unix timestamp or string with iso format
-            - SingleLine: string
-            - ComboBoxEntry: dict with id or name as key, or string with name, or string with id
-            - MultiLine: dict with content as key, or string
-            - CheckBox: boolean
-        - unit: dict with id or name, or name as string, or id as string
+        Parameters
+        ----------
+        data_list: List[Dict]
+            List of dictionaries containing the information about the fields to be added. Each dictionary should have the following keys:
+            - field_name: Name of the field to be added. Either field_name and field_type or field_id must be specified.
+            - field_type:
+                Type of the field. Must be one of the following:
+                - Numeric fields: numeric, numeric-field, numeric_field
+                - Date fields: date, date_field, date-field, datefield
+                - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+                - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+                - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+                - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+                - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
+            - field_id: ID of the field to be added.
+            - value: Value of the field. The required format depends on the field_type:
+                - Numeric: float or int, or a string convertible to a float.
+                - Date: datetime, date object, Unix timestamp, or string in ISO format.
+                - SingleLine: string.
+                - ComboBoxEntry: Dictionary with ID or name as key, or string with name, or string with ID.
+                - MultiLine: Dictionary with content as key, or string.
+                - CheckBox: Boolean.
+            - unit: Dictionary with ID or name as key, or string with name, or string with ID.
 
-        :return: list with fielddata object
+        Returns
+        -------
+        List["FieldData"]
+            List of FieldData objects representing the added fields.
 
         """
+
 
         from .fielddata import FieldData
         if not self._fetched:
@@ -542,14 +639,28 @@ class BaseClassWithFieldData(BaseClass):
         return fielddata_list
 
 
-    def remove_field(self, fieldname=None, fieldid=None):
+    def remove_field(self, field_name: str = "", field_id: str = ""):
+        """
+        Removes a field from the current item.
+
+        Parameters
+        ----------
+        field_name : str, optional
+            Name of the field that should be removed. Either the `field_name` or `field_id` must be specified.
+        field_id : str, optional
+            ID of the field that should be removed.Either the `field_name` or `field_id` must be specified.
+
+        Returns
+        -------
+        str
+            ID of the item after the field is removed.
+
+        Raises
+        ------
+        ValueError
+            If no field is found with the given `field_name` or `field_id`.
         """
 
-        :param fieldname: Name of field that should be removed. Either id or fieldname must be specified
-        :param fieldid: id of field that should be removed.
-        :return id of item
-
-        """
 
         if not self._fetched:
             self._get()
@@ -558,13 +669,13 @@ class BaseClassWithFieldData(BaseClass):
         fielddata_to_be_removed = None
         for fielddata in self.fielddata:
             found = False
-            if fieldid:
+            if field_id:
                 found = True
-                if fielddata.fieldid == fieldid:
+                if fielddata.field_id == field_id:
                     fielddata_to_be_removed = fielddata
-            elif fieldname:
+            elif field_name:
                 found = True
-                if fielddata.field_name == fieldname:
+                if fielddata.field_name == field_name:
                     fielddata_to_be_removed = fielddata
             if not found:
                 new_fielddata_list.append(fielddata)
@@ -586,17 +697,35 @@ class BaseClassWithFiles(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def add_file(self, file_path="", file_name=None, file_id: str = "") -> "File":
+    def add_file(self, file_path: str = "", file_name: str = "", file_id: str = "") -> "File":
+        """
+        Parameters
+        ----------
+        file_path : str, optional
+            File path of the file that should be uploaded.
+        file_name : str, optional
+            Optionally specify the file name if not the original file name should be used.
+        file_id : str, optional
+            ID of the file.
+
+        Returns
+        -------
+        File
+            The file object that has been added.
+
+        Raises
+        ------
+        AssertationError
+            If neither file path nor file_id is specified.
+        ValueError
+            If the file path specified does not exist.
         """
 
-        :param file_path: file path of the file that should be uploaded
-        :param file_name: Optionally specify the file name if not the original file name should be used
-
-        :return: file object
-        """
 
         from furthrmind.file_loader import FileLoader
         from .file import File
+
+        assert file_path or file_id, "File_path or file_id must be specified"
 
         if not self._fetched:
             self._get()
@@ -624,13 +753,27 @@ class BaseClassWithFiles(BaseClass):
         self.files = new_file_list
         return file
 
-    def remove_file(self, file_id=None, file_name=None):
+    def remove_file(self, file_id: str = "", file_name: str = ""):
         """
+        Method to remove a file from the current item
 
-        :param file_id: id of file that should be removed, either file_name or file_id must be specified
-        :param file_name: file name of file to be removed
+        Parameters
+        ----------
+        file_id: str, optional
+            ID of the file that should be removed. Either `file_id` or `file_name` must be specified.
+        file_name: str, optional
+            Name of the file to be removed.
 
-        :return: file object
+        Returns
+        -------
+        file_object: dict
+            Object representing the removed file.
+
+        Raises
+        ------
+        ValueError
+            If no file is found with the given `file_id` or `file_name`.
+
         """
 
         if not self._fetched:
@@ -668,34 +811,65 @@ class BaseClassWithGroup(BaseClass):
         super().__init__(id, data)
 
     @classmethod
-    def _create(cls, name, group_name = None, group_id=None, project_id=None):
+    def _create(cls, name, group_name: str = "", group_id: str = "", project_id: str = ""):
         """
-        Method to create a new item (sample, experiment)
-        :param name: the name of the item to be created
-        :param group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
-        : param group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-        : param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        : return: instance of the item class: experiment, or sample
+        Internal method to create items that belong to a group: exp, sample, researchitem
+
+        Parameters
+        ----------
+        name : str
+            The name of the item to be created.
+
+        group_name : str, optional
+            The name of the group where the new item will belong to. Note that group name can only be considered for groups that
+            are not subgroups. Either `group_name` or `group_id` must be specified.
+
+        group_id : str, optional
+            The id of the group where the new item will belong to. Either `group_name` or `group_id` must be specified.
+
+        project_id : str, optional
+            Optionally, create an item in another project as the `furthrmind sdk` was initiated with.
+
+        Returns
+        -------
+        dict
+            Dictionary representing the data including the generated id of the new item
         """
+
         data = cls._prepare_data_for_create(name, group_name, group_id, project_id)
         id = cls._post(data, project_id)
         data["id"] = id
         return data
 
     @classmethod
-    def _create_many(cls, data_list: List[Dict], project_id=None):
+    def _create_many(cls, data_list: List[Dict], project_id: str = "") -> List[Dict]:
         """
-        Method to create multiple items (sample, experiment)
-        :param data_list: dict with the following keys:
-            - name: the name of the item to be created
-            - group_name: The name of the group where the new item will belong to. group name can be only considered
-                            for groups that are not subgroups. Either group_name or group_id must be specified
-            - group_id: the id of the group where the new item will belong to. Either group_name or group_id must be specified
-        :param project_id: Optionally to create an item in another project as the furthrmind sdk was initiated with
-        : return list with instances of the item class: experiment, or sample
+        Parameters
+        ----------
+        data_list : List[Dict]
+            A list of dictionaries representing the data for creating multiple items (samples or experiments).
+            Each dictionary should contain the following keys:
+                - name : str
+                    The name of the item to be created.
+                - group_name : str
+                    The name of the group where the new item will belong to.
+                    The group name can be only considered for groups that are not subgroups.
+                    Either group_name or group_id must be specified.
+                - group_id : str
+                    The ID of the group where the new item will belong to.
+                    Either group_name or group_id must be specified.
+
+        project_id : str, optional
+            Optionally, create an item in another project as the `furthrmind sdk` was initiated with.
+
+        Returns
+        -------
+        list
+            A list with Dictionaries representing the data including the generated id of the new item
+
+
+
         """
-        from furthrmind.collection import Group
 
         new_list = []
         for data in data_list:
@@ -734,16 +908,30 @@ class BaseClassWithLinking(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def add_linked_experiment(self, experiment_id=None, experiment_name=None):
+    def add_linked_experiment(self, experiment_id: str = "", experiment_name: str = ""):
         """
-        This method is to link an experiment to the current item
-        Args:
-            experiment_id: id to the experiment you want to link, either id or name must be given
-            experiment_name: name of the experiment you want to link, either name or name must be given
+        This method is used to link an experiment to the current item. If the experiment is already linked to the item,
+        no action is taken.
 
-        Returns:
-            the id of the item
+        Parameters
+        ----------
+        experiment_id : str, optional
+            The ID of the experiment to link. Either `experiment_id` or `experiment_name` must be provided.
+        experiment_name : str, optional
+            The name of the experiment to link. Either `experiment_id` or `experiment_name` must be provided.
+
+        Returns
+        -------
+        str
+            The ID of the item.
+
+        Raises
+        ------
+        ValueError
+            If no experiment is found with the given name.
+
         """
+
         from furthrmind.collection import Experiment
         assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
 
@@ -751,7 +939,7 @@ class BaseClassWithLinking(BaseClass):
             self._get()
 
         if experiment_name:
-            exp = Experiment.get(name = experiment_name)
+            exp = Experiment.get(name=experiment_name)
             if not exp:
                 raise ValueError("No exp found with the given name")
             experiment_id = exp.id
@@ -776,16 +964,31 @@ class BaseClassWithLinking(BaseClass):
         self.linked_experiments = new_linked_experiments
         return self.id
 
-    def remove_linked_experiment(self, experiment_id=None, experiment_name=None):
+    def remove_linked_experiment(self, experiment_id: str = "", experiment_name: str = ""):
         """
-        This method is to remove link a linked experiment from the current item
-        Args:
-            experiment_id: id to the experiment you want to remove the linkage, either id or name must be given
-            experiment_name: name of the experiment you want to remove the linkage, either name or name must be given
+        Method to remove a linked experiment from the current item.
 
-        Returns:
-            the id of the item
+        Parameters
+        ----------
+        experiment_id : str, optional
+            The ID of the experiment you want to unlink. Either `experiment_id` or `experiment_name` must be given.
+        experiment_name : str, optional
+            The name of the experiment you want to unlink. Either `experiment_id` or `experiment_name` must be given.
+
+        Returns
+        -------
+        str
+            The ID of the item after removing the linkage.
+
+        Raises
+        ------
+        ValueError
+            If no experiment is found with the given name.
+        AssertionError
+            If neither `experiment_id` nor `experiment_name` is specified.
+
         """
+
         from furthrmind.collection import Experiment
         assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
 
@@ -816,16 +1019,29 @@ class BaseClassWithLinking(BaseClass):
         self.linked_experiments = new_linked_items
         return self.id
 
-    def add_linked_sample(self, sample_id=None, sample_name=None):
+    def add_linked_sample(self, sample_id: str = "", sample_name: str = ""):
         """
-        This method is to link a sample to the current item
-        Args:
-            sample_id: id to the sample you want to link, either id or name must be given
-            sample_name: name of the sample you want to link, either name or name must be given
+        Method is to link a sample to the current item
 
-        Returns:
+        Parameters
+        ----------
+        sample_id : str, optional
+            id to the sample you want to link, either id or name must be given
+        sample_name : str, optional
+            name of the sample you want to link, either name or id must be given
+
+        Returns
+        -------
+        str
             the id of the item
+
+        Raises
+        ------
+        ValueError
+            If no sample found with the given name
+
         """
+
         from furthrmind.collection import Sample
         assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
 
@@ -859,16 +1075,33 @@ class BaseClassWithLinking(BaseClass):
         self.linked_samples = new_linked_samples
         return self.id
 
-    def remove_linked_sample(self, sample_id=None, sample_name=None):
+    def remove_linked_sample(self, sample_id: str = "", sample_name: str = ""):
         """
-        This method is to remove a linked sample from the current item
-        Args:
-            sample_id: id of the sample you want to remove the linkage, either id or name must be given
-            sample_name: name of the sample you want to remove linkage, either name or name must be given
+        Method is to remove a linked sample from the current item
 
-        Returns:
-            the id of the item
+        Parameters
+        ----------
+        sample_id : str, optional
+            The id of the sample you want to unlink. Either `sample_id` or `sample_name` must be provided.
+        sample_name : str, optional
+            The name of the sample you want to unlink. Either `sample_id` or `sample_name` must be provided.
+
+        Returns
+        -------
+        str
+            The id of the item.
+
+        Raises
+        ------
+        ValueError
+            If no sample is found with the given name.
+
+        Notes
+        -----
+        This method is used to remove a linked sample from the current item. It updates the list of linked samples for the item and saves the changes.
+
         """
+
         from furthrmind.collection import Sample
         assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
 
@@ -899,17 +1132,29 @@ class BaseClassWithLinking(BaseClass):
         self.linked_samples = new_linked_items
         return self.id
 
-    def add_linked_researchitem(self, researchitem_id=None):
+    def add_linked_researchitem(self, researchitem_id: str):
         """
-        This method is to link an experiment to the current item
-        Args:
-            researchitem_id: id to the researchitem you want to link
+        Method is to link a research item to the current item
 
-        Returns:
-            the id of the item
+        Parameters
+        ----------
+        researchitem_id : str
+            The id of the research item to be linked. If not specified, the method will raise an assertion error.
+
+        Returns
+        -------
+        str
+            The id of the current research item.
+
+        Raises
+        ------
+        AssertionError
+            If researchitem_id is not specified.
+
         """
+
         from furthrmind.collection import ResearchItem
-        assert researchitem_id, "Either researchitem_id must be specified"
+        assert researchitem_id, "researchitem_id must be specified"
 
         if not self._fetched:
             self._get()
@@ -945,15 +1190,21 @@ class BaseClassWithLinking(BaseClass):
 
         return self.id
 
-    def remove_linked_researchitem(self, researchitem_id=None):
+    def remove_linked_researchitem(self, researchitem_id: str):
         """
-        This method is to link an experiment to the current item
-        Args:
-            researchitem_id: id to the researchitem you want to remove the linkage
+        Method to remove a linked researchitem from the current item
 
-        Returns:
-            the id of the item
+        Parameters
+        ----------
+        researchitem_id : str
+            The ID of the research item you want to unlink
+
+        Returns
+        -------
+        str
+            The ID of the item after removing the linkage.
         """
+
         assert researchitem_id, "Either experiment_id must be specified"
 
         if not self._fetched:

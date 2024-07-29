@@ -189,12 +189,12 @@ class FieldData(BaseClass):
         Parameters
         ----------
         unit : Union[Dict, str]
-            - Dictionary with id or name, or string representing the name, or string representing the id.
+            Dictionary with id or name, or string representing the name, or string representing the id.
 
         Returns
         -------
         id: str
-            - The id of the updated unit.
+            The id of the updated unit.
 
         Raises
         ------
@@ -240,25 +240,23 @@ class FieldData(BaseClass):
             Name of the field. Either field name and field_type must be specified, or field_id must be specified.
         field_type : str, optional
             Type of the field. Must be one of the following:
-                - numeric, numeric-field, numeric_field
-                - date, date_field, date-field, datefield
-                - singleline, singlelinefield, text, text-field, text_field, textfield
-                - combobox, comboboxfield, list, list-field, list_field, listfield
-                - multiline, notebook, notebookfield, notebook-field, notebook_field
-                - checkbox, checkbox-field, checkbox_field, checkboxfield
-                - calculation, calculation-field, calculation_field, calculationfield
+                - Numeric fields: numeric, numeric-field, numeric_field
+                - Date fields: date, date_field, date-field, datefield
+                - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+                - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+                - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+                - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+                - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
         field_id : str, optional
             ID of the field.
         value : None, float, int, str, datetime, date, optional
             Value of the field. The data type depends on the field_type parameter:
-                - numeric, numeric-field, numeric_field: float or int, or a string convertable to a float
-                - date, date_field, date-field, datefield: datetime, or date object, or unix timestamp or string with
-                    iso format
-                - singleline, singlelinefield, text, text-field, text_field, textfield: string
-                - combobox, comboboxfield, list, list-field, list_field, listfield: dict with id or name as key, or string
-                    with name, or string with id
-                - multiline, notebook, notebookfield, notebook-field, notebook_field: dict with content as key, or string
-                - checkbox, checkbox-field, checkbox_field, checkboxfield: boolean
+                - Numeric fields: float or int, or a string convertible to a float
+                - Date fields: datetime, date object, unix timestamp, or string with iso format
+                - Text fields: string
+                - List fields: dictionary with id or name as key, or string with name, or string with id
+                - Notebook fields: dictionary with content as key, or string
+                - Checkbox fields:  boolean
         unit : dict, str, optional
             Unit of the field. Can be either a dictionary with id or name, or a string with the name.
         project_id : str, optional
@@ -310,21 +308,21 @@ class FieldData(BaseClass):
             List with dictionaries containing the following keys:
             - field_name: name of the field. Either field name and field_type must be specified, or field_id must be specified
             - field_type: type of the field. Must be one of the following:
-                - numeric, numeric-field, numeric_field
-                - date, date_field, date-field, datefield
-                - singleline, singlelinefield, text, text-field, text_field, textfield
-                - combobox, comboboxfield, list, list-field, list_field, listfield
-                - multiline, notebook, notebookfield, notebook-field, notebook_field
-                - checkbox, checkbox-field, checkbox_field, checkboxfield
-                - calculation, calculation-field, calculation_field, calculationfield
+                - Numeric fields: numeric, numeric-field, numeric_field
+                - Date fields: date, date_field, date-field, datefield
+                - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
+                - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
+                - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
+                - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
+                - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
             - field_id: id of the field
             - value:
-                - numeric, numeric-field, numeric_field: float or int, or a string convertible to a float
-                - date, date_field, date-field, datefield: datetime, date object, unix timestamp, or string with iso format
-                - singleline, singlelinefield, text, text-field, text_field, textfield: string
-                - combobox, comboboxfield, list, list-field, list_field, listfield: dictionary with id or name as key, or string with name, or string with id
-                - multiline, notebook, notebookfield, notebook-field, notebook_field: dictionary with content as key, or string
-                - checkbox, checkbox-field, checkbox_field, checkboxfield: boolean
+                - Numeric fields: float or int, or a string convertible to a float
+                - Date fields: datetime, date object, unix timestamp, or string with iso format
+                - Text fields: string
+                - List fields: dictionary with id or name as key, or string with name, or string with id
+                - Notebook fields: dictionary with content as key, or string
+                - Checkbox fields:  boolean
             - unit: dictionary with id or name, or name as string, or id as string
 
         project_id: str, optional
