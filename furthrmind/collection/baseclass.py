@@ -401,6 +401,7 @@ class BaseClassWithFieldData(BaseClass):
         ----------
         value : various data types
             The value to be updated in the field.
+
             - Numeric fields: float or int, or a string convertible to a float
             - Date fields: datetime, date object, unix timestamp, or string with iso format
             - Text fields: string
@@ -546,6 +547,7 @@ class BaseClassWithFieldData(BaseClass):
             Either fieldname and fieldtype or field_id must be specified.
         field_type : str
             Type of field. Must be one of:
+
             - Numeric fields: numeric, numeric-field, numeric_field
             - Date fields: date, date_field, date-field, datefield
             - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
@@ -557,6 +559,7 @@ class BaseClassWithFieldData(BaseClass):
             Id of field that should be added.
         value : Any
             Value of the field. The data type of the value depends on the field_type:
+
             - Numeric fields: float or int, or a string convertible to a float
             - Date fields: datetime, date object, unix timestamp, or string with iso format
             - Text fields: string
@@ -596,9 +599,11 @@ class BaseClassWithFieldData(BaseClass):
         ----------
         data_list: List[Dict]
             List of dictionaries containing the information about the fields to be added. Each dictionary should have the following keys:
+
             - field_name: Name of the field to be added. Either field_name and field_type or field_id must be specified.
             - field_type:
                 Type of the field. Must be one of the following:
+
                 - Numeric fields: numeric, numeric-field, numeric_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
@@ -606,14 +611,17 @@ class BaseClassWithFieldData(BaseClass):
                 - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
                 - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
                 - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
+
             - field_id: ID of the field to be added.
             - value: Value of the field. The required format depends on the field_type:
+
                 - Numeric: float or int, or a string convertible to a float.
                 - Date: datetime, date object, Unix timestamp, or string in ISO format.
                 - SingleLine: string.
                 - ComboBoxEntry: Dictionary with ID or name as key, or string with name, or string with ID.
                 - MultiLine: Dictionary with content as key, or string.
                 - CheckBox: Boolean.
+
             - unit: Dictionary with ID or name as key, or string with name, or string with ID.
 
         Returns
@@ -849,6 +857,7 @@ class BaseClassWithGroup(BaseClass):
         data_list : List[Dict]
             A list of dictionaries representing the data for creating multiple items (samples or experiments).
             Each dictionary should contain the following keys:
+
                 - name : str
                     The name of the item to be created.
                 - group_name : str

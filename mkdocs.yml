@@ -1,0 +1,18 @@
+# mkdocs.yml
+site_name: Calculation Docs
+
+theme:
+  name: "material"
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+          python:
+            options:
+              docstring_style: numpy
+
+nav:
+  - Furthrmind docs: index.md
+  - project.md
+  - references.md

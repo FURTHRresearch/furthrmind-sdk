@@ -15,6 +15,15 @@ if TYPE_CHECKING:
 
 class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
                  BaseClassWithGroup, BaseClassWithLinking):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the experiment
+    name : str
+        name of the experiment
+
+    """
     id = ""
     name = ""
     neglect = False
@@ -185,6 +194,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         data_list : List[Dict]
             List of dictionaries containing information about the experiments to be created.
             Each dictionary should have the following keys:
+
             - name: str
                 The name of the experiment.
             - group_name : str
@@ -214,9 +224,11 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         name : str
             Name of the datatable.
         columns : List[Dict]
-            A list of columns that should be added to the datatable. Each column is represented as a dictionary with the following keys:
+            A list of columns that should be added to the datatable. Each column is represented as a dictionary with the
+            following keys:
+
             - name : str
-                Name of the column.
+                Name of the column.</br>
             - type : str
                 Type of the column. Either "Text" or "Numeric". Data must fit the specified type.
             - data : Union[List[Union[str, float]], pandas.Series]
