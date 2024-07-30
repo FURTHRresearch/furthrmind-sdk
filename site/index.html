@@ -10,7 +10,7 @@
       
       
       
-        <link rel="next" href="project/">
+        <link rel="next" href="experiment/">
       
       
       <link rel="icon" href="assets/images/favicon.png">
@@ -18,7 +18,7 @@
     
     
       
-        <title>FURTHRmind python wrapper documentation</title>
+        <title>FURTHRmind python package</title>
       
     
     
@@ -61,6 +61,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#furthrmind-python-package" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +78,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="." title="FURTHRmind python wrapper documentation" class="md-header__button md-logo" aria-label="FURTHRmind python wrapper documentation" data-md-component="logo">
+    <a href="." title="FURTHRmind python package" class="md-header__button md-logo" aria-label="FURTHRmind python package" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
@@ -87,13 +92,13 @@
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
           <span class="md-ellipsis">
-            FURTHRmind python wrapper documentation
+            FURTHRmind python package
           </span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Furthrmind docs
+              Getting started
             
           </span>
         </div>
@@ -168,13 +173,13 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="." title="FURTHRmind python wrapper documentation" class="md-nav__button md-logo" aria-label="FURTHRmind python wrapper documentation" data-md-component="logo">
+    <a href="." title="FURTHRmind python package" class="md-nav__button md-logo" aria-label="FURTHRmind python package" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
 
     </a>
-    FURTHRmind python wrapper documentation
+    FURTHRmind python package
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -192,16 +197,117 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Getting started
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="." class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Furthrmind docs
+    Getting started
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieve-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retrieve objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nested-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nested objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-new-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create new objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-fields-files-and-datatables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding fields, files, and datatables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-list-of-collections-and-its-method-to-work-with-can-be-found-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      A list of collections and its method to work with can be found here:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -213,36 +319,80 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="project/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Project
-  </span>
-  
-
-      </a>
-    </li>
-  
-
     
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
       
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="references/" class="md-nav__link">
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
   
   <span class="md-ellipsis">
     References
   </span>
   
 
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            References
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="experiment/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Experiment
+  </span>
+  
+
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="file/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    File
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -264,6 +414,85 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#install" class="md-nav__link">
+    <span class="md-ellipsis">
+      Install
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basic usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#retrieve-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retrieve objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nested-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nested objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-new-objects" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create new objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#adding-fields-files-and-datatables" class="md-nav__link">
+    <span class="md-ellipsis">
+      Adding fields, files, and datatables
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-list-of-collections-and-its-method-to-work-with-can-be-found-here" class="md-nav__link">
+    <span class="md-ellipsis">
+      A list of collections and its method to work with can be found here:
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -278,9 +507,115 @@
                   
 
 
-  <h1>Furthrmind docs</h1>
+<h1 id="furthrmind-python-package">FURTHRmind python package</h1>
+<p>This package provides a simple and user-friendly way to interact with your FURTHRmind application. It enables users to
+effortlessly retrieve existing data or write new data into the application.</p>
+<h2 id="install">Install</h2>
+<p>You can conveniently install <code>furthrmind</code> from PyPi using the following command:</p>
+<pre><code>pip install furthrmind
+</code></pre>
+<h2 id="basic-usage">Basic usage</h2>
+<h3 id="retrieve-objects">Retrieve objects</h3>
+<p>To initiate an interaction with your server through the Furthrmind class, you need to create an instance of it. You will
+pass in your server's URL and API key. Don’t forget to provide the name or ID of the project you want to work with.</p>
+<pre><code>from furthrmind import Furthrmind
+fm = FURTHRmind(host, api_key, project_name=&quot;my project&quot;)
+</code></pre>
+<p>Retrieving data necessitates the importation of the relevant collection class. This can be attained either from your
+Furthrmind instance or by direct import.</p>
+<pre><code>Experiment = fm.Experiment
+from furthrmind.collection import Experiment
+</code></pre>
+<p>To fetch a specific experiment, invoke the get method of the Experiment class, passing in the desired experiment's ID.</p>
+<pre><code>exp = fm.Experiment.get(exp_id)
+</code></pre>
+<p>or</p>
+<pre><code>exp = Experiment.get(exp_id)
+</code></pre>
+<p>Both these commands are identical provided the Experiment class was previously imported.</p>
+<p>You can fetch all the experiments from a project by calling the get_all method which returns a list of instances of the
+Experiment class.</p>
+<pre><code>exp_list = Experiment.get_all()
+</code></pre>
+<p>The Experiment class instance encapsulates all data pertinent to your experiment. For convenience, this class provides
+several methods including: add_field, add_many_fields, remove_field, update_field_value, update_field_unit, add_file,
+remove_file, and add_datatable. Details about the available methods for each collection class can be found below.</p>
+<h3 id="nested-objects">Nested objects</h3>
+<p>In the preceding example, we retrieved one or more experiments from the Furthrmind server. Each experiment encompasses
+various attributes such as the corresponding samples, research items, and the group to which it belongs. Note that these
+entities are nested objects.</p>
+<p>For instance, the 'groups' attribute comprises a list of group instances belonging to the group collection class. To
+optimize network traffic, these nested objects do not load completely. In other words, all properties, except for the '
+id' and 'name', remain unretrieved.</p>
+<p>To verify whether an object has been fully loaded, you can inspect the <code>_fetched</code> attribute of the object. If an object
+hasn't been fetched yet, you can invoke the <code>get()</code> method on that object to retrieve it.</p>
+<h3 id="create-new-objects">Create new objects</h3>
+<p>To generate a new experiment, you should invoke the <code>create()</code> or <code>create_many()</code> method. It's important to correctly
+supply the input arguments suitable for each collection class. Specifically, the <code>create</code> method of the <code>Experiment</code>
+class necessitates passing the new experiment's name, and the name or ID of the group to which it should belong.</p>
+<p>In case your requirement entails adding an experiment to a subgroup, supplying this subgroup's ID becomes paramount.
+The <code>create</code> method subsequently gives back an instance of the <code>Experiment</code> class, whereas the <code>create_many</code> method
+yields a list of <code>Experiment</code> class instances.</p>
+<pre><code>new_exp = Experiment.create(&quot;myexperiment2&quot;, group_name=&quot;My group&quot;
+</code></pre>
+<p>Alternatively, to create multiple experiments:</p>
+<pre><code>experiments = Experiment.create_many([{&quot;name&quot;: &quot;exp1&quot;, &quot;group&quot;: &quot;group1&quot;}, {&quot;name&quot;: &quot;exp2&quot;, &quot;group&quot;: &quot;group2&quot;}])
 
-
+</code></pre>
+<h3 id="adding-fields-files-and-datatables">Adding fields, files, and datatables</h3>
+<p>After you created the new experiment you might want to add some fields, files, and datatables to your
+experiment. This can be achieved with:</p>
+<pre><code>new_exp.add_field(field_name=&quot;My field namy&quot;, field_type=&quot;Numeric&quot;,
+                  value=5, unit=&quot;cm&quot;)
+new_exp.add_many_fields([
+        {
+            &quot;name&quot;: &quot;May field name,
+            &quot;field_type&quot; =&quot;Numeric&quot;,
+            &quot;value: 5, 
+            &quot;unit&quot;: &quot;cm&quot;
+        },
+        {
+            &quot;name&quot;: &quot;May second field name,
+            &quot;field_type&quot; =&quot;Numeric&quot;,
+            &quot;value: 10, 
+            &quot;unit&quot;: &quot;m&quot;
+        }
+])
+new_exp.add_file(my_file_path)
+new_exp.add_datatable(name=my data table, columns=[
+        {
+            &quot;name&quot;: &quot;my 1st column&quot;
+            &quot;type&quot;: &quot;Numeric,
+            &quot;unit&quot;: &quot;cm&quot;,
+            &quot;data&quot;: [1,2,3]
+        },
+        {
+            &quot;name&quot;: &quot;my 2nd column&quot;
+            &quot;type&quot;: &quot;Numeric,
+            &quot;unit&quot;: &quot;cm&quot;,
+            &quot;data&quot;: [4,5,6]
+        },
+])
+</code></pre>
+<h2 id="a-list-of-collections-and-its-method-to-work-with-can-be-found-here">A list of collections and its method to work with can be found here:</h2>
+<p><a href="experiment/">experiment</a></p>
+<p>Get a project
+pass the id or name of the project you want to retrieve</p>
+<ul>
+<li>Project</li>
+<li>Group</li>
+<li>Experiment</li>
+<li>Sample</li>
+<li>ResearchItem</li>
+<li>Field</li>
+<li>FieldData (the fields attached to an item: experiments, samples, or researchitems)</li>
+<li>Unit</li>
+<li>File</li>
+<li>DataTable</li>
+<li>Column</li>
+<li>ComboBoxEntry (the entries within a list field)</li>
+<li>Category </li>
+</ul>
 
 
 

@@ -1,5 +1,5 @@
 # mkdocs.yml
-site_name: FURTHRmind python wrapper documentation
+site_name: FURTHRmind python package
 
 theme:
   name: "material"
@@ -11,8 +11,11 @@ plugins:
           python:
             options:
               docstring_style: numpy
+              inherited_members: true
+
 
 nav:
-  - Furthrmind docs: index.md
-  - project.md
-  - references.md
+  - Getting started: index.md
+  - References:
+    - experiment.md
+    - file.md

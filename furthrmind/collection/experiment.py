@@ -22,6 +22,10 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         id of the experiment
     name : str
         name of the experiment
+    shortid : str
+        shortid of the experiment
+    files : List[File]
+        List of files belonging to this experiment. See [File](file.md) for more information.
 
     """
     id = ""
