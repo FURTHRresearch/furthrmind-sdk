@@ -3,6 +3,8 @@ site_name: FURTHRmind python package
 
 theme:
   name: "material"
+  logo: "assets/logo.png"
+  favicon: "assets/logo.png"
 
 plugins:
   - search
