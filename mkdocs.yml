@@ -19,5 +19,10 @@ plugins:
 nav:
   - Getting started: index.md
   - References:
+    - group.md
     - experiment.md
+    - sample.md
+    - ResearchItem: researchitem.md
     - file.md
+    - FieldData: fielddata.md
+    - DataTable: datatable.md

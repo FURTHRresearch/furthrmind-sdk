@@ -8,7 +8,7 @@ from furthrmind.collection.baseclass import (BaseClassWithFieldData, BaseClassWi
 from furthrmind.utils import instance_overload
 
 if TYPE_CHECKING:
-    from furthrmind.collection import *
+    from furthrmind.collection import FieldData, Experiment, ResearchItem, Group, DataTable, File
 
 
 class Sample(BaseClassWithFieldData,

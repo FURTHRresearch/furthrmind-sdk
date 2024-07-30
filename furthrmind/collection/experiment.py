@@ -26,6 +26,34 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         shortid of the experiment
     files : List[File]
         List of files belonging to this experiment. See [File](file.md) for more information.
+    fielddata : List[FieldData]
+        List of field data belonging to this experiment. See [FieldData](fielddata.md) for more information.
+    linked_samples : List[Sample]
+        This list contains 'sample' objects linked to the current experiment. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'sample'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'sample' objects, see the provided [Sample](sample.md).
+    linked_experiments : List[Experiment]
+        This list contains 'experiment' objects linked to the current experiment. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'experiment'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'experiment' objects, see the provided [Experiment](experiment.md).
+    linked_researchitems : Dict[str, List[ResearchItem]]
+        This is a dictionary with category name as keys and lists with the corresponding `researchitem` objects as values.
+        The `researchitem` objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'experiment' objects, see the provided [ResearchItem](researchitem.md).
+    groups : List[Groups]
+        This list contains 'group' objects the experiment belongs to. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'group' objects, see the provided [Group](group.md).
+    datatables : List[DataTable]
+        This list contains 'datatable' objects that belong to this experiment. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'datatable'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'datatable' objects, see the provided [DataTable](datatable.md).
 
     """
     id = ""
@@ -112,9 +140,9 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
 
         return cls._get(id, shortid, name, project_id=project_id)
 
-
     @classmethod
-    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (), project_id: str = "") -> List[Self]:
+    def get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (), project_id: str = "") -> \
+            List[Self]:
         """
         Method to get all experiment belonging to one project
 

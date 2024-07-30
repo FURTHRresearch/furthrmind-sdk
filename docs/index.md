@@ -128,22 +128,8 @@ new_exp.add_datatable(name=my data table, columns=[
 ])
 ```
 
-## A list of collections and its method to work with can be found here:
-[experiment](experiment.md)
+## Detailed information about each collection and its attributes and methods can be found here:
+- [Experiment](experiment.md)
+- [Sample](sample.md)
+- [File](file.md)
 
-Get a project
-pass the id or name of the project you want to retrieve
-
-- Project
-- Group
-- Experiment
-- Sample
-- ResearchItem
-- Field
-- FieldData (the fields attached to an item: experiments, samples, or researchitems)
-- Unit
-- File
-- DataTable
-- Column
-- ComboBoxEntry (the entries within a list field)
-- Category 

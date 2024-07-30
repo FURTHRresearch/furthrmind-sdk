@@ -8,11 +8,11 @@ from furthrmind.collection.baseclass import BaseClass
 if TYPE_CHECKING:
     from furthrmind.collection import Column
 
+
 class DataTable(BaseClass):
     id = ""
     name = ""
     columns: List["Column"] = []
-
 
     _attr_definition = {
         "columns": {"class": "Column"}
@@ -43,15 +43,15 @@ class DataTable(BaseClass):
         project_url = cls.fm.get_project_url(project_id)
         url = f"{project_url}/rawdata"
         return url
-    
+
     @classmethod
     def get(cls, id: str = "", project_id: str = "") -> Self:
         """
-        Method to get one datatable by its id
-        If called on an instance of the class, the id of the instance is used
-        Columns are retrieved with id and column names only. To get the belonging data, the get method of the
-        corresponding column must be called. Alternatively, the 'get_columns' method of the datatable must be
-        called
+        This method retrieves a singular `datatable` using its ID. If this method is invoked on an instance of the class,
+        the instance's ID is utilized. The retrieved `datatable` contains columns identified solely by their respective
+        IDs and names. To obtain the corresponding data for these columns, you must either:
+        1. Invoke the `get()` method on the specific column, or
+        2. call the `get_columns()` method on the `datatable`.
 
         Parameters
         ----------
@@ -161,7 +161,7 @@ class DataTable(BaseClass):
         self.columns = new_column_list
         return columns
 
-    def get_pandas_dataframe(self, column_id_list: List[str] = (), column_name_list:List[str] = ()) -> DataFrame:
+    def get_pandas_dataframe(self, column_id_list: List[str] = (), column_name_list: List[str] = ()) -> DataFrame:
         """
         Method to get columns and their data as a pandas dataframe
         If column_id_list and column_name_list are not provided, the method will retrieve all columns belonging
@@ -188,7 +188,7 @@ class DataTable(BaseClass):
         df = DataFrame.from_dict(data_dict)
         return df
 
-    def _get_columns(self, column_id_list: List[str]=None, column_name_list:List[str]=None) -> List["Column"]:
+    def _get_columns(self, column_id_list: List[str] = None, column_name_list: List[str] = None) -> List["Column"]:
         from furthrmind.collection import Column
         if column_id_list:
             pass
@@ -260,9 +260,8 @@ class DataTable(BaseClass):
             data["sample"] = {"id": sample_id}
 
         if researchitem_id:
-            data["researchitem"] = {"id":researchitem_id}
+            data["researchitem"] = {"id": researchitem_id}
 
         id = cls._post(data, project_id)
         data["id"] = id
         return data
-
