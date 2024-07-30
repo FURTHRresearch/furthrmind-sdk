@@ -14,7 +14,7 @@ class Project(BaseClass):
     groups: List["Group"] = []
     units: List["Unit"] = []
     researchitems: Dict[str, List["ResearchItem"]] = {}
-    permissions = []
+    permissions: Dict[str, List] = {}
     fields: List["Field"] = []
 
     _attr_definition = {
