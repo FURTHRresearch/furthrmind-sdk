@@ -1,5 +1,5 @@
 # mkdocs.yml
-site_name: Calculation Docs
+site_name: FURTHRmind python wrapper documentation
 
 theme:
   name: "material"
