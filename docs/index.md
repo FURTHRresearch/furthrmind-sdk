@@ -68,6 +68,20 @@ id' and 'name', remain unretrieved.
 To verify whether an object has been fully loaded, you can inspect the `_fetched` attribute of the object. If an object
 hasn't been fetched yet, you can invoke the `get()` method on that object to retrieve it.
 
+### Fields and FieldData: How to locate specific field value within an item
+The targeted experiment contains an attribute known as 'fielddata', which is a list comprising [FieldData](fielddata.md) 
+objects. Unlike [Field](field.md) objects that represent field definitions within a project, 
+[FieldData](fielddata.md) merges these definitions with a specific value and unit applicable 
+to a particular item, such as an experiment.
+
+If you wish to locate a field value related to a specific item, you can iterate through the 'fielddata' list and 
+compare the field names. For example, to search for the value of a field named "width", you could do the following:
+```
+for fielddata in exp.fielddata:
+    if fielddata.field_name == "width":
+        value = fielddata.value
+```
+
 ### Create new objects
 
 To generate a new experiment, you should invoke the `create()` or `create_many()` method. It's important to correctly
@@ -129,7 +143,17 @@ new_exp.add_datatable(name=my data table, columns=[
 ```
 
 ## Detailed information about each collection and its attributes and methods can be found here:
+
+- [Project](project.md)
+- [Group](group.md)
 - [Experiment](experiment.md)
 - [Sample](sample.md)
+- [ResearchItem](researchitem.md)
 - [File](file.md)
-
+- [Field](field.md)
+- [FieldData](fielddata.md)
+- [DataTable](datatable.md)
+- [Column](column.md)
+- [ComboBoxEntry](comboboxentry.md)
+- [Unit](unit.md)
+- [Category](category.md)

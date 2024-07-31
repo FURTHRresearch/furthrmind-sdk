@@ -3,6 +3,15 @@ import os
 from io import BytesIO
 
 class File(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the file
+    name : str
+        name of the file including the extension
+    """
+
     id = ""
     name = ""
 

@@ -43,8 +43,8 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         The `researchitem` objects are partially fetched,
         providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
         Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
-        'experiment' objects, see the provided [ResearchItem](researchitem.md).
-    groups : List[Groups]
+        'researchitem' objects, see the provided [ResearchItem](researchitem.md).
+    groups : List[Group]
         This list contains 'group' objects the experiment belongs to. These objects are partially fetched,
         providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
         Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
@@ -54,6 +54,9 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'datatable'.
         Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
         'datatable' objects, see the provided [DataTable](datatable.md).
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
 
     """
     id = ""

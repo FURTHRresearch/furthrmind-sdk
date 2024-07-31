@@ -19,10 +19,16 @@ plugins:
 nav:
   - Getting started: index.md
   - References:
+    - project.md
     - group.md
     - experiment.md
     - sample.md
     - ResearchItem: researchitem.md
     - file.md
+    - field.md
     - FieldData: fielddata.md
     - DataTable: datatable.md
+    - column.md
+    - ComboBoxEntry: comboboxentry.md
+    - unit.md
+    - category.md

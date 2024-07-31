@@ -7,6 +7,31 @@ if TYPE_CHECKING:
 
 
 class Field(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the field
+    name : str
+        name of the field
+    type : str
+        Corresponding field type. One out of:
+
+            - Numeric for numeric fields
+            - Date for date fields
+            - SingleLine for text fields
+            - ComboBox for list fields
+            - MultiLine for notebook fields
+            - Checkbox for checkbox fields
+            - Calculation for calculation fields
+
+    script : str
+        In case of a calculation field, this attribute holds the script applied for the calculations
+    comboboxentries : List[ComboBoxEntry]
+        In case of a list field, this attribute holds all attached list options as [ComboBoxEntry](comboboxentry.md)
+        objects. Otherwise it is an empty list.
+    """
+
     id = ""
     name = ""
     type = ""

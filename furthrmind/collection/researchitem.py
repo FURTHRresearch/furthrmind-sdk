@@ -9,6 +9,52 @@ if TYPE_CHECKING:
     from furthrmind.collection import File, FieldData, Sample, Group, Category, DataTable
 
 class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClassWithLinking, BaseClass ):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the researchitem
+    name : str
+        name of the researchitem
+    shortid : str
+        shortid of the researchitem
+    files : List[File]
+        List of files belonging to this researchitem. See [File](file.md) for more information.
+    fielddata : List[FieldData]
+        List of field data belonging to this researchitem. See [FieldData](fielddata.md) for more information.
+    linked_samples : List[Sample]
+        This list contains 'sample' objects linked to the current researchitem. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'sample'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'sample' objects, see the provided [Sample](sample.md).
+    linked_experiments : List[Experiment]
+        This list contains 'experiment' objects linked to the current researchitem. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'experiment'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'experiment' objects, see the provided [Experiment](experiment.md).
+    linked_researchitems : Dict[str, List[ResearchItem]]
+        This is a dictionary with category name as keys and lists with the corresponding `researchitem` objects as values.
+        The `researchitem` objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'researchitem' objects, see the provided [ResearchItem](researchitem.md).
+    groups : List[Group]
+        This list contains 'group' objects the researchitem belongs to. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'group' objects, see the provided [Group](group.md).
+    category : Category
+        [Category](category.md) object of the researchitem.
+    datatables : List[DataTable]
+        This list contains 'datatable' objects that belong to this researchitem. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'datatable'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'datatable' objects, see the provided [DataTable](datatable.md).
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     neglect = False

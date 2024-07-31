@@ -2,23 +2,37 @@ import math
 
 import numpy as np
 import pandas
-from typing_extensions import Self, List, Dict
+from typing_extensions import Self, List, Dict, Any
 from inspect import isclass
-from ..utils import furthr_wrap
 from furthrmind.collection.baseclass import BaseClass
 from furthrmind.collection.fielddata import FieldData
 
 
 class Column(BaseClass):
-    id = ""
-    name = ""
-    type = ""
-    values = []
+    """
+    Attributes
+    ----------
+    id : str
+        id of the column
+    name : str
+        name of the column
+    type : str
+        Type of the column. Either "Text" or "Numeric"
+    values : List[Any]
+        "These represent the values held within the column. If the column type is 'Text',
+        the values are characterized as strings. Conversely, for 'Numeric' type columns,
+        the values are expressed as floating-point numbers."
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
 
+    id: str = ""
+    name: str = ""
+    type: str = ""
+    values: List[Any] = []
 
-    _attr_definition = {
-        "columns": {"class": "Column"}
-    }
+    _attr_definition = {"columns": {"class": "Column"}}
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
@@ -51,7 +65,7 @@ class Column(BaseClass):
         if isclass(cls):
             assert id, "id must be specified"
 
-        cls._get(id, project_id=project_id)
+        return cls._get(id, project_id=project_id)
 
     # noinspection PyMethodOverriding
     @classmethod
@@ -123,8 +137,7 @@ class Column(BaseClass):
                 else:
                     new_data.append(d)
             except:
-                new_data.append(d)
-            # data = [d if not math.isnan(d) else None for d in data]
+                new_data.append(d)  # data = [d if not math.isnan(d) else None for d in data]
         data = new_data
         if column_type == "Text":
             if all([isinstance(d, (str, type(None))) for d in data]):
@@ -141,7 +154,8 @@ class Column(BaseClass):
                 try:
                     new_data.append(float(d))
                 except:
-                    raise ValueError("All column values must be a float, int or a string that can be converted to a float")
+                    raise ValueError(
+                        "All column values must be a float, int or a string that can be converted to a float")
             return new_data
 
     @classmethod
@@ -155,11 +169,14 @@ class Column(BaseClass):
         name : str
             Name of the column
         type : str
-            Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data
-            will be converted to string and for Numeric all data is converted to float (if possible)
+            The column type is categorized as either "Text" or "Numeric". For the "Text" type, all data
+            will be transformed into strings. Conversely, for the "Numeric" type, data will be converted
+            into floats, provided such a conversion is feasible. Please ensure that your data corresponds
+            to the assigned column type.
         data : Union[list, pandas.Series]
-            List or pandas series. values, must fit to column_type.
-        unit : Optional[Union[str, int, dict]]
+            This should be either a list or a pandas series. Its values need to comply with the specified column type
+            and will undergo conversion based on the rules described above.
+        unit : Optional[Union[str, Dict]]
             Dict with id or name, or name as string, or id as string
         project_id : Optional[str]
             Optionally to create an item in another project as the furthrmind sdk was initiated with
@@ -177,7 +194,6 @@ class Column(BaseClass):
         data_dict["id"] = id
         return data_dict
 
-
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
     def create_many(cls, data_list: List[Dict], project_id: str = "") -> List[Self]:
@@ -187,14 +203,16 @@ class Column(BaseClass):
         Parameters
         ----------
         data_list : List[Dict]
-            A list of dictionaries containing information about the data columns to be created. Each dictionary should have the following keys:
+            A list of dictionaries containing information about the data columns to be created. Each dictionary should
+             have the following keys:
+
                 - name: Name of the column
                 - type: Type of the column. Allowed values are "Text" or "Numeric".
                 - data: List of column values. The values must match the column type. Can also be a pandas data series.
                 - unit: Optional. Dictionary with id or name, or name as a string, or id as a string.
 
         project_id : str, optional
-            Optionally to create an columns in another project as the furthrmind sdk was initiated with
+            Optionally to create columns in another project as the furthrmind sdk was initiated with
 
         Returns
         -------

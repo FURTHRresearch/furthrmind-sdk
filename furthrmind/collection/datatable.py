@@ -10,6 +10,22 @@ if TYPE_CHECKING:
 
 
 class DataTable(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the datatable
+    name : str
+        name of the datatable
+    columns : List[Column]
+        List of [Column](column.md) objects belonging to this datatable. For additional information, consult the
+        [Column](column.md) documentation. Initially, the columns only present the id and name. To retrieve their
+        values, utilize the get() method on the relevant column or invoke the get_columns() method of the datatable.
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     columns: List["Column"] = []
@@ -108,7 +124,7 @@ class DataTable(BaseClass):
         return cls._get_many(ids, project_id=project_id)
 
     @classmethod
-    def _get_all(cls, project_id: str = "") -> List[Self]:
+    def get_all(cls, project_id: str = "") -> List[Self]:
 
         """
         Method to get all datatables belonging to one project
@@ -191,7 +207,12 @@ class DataTable(BaseClass):
     def _get_columns(self, column_id_list: List[str] = None, column_name_list: List[str] = None) -> List["Column"]:
         from furthrmind.collection import Column
         if column_id_list:
-            pass
+            column_id_list_new = []
+            current_column_ids = [c.id for c in self.columns]
+            for column_id in column_id_list:
+                if column_id in current_column_ids:
+                    column_id_list_new.append(column_id)
+            column_id_list = column_id_list_new
         elif column_name_list:
             column_id_list = []
             for column in self.columns:

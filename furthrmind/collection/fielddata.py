@@ -11,12 +11,41 @@ if TYPE_CHECKING:
 
 
 class FieldData(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the fielddata
+    field_name : str
+        field name of the corresponding field
+    field_id : List[File]
+        field id of the corresponding field
+    field_type : List[FieldData]
+        field type of the corresponding field
+    value : Any
+        value of the fielddata. Type depends on the field type:
+
+            - Numeric fields: float or None
+            - Date fields: python datetime object or None
+            - Text field: string or None
+            - List field: The value will be a dictionary with the name and the id to the selected option (comboboxentry).
+                If no option is selected, the value will be None
+            - Notebook field: The value will be a dictionary with the id and content of the notebook.
+            - Checkbox field: boolean
+    si_value : Union[float, None]
+        In case of numeric fields, the attribute represents the corresponding si-value considering the selected unit
+    unit : [Unit](unit.md)
+        The selected unit for numeric fields. Otherwise None
+    author: Dict[str, str]
+        The author of the fielddata with id and email address
+
+    """
     id = ""
     field_name = ""
     field_id = ""
     field_type = ""
     si_value = None
-    unit: List["Unit"] = None
+    unit: "Unit" = None
     author = None
     value = None
 
@@ -240,6 +269,7 @@ class FieldData(BaseClass):
             Name of the field. Either field name and field_type must be specified, or field_id must be specified.
         field_type : str, optional
             Type of the field. Must be one of the following:
+
                 - Numeric fields: numeric, numeric-field, numeric_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
@@ -247,16 +277,19 @@ class FieldData(BaseClass):
                 - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
                 - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
                 - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
+
         field_id : str, optional
             ID of the field.
         value : None, float, int, str, datetime, date, optional
             Value of the field. The data type depends on the field_type parameter:
+
                 - Numeric fields: float or int, or a string convertible to a float
                 - Date fields: datetime, date object, unix timestamp, or string with iso format
                 - Text fields: string
                 - List fields: dictionary with id or name as key, or string with name, or string with id
                 - Notebook fields: dictionary with content as key, or string
                 - Checkbox fields:  boolean
+
         unit : dict, str, optional
             Unit of the field. Can be either a dictionary with id or name, or a string with the name.
         project_id : str, optional
@@ -308,6 +341,7 @@ class FieldData(BaseClass):
             List with dictionaries containing the following keys:
             - field_name: name of the field. Either field name and field_type must be specified, or field_id must be specified
             - field_type: type of the field. Must be one of the following:
+
                 - Numeric fields: numeric, numeric-field, numeric_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
@@ -315,14 +349,17 @@ class FieldData(BaseClass):
                 - Notebook fields: multiline, notebook, notebookfield, notebook-field, notebook_field
                 - Checkbox fields: checkbox, checkbox-field, checkbox_field, checkboxfield
                 - Calculation fields: calculation, calculation-field, calculation_field, calculationfield
+
             - field_id: id of the field
             - value:
+
                 - Numeric fields: float or int, or a string convertible to a float
                 - Date fields: datetime, date object, unix timestamp, or string with iso format
                 - Text fields: string
                 - List fields: dictionary with id or name as key, or string with name, or string with id
                 - Notebook fields: dictionary with content as key, or string
                 - Checkbox fields:  boolean
+
             - unit: dictionary with id or name, or name as string, or id as string
 
         project_id: str, optional

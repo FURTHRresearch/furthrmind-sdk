@@ -4,14 +4,23 @@ from typing_extensions import List, Self
 
 
 class Category(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the category
+    name : str
+        name of the category
+    description : str
+        Description of the category
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     description = ""
-    project = ""
-
-    _attr_definition = {
-        "project": {"class": "Project"}
-    }
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
@@ -42,6 +51,8 @@ class Category(BaseClass):
     @classmethod
     def get(cls, id: str = "", project_id: str = "") -> Self:
         """
+        Method to get a category by its id.
+
         Parameters
         ----------
         id : str
@@ -59,34 +70,23 @@ class Category(BaseClass):
         ------
         AssertionError
             If used as a class method and id is not specified.
-
-        Example Usage
-        -------------
-        # Get a category by id
-        category = Category.get(id='category_id')
-
-        # Get a category by id using class method
-        category = Category.get('category_id')
-
-        # Get a category using the id of the instance
-        category = category.get()
         """
 
         if isclass(cls):
             assert id, "id must be specified"
-        return super().get(id=id, project_id=project_id)
+        return super()._get(id=id, project_id=project_id)
 
 
     # noinspection PyMethodOverriding
     @classmethod
-    def get_many(cls, ids: List[str] = (), names: List[str] = (), project_id: str = "") -> List[Self]:
+    def get_many(cls, ids: List[str] = (), project_id: str = "") -> List[Self]:
         """
+        Method to get a category by its ids.
+
         Parameters
         ----------
         ids : List[str]
             List with ids.
-        names : List[str]
-            List with names.
         project_id : str, optional
             Optionally, to get experiments from another project as the furthrmind sdk was initiated with. Defaults to None.
 
@@ -101,12 +101,14 @@ class Category(BaseClass):
             If ids or names are not specified.
         """
 
-        assert ids or names, "ids or names must be specified"
-        return cls._get_many(ids, names, project_id=project_id)
+        assert ids, "ids must be specified"
+        return cls._get_many(ids, project_id=project_id)
 
     @classmethod
     def get_all(cls, project_id: str = "") -> List[Self]:
         """
+        Method to get all categories.
+
         Parameters
         ----------
         project_id : str (optional)

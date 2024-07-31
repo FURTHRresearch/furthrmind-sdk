@@ -2,10 +2,54 @@ from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClass
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 if TYPE_CHECKING:
-    from furthrmind.collection import *
+    from furthrmind.collection import File, FieldData, Experiment, Sample, ResearchItem
 
 
 class Group(BaseClassWithFieldData):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the group
+    name : str
+        name of the group
+    shortid : str
+        shortid of the group
+    files : List[File]
+        List of files belonging to this group. See [File](file.md) for more information.
+    fielddata : List[FieldData]
+        List of field data belonging to this group. See [FieldData](fielddata.md) for more information.
+    samples : List[Sample]
+        This list contains 'sample' objects belonging to this group. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'sample'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'sample' objects, see the provided [Sample](sample.md).
+    experiments : List[Experiment]
+        This list contains 'experiment' objects belonging to this group. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'experiment'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'experiment' objects, see the provided [Experiment](experiment.md).
+    researchitems : Dict[str, List[ResearchItem]]
+        This is a dictionary with category name as keys and lists with the corresponding `researchitem` objects belonging
+         to this group as values. The `researchitem` objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'researchitem' objects, see the provided [ResearchItem](researchitem.md).
+    sub_groups : List[Group]
+        This list contains 'group' objects that are subgroups of this group. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'group' objects, see the provided [Group](group.md).
+    parent_group : Group
+        If the group is a subgroup, the attribute holds its parent group. This object is partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'group' objects, see the provided [Group](group.md).
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     neglect = False

@@ -10,7 +10,7 @@
       
       
       
-        <link rel="next" href="group/">
+        <link rel="next" href="project/">
       
       
       <link rel="icon" href="assets/logo.png">
@@ -272,6 +272,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fields-and-fielddata-how-to-locate-specific-field-value-within-an-item" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fields and FieldData: How to locate specific field value within an item
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#create-new-objects" class="md-nav__link">
     <span class="md-ellipsis">
       Create new objects
@@ -345,6 +354,27 @@
             References
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="project/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Project
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -458,6 +488,27 @@
   
   
     <li class="md-nav__item">
+      <a href="field/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Field
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="fielddata/" class="md-nav__link">
         
   
@@ -484,6 +535,90 @@
   
   <span class="md-ellipsis">
     DataTable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="column/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Column
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="comboboxentry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ComboBoxEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="unit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="category/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Category
   </span>
   
 
@@ -558,6 +693,15 @@
   <a href="#nested-objects" class="md-nav__link">
     <span class="md-ellipsis">
       Nested objects
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fields-and-fielddata-how-to-locate-specific-field-value-within-an-item" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fields and FieldData: How to locate specific field value within an item
     </span>
   </a>
   
@@ -652,6 +796,17 @@ optimize network traffic, these nested objects do not load completely. In other 
 id' and 'name', remain unretrieved.</p>
 <p>To verify whether an object has been fully loaded, you can inspect the <code>_fetched</code> attribute of the object. If an object
 hasn't been fetched yet, you can invoke the <code>get()</code> method on that object to retrieve it.</p>
+<h3 id="fields-and-fielddata-how-to-locate-specific-field-value-within-an-item">Fields and FieldData: How to locate specific field value within an item</h3>
+<p>The targeted experiment contains an attribute known as 'fielddata', which is a list comprising <a href="fielddata/">FieldData</a> 
+objects. Unlike <a href="field/">Field</a> objects that represent field definitions within a project, 
+<a href="fielddata/">FieldData</a> merges these definitions with a specific value and unit applicable 
+to a particular item, such as an experiment.</p>
+<p>If you wish to locate a field value related to a specific item, you can iterate through the 'fielddata' list and 
+compare the field names. For example, to search for the value of a field named "width", you could do the following:</p>
+<pre><code>for fielddata in exp.fielddata:
+    if fielddata.field_name == &quot;width&quot;:
+        value = fielddata.value
+</code></pre>
 <h3 id="create-new-objects">Create new objects</h3>
 <p>To generate a new experiment, you should invoke the <code>create()</code> or <code>create_many()</code> method. It's important to correctly
 supply the input arguments suitable for each collection class. Specifically, the <code>create</code> method of the <code>Experiment</code>
@@ -702,9 +857,19 @@ new_exp.add_datatable(name=my data table, columns=[
 </code></pre>
 <h2 id="detailed-information-about-each-collection-and-its-attributes-and-methods-can-be-found-here">Detailed information about each collection and its attributes and methods can be found here:</h2>
 <ul>
+<li><a href="project/">Project</a></li>
+<li><a href="group/">Group</a></li>
 <li><a href="experiment/">Experiment</a></li>
 <li><a href="sample/">Sample</a></li>
+<li><a href="researchitem/">ResearchItem</a></li>
 <li><a href="file/">File</a></li>
+<li><a href="field/">Field</a></li>
+<li><a href="fielddata/">FieldData</a></li>
+<li><a href="datatable/">DataTable</a></li>
+<li><a href="column/">Column</a></li>
+<li><a href="comboboxentry/">ComboBoxEntry</a></li>
+<li><a href="unit/">Unit</a></li>
+<li><a href="category/">Category</a></li>
 </ul>
 
 

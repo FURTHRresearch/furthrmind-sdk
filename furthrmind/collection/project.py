@@ -5,6 +5,53 @@ if TYPE_CHECKING:
     from furthrmind.collection import Sample, Experiment, Group, Unit, ResearchItem, Field
 
 class Project(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the project
+    name : str
+        name of the project
+    shortid : str
+        shortid of the project
+    info : str
+        Detailed information about the project
+    samples : List[Sample]
+        This list contains 'sample' objects belonging to this project. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'sample'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'sample' objects, see the provided [Sample](sample.md).
+    experiments : List[Experiment]
+        This list contains 'experiment' objects belonging to this project. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'experiment'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'experiment' objects, see the provided [Experiment](experiment.md).
+    researchitems : Dict[str, List[ResearchItem]]
+        This is a dictionary with category name as keys and lists with the corresponding `researchitem` objects belonging
+        to this project as values. The `researchitem` objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'researchitem' objects, see the provided [ResearchItem](researchitem.md).
+    groups : List[Group]
+        This list contains 'group' objects that belong to this project. These objects are partially fetched,
+        providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'group'.
+        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of
+        'group' objects, see the provided [Group](group.md).
+    units : List[Unit]
+        This list contains all unit objects that belong to this project. For more information about the unit object, please
+        refer to [Unit](unit.md).
+    fields : List[Field]
+        This list contains all fields that belong to this project. Each entry is a [Field](field.md) object.
+    permissions : Dict
+        This is a dictionary containing various keys. The `owner` key represents the owner of the project.
+        The `users` key refers to a list of users granted access to this project, including their respective access levels.
+        Lastly, the `usergroups` key relates to a list of usergroups with access privileges to this project, also presenting
+        their respective access levels.
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     info = ""

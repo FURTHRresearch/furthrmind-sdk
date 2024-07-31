@@ -3,6 +3,19 @@ from typing_extensions import Self, List, Dict
 from inspect import isclass
 
 class Unit(BaseClass):
+    """
+    Attributes
+    ----------
+    id : str
+        id of the unit
+    name : str
+        name of the unit
+    longname : str
+        Long name of the unit. In case of "cm" this would be centimeter
+    definition : str
+        In case of self defined units, this attributes gives the definition of the unit in si units
+    """
+
     id = ""
     name = ""
     longname = ""
@@ -64,23 +77,46 @@ class Unit(BaseClass):
             return data
 
     @classmethod
-    def _get_many(cls, ids: List[str] = (), project_id=None) -> List[
-        Self]:
+    def get_many(cls, ids: List[str] = (), project_id=None) -> List[Self]:
         """
-        Method to get many units belonging to one project
-        :param List[str] ids: List with ids
-        :param str project_id: Optionally to get experiments from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of experiment class
+        This method is used to retrieve many units belonging to one project.
+
+        Parameters
+        ----------
+        ids : List[str]
+            List of ids.
+        project_id : str, optional
+            The project id. Defaults to None.
+
+        Returns
+        -------
+        List[Self]
+            List of instances of the experiment class.
+
+        Raises
+        ------
+        TypeError
+            If ids is not a list.
         """
+
         return super()._get_many(ids, project_id=project_id)
 
     @classmethod
     def _get_all(cls, project_id=None) -> List[Self]:
         """
         Method to get all units belonging to one project
-        :param str project_id: Optionally to get units from another project as the furthrmind sdk was initiated with, defaults to None
-        :return List[Self]: List with instances of unit class
+
+        Parameters
+        ----------
+        project_id : str
+            Optionally specify the project ID to get units from. Defaults to None.
+
+        Returns
+        -------
+        List[Self]
+            A list containing instances of the unit class.
         """
+
         return super()._get_all(project_id)
 
     @classmethod

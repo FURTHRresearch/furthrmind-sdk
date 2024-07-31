@@ -248,6 +248,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../project/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Project
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../group/" class="md-nav__link">
         
   
@@ -611,6 +632,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../field/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Field
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../fielddata/" class="md-nav__link">
         
   
@@ -637,6 +679,90 @@
   
   <span class="md-ellipsis">
     DataTable
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../column/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Column
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../comboboxentry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ComboBoxEntry
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../unit/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Unit
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../category/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Category
   </span>
   
 
@@ -1056,14 +1182,14 @@ Refer to nested objects in <a href="../">Getting Started</a> for further details
 The <code>researchitem</code> objects are partially fetched,
 providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'researchitem'.
 Refer to nested objects in <a href="../">Getting Started</a> for further details. For a comprehensive understanding of
-'experiment' objects, see the provided <a href="../researchitem/">ResearchItem</a>.</p>
+'researchitem' objects, see the provided <a href="../researchitem/">ResearchItem</a>.</p>
               </div>
             </td>
           </tr>
           <tr class="doc-section-item">
             <td><code><span title="furthrmind.collection.experiment.Experiment.groups">groups</span></code></td>
             <td>
-                  <code><span title="typing_extensions.List">List</span>[Groups]</code>
+                  <code><span title="typing_extensions.List">List</span>[<a class="autorefs autorefs-internal" title="furthrmind.collection.Group" href="../group/#furthrmind.collection.group.Group">Group</a>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1085,6 +1211,18 @@ Refer to nested objects in <a href="../">Getting Started</a> for further details
 providing only the name and ID. To retrieve the entire object, invoke the 'get()' method on the 'datatable'.
 Refer to nested objects in <a href="../">Getting Started</a> for further details. For a comprehensive understanding of
 'datatable' objects, see the provided <a href="../datatable/">DataTable</a>.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td><code><span title="furthrmind.collection.experiment.Experiment._fetched">_fetched</span></code></td>
+            <td>
+                  <code>bool</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+the name and ID are present.</p>
               </div>
             </td>
           </tr>
@@ -1368,7 +1506,10 @@ Refer to nested objects in <a href="../">Getting Started</a> for further details
 <span class="normal">288</span>
 <span class="normal">289</span>
 <span class="normal">290</span>
-<span class="normal">291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">(</span><span class="n">BaseClassWithFieldData</span><span class="p">,</span> <span class="n">BaseClassWithFiles</span><span class="p">,</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span> <span class="nc">Experiment</span><span class="p">(</span><span class="n">BaseClassWithFieldData</span><span class="p">,</span> <span class="n">BaseClassWithFiles</span><span class="p">,</span>
                  <span class="n">BaseClassWithGroup</span><span class="p">,</span> <span class="n">BaseClassWithLinking</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Attributes</span>
@@ -1398,8 +1539,8 @@ Refer to nested objects in <a href="../">Getting Started</a> for further details
 <span class="sd">        The `researchitem` objects are partially fetched,</span>
 <span class="sd">        providing only the name and ID. To retrieve the entire object, invoke the &#39;get()&#39; method on the &#39;researchitem&#39;.</span>
 <span class="sd">        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of</span>
-<span class="sd">        &#39;experiment&#39; objects, see the provided [ResearchItem](researchitem.md).</span>
-<span class="sd">    groups : List[Groups]</span>
+<span class="sd">        &#39;researchitem&#39; objects, see the provided [ResearchItem](researchitem.md).</span>
+<span class="sd">    groups : List[Group]</span>
 <span class="sd">        This list contains &#39;group&#39; objects the experiment belongs to. These objects are partially fetched,</span>
 <span class="sd">        providing only the name and ID. To retrieve the entire object, invoke the &#39;get()&#39; method on the &#39;group&#39;.</span>
 <span class="sd">        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of</span>
@@ -1409,6 +1550,9 @@ Refer to nested objects in <a href="../">Getting Started</a> for further details
 <span class="sd">        providing only the name and ID. To retrieve the entire object, invoke the &#39;get()&#39; method on the &#39;datatable&#39;.</span>
 <span class="sd">        Refer to nested objects in [Getting Started](index.md) for further details. For a comprehensive understanding of</span>
 <span class="sd">        &#39;datatable&#39; objects, see the provided [DataTable](datatable.md).</span>
+<span class="sd">    _fetched : bool</span>
+<span class="sd">        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only</span>
+<span class="sd">        the name and ID are present.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">id</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1769,10 +1913,7 @@ following keys:</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
 <span class="normal">256</span>
@@ -1810,7 +1951,10 @@ following keys:</p>
 <span class="normal">288</span>
 <span class="normal">289</span>
 <span class="normal">290</span>
-<span class="normal">291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_datatable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataTable&quot;</span><span class="p">:</span>
+<span class="normal">291</span>
+<span class="normal">292</span>
+<span class="normal">293</span>
+<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span> <span class="nf">add_datatable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DataTable&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Method to create a new datatable within this experiment. Add the created datatable to the datatables attribute</span>
 
@@ -3331,10 +3475,7 @@ are not subgroups. Either group_name or group_id must be specified.</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">196</span>
 <span class="normal">197</span>
 <span class="normal">198</span>
 <span class="normal">199</span>
@@ -3356,7 +3497,10 @@ are not subgroups. Either group_name or group_id must be specified.</p>
 <span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@BaseClass</span><span class="o">.</span><span class="n">_create_instances_decorator</span><span class="p">(</span><span class="n">_fetched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">group_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3482,10 +3626,7 @@ Each dictionary should have the following keys:</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">223</span>
 <span class="normal">224</span>
 <span class="normal">225</span>
 <span class="normal">226</span>
@@ -3510,7 +3651,10 @@ Each dictionary should have the following keys:</p>
 <span class="normal">245</span>
 <span class="normal">246</span>
 <span class="normal">247</span>
-<span class="normal">248</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="nd">@BaseClass</span><span class="o">.</span><span class="n">_create_instances_decorator</span><span class="p">(</span><span class="n">_fetched</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">create_many</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">data_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">],</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3831,10 +3975,7 @@ If called on an instance of the class, the id of the class is used</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">110</span>
 <span class="normal">111</span>
 <span class="normal">112</span>
 <span class="normal">113</span>
@@ -3865,7 +4006,10 @@ If called on an instance of the class, the id of the class is used</p>
 <span class="normal">138</span>
 <span class="normal">139</span>
 <span class="normal">140</span>
-<span class="normal">141</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
+<span class="normal">144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">shortid</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Method to get one experiment by its id, name, or short_id</span>
@@ -3977,10 +4121,7 @@ If called on an instance of the class, the id of the class is used</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">175</span>
-<span class="normal">176</span>
-<span class="normal">177</span>
-<span class="normal">178</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">178</span>
 <span class="normal">179</span>
 <span class="normal">180</span>
 <span class="normal">181</span>
@@ -3993,7 +4134,10 @@ If called on an instance of the class, the id of the class is used</p>
 <span class="normal">188</span>
 <span class="normal">189</span>
 <span class="normal">190</span>
-<span class="normal">191</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">191</span>
+<span class="normal">192</span>
+<span class="normal">193</span>
+<span class="normal">194</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Method to get all experiment belonging to one project</span>
@@ -4152,10 +4296,7 @@ If called on an instance of the class, the id of the class is used</p>
 
             <details class="quote">
               <summary>Source code in <code>furthrmind/collection/experiment.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
-<span class="normal">144</span>
-<span class="normal">145</span>
-<span class="normal">146</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">146</span>
 <span class="normal">147</span>
 <span class="normal">148</span>
 <span class="normal">149</span>
@@ -4182,7 +4323,10 @@ If called on an instance of the class, the id of the class is used</p>
 <span class="normal">170</span>
 <span class="normal">171</span>
 <span class="normal">172</span>
-<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span> <span class="nf">get_many</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">shortids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">(),</span> <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> \
         <span class="n">List</span><span class="p">[</span><span class="n">Self</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>

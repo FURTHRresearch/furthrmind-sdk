@@ -1,10 +1,32 @@
-from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClass
-from typing_extensions import List, Self, Dict, TYPE_CHECKING
 from inspect import isclass
+
+from typing_extensions import List, Self, Dict, TYPE_CHECKING
+
+from furthrmind.collection.baseclass import BaseClassWithFieldData, BaseClass
+
 if TYPE_CHECKING:
-    from furthrmind.collection import *
+    from furthrmind.collection import File, FieldData
+
 
 class ComboBoxEntry(BaseClassWithFieldData):
+    """
+    ComboBoxEntries represent the available options in a list field
+
+    Attributes
+    ----------
+    id : str
+        id of the column
+    name : str
+        name of the column
+    files : List[File]
+        List of files belonging to this comboboxentry. See [File](file.md) for more information.
+    fielddata : List[FieldData]
+        List of field data belonging to this comboboxentry. See [FieldData](fielddata.md) for more information.
+    _fetched : bool
+        This is a Boolean attribute indicating whether all attributes have been retrieved from the server or only
+        the name and ID are present.
+    """
+
     id = ""
     name = ""
     files: List["File"] = []
@@ -52,7 +74,7 @@ class ComboBoxEntry(BaseClassWithFieldData):
         id : str
             id of the requested comboboxentry
         project_id : str
-            Optionally, to get experiments from another project as the furthrmind sdk was initiated with
+            Optionally, to get a comboboxentry from another project as the furthrmind sdk was initiated with
 
         Returns
         -------
@@ -71,18 +93,19 @@ class ComboBoxEntry(BaseClassWithFieldData):
 
         return cls._get(id, project_id=project_id)
 
-
     # noinspection PyMethodOverriding
     @classmethod
     def get_many(cls, ids: List[str] = (), project_id: str = "") -> List[Self]:
         """
+        This method is a class method that retrieves multiple comboboxentries belonging to one project.
+
         Parameters
         ----------
         ids : List[str]
             List with ids.
 
         project_id : str, optional
-            Optionally to get experiments from another project as the furthrmind sdk was initiated with,
+            Optionally to get comboboxentries from another project as the furthrmind sdk was initiated with,
             defaults to an empty string.
 
         Returns
@@ -95,18 +118,16 @@ class ComboBoxEntry(BaseClassWithFieldData):
         AssertError
             If `ids` list is empty.
 
-        Notes
-        -----
-        This method is a class method that retrieves multiple comboboxentries belonging to one project.
-
         """
 
         assert ids, "ids must be specified"
         return cls._get_many(ids, project_id=project_id)
-    
+
     @classmethod
     def get_all(cls, project_id: str = "") -> List[Self]:
         """
+        Method to get all comboboxentries belonging to one project.
+
         Parameters
         ----------
         project_id : str, optional
@@ -119,7 +140,7 @@ class ComboBoxEntry(BaseClassWithFieldData):
         """
 
         return cls._get_all(project_id=project_id)
-    
+
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
     def create(cls, name: str, field_name: str = "", field_id: str = "", project_id: str = "") -> Self:
@@ -153,6 +174,8 @@ class ComboBoxEntry(BaseClassWithFieldData):
             If the field with the given name is not found.
         """
 
+        from furthrmind.collection.field import Field
+
         if not name:
             raise ValueError("Name must be specified")
         if not field_name and not field_id:
@@ -184,11 +207,13 @@ class ComboBoxEntry(BaseClassWithFieldData):
         data_list : List[Dict]
             List of dictionaries containing the data for creating instances of comboboxentry class. Each dictionary
             should have the following keys:
+
             - "name" (str): Name of the combobox entry.
             - "field_name" (str, optional): Name of the field where the combobox entry should belong to. Either
                 "field_name" or "field_id" must be provided.
             - "field_id" (str, optional): ID of the field where the combobox entry should belong to. Either "field_name"
                 or "field_id" must be provided.
+
         project_id : str, optional
             ID of the project where the combobox entries should be created. If not provided, the items will be created
             in the current project.
@@ -202,11 +227,14 @@ class ComboBoxEntry(BaseClassWithFieldData):
         ------
         ValueError
             If any of the following conditions are met:
+
             - "name" is missing in any of the dictionaries in "data_list".
             - Both "field_name" and "field_id" are missing in any of the dictionaries in "data_list".
             - The provided "field_name" does not match any existing field in the project.
 
         """
+
+        from furthrmind.collection.field import Field
 
         look_for_field_ids = False
         for data in data_list:
@@ -245,6 +273,3 @@ class ComboBoxEntry(BaseClassWithFieldData):
             data["id"] = id
 
         return new_data_list
-
-
-
