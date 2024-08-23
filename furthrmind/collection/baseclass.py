@@ -745,6 +745,9 @@ class BaseClassWithFiles(BaseClass):
 
             fl = FileLoader(self.fm.host, self.fm.api_key)
             file_id, file_name = fl.uploadFile(file_path, file_name)
+            if not file_name:
+                file_path = file_path.replace("\\", "/")
+                file_name = os.path.basename(file_path)
             file_data = {"id": file_id,
                          "name": file_name}
         else:
