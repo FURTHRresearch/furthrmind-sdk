@@ -18,6 +18,7 @@ class Field(BaseClass):
         Corresponding field type. One out of:
 
             - Numeric for numeric fields
+            - NumericRange for numeric range fields
             - Date for date fields
             - SingleLine for text fields
             - ComboBox for list fields
@@ -162,6 +163,7 @@ class Field(BaseClass):
             The field type of the field. Must be one of the following. Lower or uppercase is not considered,
                 i.e. Numeric or numeric is both valid:
                 - Numeric fields: numeric, numeric-field, numeric_field
+                - Numeric range fields: numericrange, numeric_range, numericrangefield, numeric-range-field, numeric_range_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
                 - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
@@ -196,6 +198,7 @@ class Field(BaseClass):
     def _check_field_type(cls, field_type: str):
         field_type_mapping = {
             "Numeric": ["numeric", "numeric-field", "numeric_field", "numericfield"],
+            "NumericRange": ["numericrange", "numeric_range", "numericrangefield", "numeric-range-field","numeric_range_field"],
             "Date": ["date", "date_field", "date-field", "datefield"],
             "SingleLine": ["singleline", "single-line", "single_line", "singlelinefield", "single-line-field",
                            "single_line_field", "text", "text-field", "text_field", "textfield"],
@@ -229,6 +232,7 @@ class Field(BaseClass):
                 The field type of the field. Must be one of the following. Lower or uppercase is not considered,
                 i.e. Numeric or numeric is both valid:
                 - Numeric fields: numeric, numeric-field, numeric_field
+                - Numeric range fields: numericrange, numeric_range, numericrangefield, numeric-range-field, numeric_range_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
                 - List fields: combobox, comboboxfield, list, list-field, list_field, listfield

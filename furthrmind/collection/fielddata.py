@@ -26,6 +26,7 @@ class FieldData(BaseClass):
         value of the fielddata. Type depends on the field type:
 
             - Numeric fields: float or None
+            - Numeric range fields: list of two floats or None
             - Date fields: python datetime object or None
             - Text field: string or None
             - List field: The value will be a dictionary with the name and the id to the selected option (comboboxentry).
@@ -85,6 +86,7 @@ class FieldData(BaseClass):
             The value to update the fielddata. The valid types for each field type are as follows:
 
             - numeric, numeric-field, numeric_field: float or int, or a string convertable to a float
+            - numeric range, numeric-range-field, numeric_range_field: List with two floats, ints, or strings convertable to a float
             - date, date_field, date-field, datefield: datetime, or date object, or unix timestamp or string with
                 iso format
             - singleline, singlelinefield, text, text-field, text_field, textfield: string
@@ -159,6 +161,21 @@ class FieldData(BaseClass):
             except:
                 raise TypeError("Not numeric")
             return value, field_type
+        elif field_type == "NumericRange":
+            if not isinstance(value, list):
+                raise TypeError("Not a list")
+            if not len(value) == 2:
+                raise TypeError("Not a list with two elements")
+            for pos, element in enumerate(value):
+                if element is None:
+                    continue
+                try:
+                    element = float(element)
+                    value[pos] = element
+                except:
+                    raise TypeError("Element is not convertible to float")
+            return value, field_type
+
         elif field_type == "Date":
             if isinstance(value, datetime):
                 return int(value.timestamp()), field_type
@@ -271,6 +288,7 @@ class FieldData(BaseClass):
             Type of the field. Must be one of the following:
 
                 - Numeric fields: numeric, numeric-field, numeric_field
+                - Numeric range fields: numericrange, numeric_range, numericrangefield, numeric-range-field, numeric_range_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
                 - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
@@ -284,6 +302,7 @@ class FieldData(BaseClass):
             Value of the field. The data type depends on the field_type parameter:
 
                 - Numeric fields: float or int, or a string convertible to a float
+                - Numeric range fields: List with two floats, ints, or strings convertable to a float
                 - Date fields: datetime, date object, unix timestamp, or string with iso format
                 - Text fields: string
                 - List fields: dictionary with id or name as key, or string with name, or string with id
@@ -343,6 +362,7 @@ class FieldData(BaseClass):
             - field_type: type of the field. Must be one of the following:
 
                 - Numeric fields: numeric, numeric-field, numeric_field
+                - Numeric range fields: numericrange, numeric_range, numericrangefield, numeric-range-field, numeric_range_field
                 - Date fields: date, date_field, date-field, datefield
                 - Text fields: singleline, singlelinefield, text, text-field, text_field, textfield
                 - List fields: combobox, comboboxfield, list, list-field, list_field, listfield
@@ -354,6 +374,7 @@ class FieldData(BaseClass):
             - value:
 
                 - Numeric fields: float or int, or a string convertible to a float
+                - Numeric range fields: List with two floats, ints, or strings convertable to a float
                 - Date fields: datetime, date object, unix timestamp, or string with iso format
                 - Text fields: string
                 - List fields: dictionary with id or name as key, or string with name, or string with id
