@@ -524,7 +524,7 @@ class BaseClassWithFieldData(BaseClass):
                 if item.id == fielddata_id:
                     fielddata = item
             if field_id:
-                if item.fieldid == field_id:
+                if item.field_id == field_id:
                     fielddata = item
             elif field_name:
                 if item.field_name.lower() == field_name.lower():
@@ -1246,3 +1246,139 @@ class BaseClassWithLinking(BaseClass):
         self._post(data=data)
         self.linked_researchitems = new_linked_items
         return self.id
+
+
+class BaseClassWithNameUpdate(BaseClass):
+    id = None
+    name = ""
+
+    def __init__(self, id=None, data=None):
+        super().__init__(id, data)
+
+    def update_name(self, name: str) -> str:
+        """
+        The method updates the name of the current item.
+
+        Parameters
+        ----------
+        name : str
+            New name
+
+
+        Returns
+        -------
+        str
+            The id of the item.
+        """
+
+        data = {"id": self.id, "name": name}
+        id = self._post(data)
+        self.name = name
+        return id
+
+    @classmethod
+    def update_many_names(cls, data_list: [List[Dict[str, str]]]) -> List[str]:
+        """
+        Method to update the name of many items.
+
+        Parameters
+        ----------
+        data_list : List[Dict[str, str]]
+            A list of dictionaries representing the data to update the name of many items.
+            Each dictionary should contain the following keys:
+
+                - id : str
+                    The id of the item that should be updated.
+                - name : str
+                    The new name of the item.
+
+
+        Returns
+        -------
+        Self
+            The updated object.
+        """
+
+        assert isinstance(data_list, (tuple, list)), "data_list must be a list or tuple"
+
+        new_data_list = []
+        for data in data_list:
+            assert isinstance(data, dict), "Each entry in the data list must be a dictionary"
+            assert "name" in data and "id" in data, "Each entry must have a key 'name' and a key 'id'"
+            new_data_list.append({"id": data["id"], "name": data["name"]})
+
+
+        id_list = cls._post(new_data_list, force_list=True)
+
+        return id_list
+
+class BaseClassWithProtected(BaseClass):
+    id = None
+    protected = False
+
+    def __init__(self, id=None, data=None):
+        super().__init__(id, data)
+
+    def update_protected(self, protected: bool) -> str:
+        """
+        This method updates the protection state of the current item.
+
+        Parameters
+        ----------
+        protected : bool
+            True or False, whether the item should be protected or not.
+
+        Returns
+        -------
+        str
+            The id of the item.
+        """
+        if not self._fetched:
+            self._get()
+
+        assert isinstance(protected, bool), "protected must be a boolean"
+
+        if self.protected == protected:
+            return self.id
+
+        data = {"id": self.id, "protected": protected}
+        id = self._post(data)
+        self.protected = protected
+        return id
+
+    @classmethod
+    def update_many_protected(cls, data_list: [List[Dict[str, str]]]) -> List[str]:
+        """
+        With this method the protection state of many items are updated.
+
+        Parameters
+        ----------
+        data_list : List[Dict[str, str]]
+            A list of dictionaries representing the data for updating the items.
+            Each dictionary should contain the following keys:
+
+                - id : str
+                    The id of the item that should be updated.
+                - protected : bool
+                    True or False, whether the item should be protected or not.
+
+
+        Returns
+        -------
+        Self
+            The updated object.
+        """
+
+        assert isinstance(data_list, (tuple, list)), "data_list must be a list or tuple"
+
+        new_data_list = []
+        for data in data_list:
+            assert isinstance(data, dict), "Each entry in the data list must be a dictionary"
+            assert "protected" in data and "id" in data, "Each entry must have a key 'name' and a key 'id'"
+            assert isinstance(data["protected"], bool), "protected must be a boolean"
+            new_data_list.append({"id": data["id"], "protected": data["protected"]})
+
+
+        id_list = cls._post(new_data_list, force_list=True)
+
+        return id_list

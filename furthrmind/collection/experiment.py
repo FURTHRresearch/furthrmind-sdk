@@ -6,7 +6,7 @@ from furthrmind.collection.baseclass import (BaseClassWithFieldData,
                                              BaseClassWithFiles,
                                              BaseClassWithGroup,
                                              BaseClassWithLinking,
-                                             BaseClass
+                                             BaseClass, BaseClassWithNameUpdate, BaseClassWithProtected
                                              )
 
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
-                 BaseClassWithGroup, BaseClassWithLinking):
+                 BaseClassWithGroup, BaseClassWithLinking, BaseClassWithNameUpdate, BaseClassWithProtected):
     """
     Attributes
     ----------
@@ -24,6 +24,8 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
         name of the experiment
     shortid : str
         shortid of the experiment
+    protected: bool
+        Indicates, if the experiment is protected in frontend. Does not protect the item for changes made by the api
     files : List[File]
         List of files belonging to this experiment. See [File](file.md) for more information.
     fielddata : List[FieldData]
@@ -62,6 +64,7 @@ class Experiment(BaseClassWithFieldData, BaseClassWithFiles,
     id = ""
     name = ""
     neglect = False
+    protected = False
     shortid = ""
     files: List["File"] = []
     fielddata: List["FieldData"] = []

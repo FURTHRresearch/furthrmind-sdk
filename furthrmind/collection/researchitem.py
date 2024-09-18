@@ -1,14 +1,15 @@
 from ..utils import furthr_wrap
 from furthrmind.collection.baseclass import (BaseClassWithFieldData, BaseClassWithFiles,
                                              BaseClassWithGroup, BaseClass,
-                                             BaseClassWithLinking)
+                                             BaseClassWithLinking, BaseClassWithNameUpdate, BaseClassWithProtected)
 from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 
 if TYPE_CHECKING:
     from furthrmind.collection import File, FieldData, Sample, Group, Category, DataTable
 
-class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClassWithLinking, BaseClass ):
+class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClassWithLinking,
+                   BaseClassWithNameUpdate, BaseClassWithProtected, BaseClass ):
     """
     Attributes
     ----------
@@ -18,6 +19,8 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
         name of the researchitem
     shortid : str
         shortid of the researchitem
+    protected: bool
+        Indicates, if the researchitem is protected in frontend. Does not protect the item for changes made by the api
     files : List[File]
         List of files belonging to this researchitem. See [File](file.md) for more information.
     fielddata : List[FieldData]
@@ -58,6 +61,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
     id = ""
     name = ""
     neglect = False
+    protected = False
     shortid = ""
     files: List["File"] = []
     fielddata: List["FieldData"] = []

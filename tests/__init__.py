@@ -237,6 +237,37 @@ def test_add_file_by_id(fm: Furthrmind):
     experiment.add_file(file_id=file_id)
     print(1)
 
+def test_name_update():
+    exp_list = Experiment.get_all()
+    exp = exp_list[0]
+    exp_list_new = exp_list[1:3]
+    print(exp_list[0].name)
+    exp.update_name("New name 1")
+    data = []
+    x = 2
+    for exp in exp_list_new:
+        data.append({"id": exp.id, "name": f"New name {x}"})
+        x += 1
+    Experiment.update_many_names(data)
+
+def test_protect_update():
+    exp_list = Experiment.get_all()
+    exp = exp_list[0]
+    exp_list_new = exp_list[1:3]
+    print(exp_list[0].name)
+    exp.update_protected(False)
+    data = []
+    x = 2
+    for exp in exp_list_new:
+        data.append({"id": exp.id, "protected": False})
+        x += 1
+    Experiment.update_many_protected(data)
+
+def test_protect_update_researchitem():
+    ri = ResearchItem.get(shortid="rtm-5tcxw3")
+    ri.update_protected(True)
+
+
 if __name__ == "__main__":
     # fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test3")
     fm = Furthrmind("http://127.0.0.1:5000", "LW8UDU23IGZ800O6OJYWS8H7IZ0C0T66", project_name="test")
@@ -278,6 +309,9 @@ if __name__ == "__main__":
     # create_group_and_subgroup()
     # get_new_fetched()
     # test_combo()
-    test_add_file_by_id(fm)
+    # test_add_file_by_id(fm)
+    # test_name_update()
+    # test_protect_update()
+    test_protect_update_researchitem()
     print(1)
 

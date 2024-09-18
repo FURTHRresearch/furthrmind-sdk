@@ -4,7 +4,7 @@ from typing_extensions import Self, Dict, List, TYPE_CHECKING
 
 from furthrmind.collection.baseclass import (BaseClassWithFieldData, BaseClassWithFiles,
                                              BaseClassWithGroup, BaseClass,
-                                             BaseClassWithLinking)
+                                             BaseClassWithLinking, BaseClassWithNameUpdate, BaseClassWithProtected)
 from furthrmind.utils import instance_overload
 
 if TYPE_CHECKING:
@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class Sample(BaseClassWithFieldData,
              BaseClassWithFiles, BaseClassWithGroup,
-             BaseClassWithLinking, BaseClass):
+             BaseClassWithLinking, BaseClassWithNameUpdate, BaseClassWithProtected, BaseClass):
     """
     Attributes
     ----------
@@ -23,6 +23,8 @@ class Sample(BaseClassWithFieldData,
         name of the sample
     shortid : str
         shortid of the sample
+    protected: bool
+        Indicates, if the sample is protected in frontend. Does not protect the item for changes made by the api
     files : List[File]
         List of files belonging to this sample. See [File](file.md) for more information.
     fielddata : List[FieldData]
@@ -61,6 +63,7 @@ class Sample(BaseClassWithFieldData,
     id = ""
     name = ""
     neglect = False
+    protected = False
     shortid = ""
     files: List["File"] = []
     fielddata: List["FieldData"] = []
