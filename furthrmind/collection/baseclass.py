@@ -587,7 +587,7 @@ class BaseClassWithFieldData(BaseClass):
         fielddata = FieldData.create(field_name, field_type, field_id, value, unit)
 
         new_field_data_list = list(self.fielddata)
-        if position:
+        if position is not None:
             assert type(position) is int, "Position must be an integer"
             new_field_data_list.insert(position, fielddata)
         else:
@@ -693,13 +693,13 @@ class BaseClassWithFieldData(BaseClass):
         for fielddata in self.fielddata:
             found = False
             if field_id:
-                found = True
                 if fielddata.field_id == field_id:
                     fielddata_to_be_removed = fielddata
+                    found = True
             elif field_name:
-                found = True
                 if fielddata.field_name == field_name:
                     fielddata_to_be_removed = fielddata
+                    found = True
             if not found:
                 new_fielddata_list.append(fielddata)
 
