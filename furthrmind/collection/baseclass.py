@@ -536,7 +536,7 @@ class BaseClassWithFieldData(BaseClass):
         return fielddata.set_calculation_result(value)
 
     def add_field(self, field_name: str = "", field_type: str = "", field_id: str = "",
-                  value: Any = None, unit: Union[Dict, str] = None) -> "FieldData":
+                  value: Any = None, unit: Union[Dict, str] = None, position: int = None) -> "FieldData":
         """
         Method to add a field to the current item
 
@@ -570,6 +570,9 @@ class BaseClassWithFieldData(BaseClass):
         unit : Union[Dict, str]
             Dictionary with id or name, or string representing the name, or string representing the id.
 
+        position: int
+            The position where the field should be added in the card. Starting at "0". Optionally.
+
         Returns
         -------
         FieldData
@@ -584,7 +587,12 @@ class BaseClassWithFieldData(BaseClass):
         fielddata = FieldData.create(field_name, field_type, field_id, value, unit)
 
         new_field_data_list = list(self.fielddata)
-        new_field_data_list.append(fielddata)
+        if position:
+            assert type(position) is int, "Position must be an integer"
+            new_field_data_list.insert(position, fielddata)
+        else:
+            new_field_data_list.append(fielddata)
+
         self.fielddata = new_field_data_list
 
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
@@ -623,6 +631,7 @@ class BaseClassWithFieldData(BaseClass):
                 - CheckBox: Boolean.
 
             - unit: Dictionary with ID or name as key, or string with name, or string with ID.
+            - position: int, The position where the field should be added in the card. Starting at "0". Optionally.
 
         Returns
         -------
@@ -639,7 +648,13 @@ class BaseClassWithFieldData(BaseClass):
         fielddata_list = FieldData.create_many(data_list)
 
         new_field_data_list = list(self.fielddata)
-        new_field_data_list.extend(fielddata_list)
+        for fielddata, data in zip(fielddata_list, data_list):
+            if "position" in data:
+                assert type(data["position"]) is int, "Position must be an integer"
+                new_field_data_list.insert(data["position"], fielddata)
+            else:
+                new_field_data_list.append(fielddata)
+
         self.fielddata = new_field_data_list
 
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
