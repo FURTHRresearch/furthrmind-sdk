@@ -20,7 +20,7 @@ class FieldData(BaseClass):
         field name of the corresponding field
     field_id : List[File]
         field id of the corresponding field
-    field_type : List[FieldData]
+    field_type : str
         field type of the corresponding field
     value : Any
         value of the fielddata. Type depends on the field type:
