@@ -64,6 +64,12 @@ class FieldData(BaseClass):
         instance_methods = ["_check_value_type"]
         instance_overload(self, instance_methods)
 
+    def _update_attributes(self, data):
+        super()._update_attributes(data)
+        if self.field_type == "Date":
+            if self.value:
+                self.value = datetime.fromtimestamp(self.value)
+
     @classmethod
     def _post_url(cls, project_id=None):
         project_url = cls.fm.get_project_url(project_id)

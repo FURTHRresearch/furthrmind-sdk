@@ -1,6 +1,7 @@
+import datetime
 import math
 
-import numpy as np
+import iteration_utilities
 import pandas
 from typing_extensions import Self, List, Dict, Any
 from inspect import isclass
@@ -36,6 +37,19 @@ class Column(BaseClass):
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
+
+    def _update_attributes(self, data):
+        super()._update_attributes(data)
+
+        def convert_date(value):
+            if not value:
+                return value
+            value = datetime.datetime.fromtimestamp(value)
+            return value
+
+        if self.type == "Date":
+            if self.values:
+                self.values = list(map(convert_date, self.values))
 
     @classmethod
     def get(cls, id: str = "", project_id: str = "") -> Self:
@@ -124,39 +138,72 @@ class Column(BaseClass):
 
     @classmethod
     def _type_check(cls, column_type, data):
-        if not column_type in ["Text", "Numeric"]:
-            raise ValueError("Column type must be Text/Numeric")
+        column_type = column_type.capitalize()
+        if not column_type in ["Text", "Numeric", "Date", "Bool"]:
+            raise ValueError("Column type must be Text/Numeric/Date/Bool.")
         if isinstance(data, pandas.Series):
             data = data.tolist()
 
-        new_data = []
-        for d in data:
-            try:
-                if math.isnan(d):
-                    new_data.append(None)
-                else:
-                    new_data.append(d)
-            except:
-                new_data.append(d)  # data = [d if not math.isnan(d) else None for d in data]
-        data = new_data
+        data = list(map(Column._convert_nan, data))
+
         if column_type == "Text":
-            if all([isinstance(d, (str, type(None))) for d in data]):
+            if iteration_utilities.all_isinstance(data, (str, type(None))):
                 return data
             return [str(d) for d in data]
 
         elif column_type == "Numeric":
-            if all([isinstance(d, (int, float, type(None))) for d in data]):
+            if iteration_utilities.all_isinstance(data, (int, float, type(None))):
                 return data
-            new_data = []
-            for d in data:
-                if d is None:
-                    new_data.append(d)
-                try:
-                    new_data.append(float(d))
-                except:
-                    raise ValueError(
-                        "All column values must be a float, int or a string that can be converted to a float")
-            return new_data
+            data = list(map(Column._convert_float, data))
+            return data
+        
+        elif column_type == "Date":
+            if iteration_utilities.all_isinstance(data, (int, float, type(None))):
+                return data
+            data = list(map(Column._convert_date, data))
+            return data
+
+    @staticmethod
+    def _convert_nan(value):
+        if value is None:
+            return None
+        try:
+            if math.isnan(value):
+                return None
+            else:
+                return value
+        except:
+            return value
+
+    @staticmethod
+    def _convert_float(value):
+        if value is None:
+            return value
+        try:
+            value = float(value)
+            return value
+        except:
+            raise ValueError(
+                "All column values must be a float, int or a string that can be converted to a float")
+
+    @staticmethod
+    def _convert_date(value):
+        if value is None:
+            return value
+        if isinstance(value, datetime.datetime):
+            return int(value.timestamp())
+        elif isinstance(value, datetime.date):
+            value = datetime.datetime.combine(value, datetime.datetime.min.time())
+            return int(value.timestamp())
+        elif isinstance(value, str):
+            try:
+                value = datetime.datetime.fromisoformat(value)
+                return int(value.timestamp())
+            except ValueError:
+                raise TypeError("No iso time format")
+        elif isinstance(value, (int, float)):
+            return value
+        raise ValueError("All column values must be a date, datetime, string, or int")
 
     @classmethod
     @BaseClass._create_instances_decorator(_fetched=False)
@@ -187,6 +234,7 @@ class Column(BaseClass):
             Instance of column class
 
         """
+        type = type.capitalize()
         data = cls._type_check(type, data)
         unit = FieldData._check_unit(unit)
         data_dict = {"name": name, "type": type, "values": data, "unit": unit}
@@ -223,7 +271,8 @@ class Column(BaseClass):
 
         new_data_list = []
         for item in data_list:
-            type = item.get("type")
+            type:str = item.get("type", "")
+            type = type.capitalize()
             unit = item.get("unit")
             name = item.get("name")
             data = item.get("data")
