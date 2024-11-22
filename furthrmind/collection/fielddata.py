@@ -412,8 +412,7 @@ class FieldData(BaseClass):
             _data = {}
             if field_id:
                 _data.update({"fieldid": field_id})
-                field = Field(id=field_id)
-                field.get()
+                field: Field = Field.get(id=field_id)
                 field_type = field.type
 
             value, field_type = FieldData._check_value_type(value, field_type)
@@ -432,6 +431,6 @@ class FieldData(BaseClass):
             post_data_list.append(_data)
 
         id_list = FieldData._post(post_data_list, project_id, force_list=True)
-        for data, id in zip(data_list, id_list):
+        for data, id in zip(post_data_list, id_list):
             data["id"] = id
-        return data_list
+        return post_data_list
