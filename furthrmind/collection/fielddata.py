@@ -184,6 +184,9 @@ class FieldData(BaseClass):
 
         elif field_type == "Date":
             if isinstance(value, datetime):
+                if value.tzinfo is None:
+                    timezone = value.astimezone().tzinfo
+                    value = value.replace(tzinfo=timezone)
                 return int(value.timestamp()), field_type
             if isinstance(value, date):
                 value = datetime.combine(value, datetime.min.time())

@@ -2,6 +2,7 @@ import requests
 from furthrmind.collection.project import Project
 import os
 from furthrmind import collection
+from typing_extensions import List, Dict
 
 
 class Furthrmind:
@@ -19,7 +20,9 @@ class Furthrmind:
     Project = collection.Project
     Category = collection.Category
 
-    def __init__(self, host, api_key=None, api_key_file=None, project_id=None, project_name=None):
+    def __init__(
+        self, host, api_key=None, api_key_file=None, project_id=None, project_name=None
+    ):
 
         if not host.startswith("http"):
             host = f"https://{host}"
@@ -28,7 +31,9 @@ class Furthrmind:
         self.session = requests.session()
         self.project_url = None
 
-        assert api_key is not None or api_key_file is not None, "Either api_key or api_key_file must be specified"
+        assert (
+            api_key is not None or api_key_file is not None
+        ), "Either api_key or api_key_file must be specified"
 
         if api_key_file:
             assert os.path.isfile(api_key_file), "Api key file is not a valid file"
@@ -42,7 +47,6 @@ class Furthrmind:
         self._write_fm_to_base_class()
 
         self.set_project(project_id, project_name)
-
 
     def set_project(self, id=None, name=None):
         if not id and not name:
@@ -71,6 +75,7 @@ class Furthrmind:
 
     def _write_fm_to_base_class(self):
         from furthrmind.collection.baseclass import BaseClass
+
         BaseClass.fm = self
 
     def send_email(self, mail_to: str, mail_subject: str, mail_body: str):
@@ -82,5 +87,38 @@ class Furthrmind:
         }
         self.session.post(url, json=data)
 
+    def run_custom_script(
+        self, script: str, files: List[Dict] = None, config: dict = None
+    ):
+        """
+        Run a custom script on the server webdatacalc server.
+        The script must be a valid python script.
+        The files is a list of dictionaries with the following keys:
+        - name: The name of the file, including the extension
+        - content: The content of the file
+        - format: 'text' or 'bytes'
+        - fileId: The id of the file, if the file is already uploaded to the server
+        The config is a dictionary with additional configuration for the script.:
+        """
+        url = f"{self.base_url}/run-custom-script"
 
+        if not files:
+            files = []
+        for f in files:
+            if f.get("fileId"):
+                continue
+            assert "name" in f, "Name not specified"
+            assert "content" in f, "Content not specified"
+            assert f["format"] in ["text", "bytes"], "Invalid format"
 
+        if not config:
+            config = {}
+        if not config.get("X-API-KEY"):
+            config.update({"X-API-KEY": self.api_key})
+        data = {"script": script, "files": files, "config": config}
+        response = self.session.post(url, json=data)
+        if response.status_code != 200:
+            message = response.text
+            raise ValueError(f"Server returned an error: {message}")
+        return response.json()
+        

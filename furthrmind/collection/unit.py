@@ -102,7 +102,7 @@ class Unit(BaseClass):
         return super()._get_many(ids, project_id=project_id)
 
     @classmethod
-    def _get_all(cls, project_id=None) -> List[Self]:
+    def get_all(cls, project_id=None) -> List[Self]:
         """
         Method to get all units belonging to one project
 

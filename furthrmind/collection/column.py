@@ -191,9 +191,17 @@ class Column(BaseClass):
         if value is None:
             return value
         if isinstance(value, datetime.datetime):
+            if isinstance(value, pandas.Timestamp):
+                value = value.to_pydatetime()
+            if value.tzinfo is None:
+                timezone = value.astimezone().tzinfo
+                value = value.replace(tzinfo=timezone)
             return int(value.timestamp())
         elif isinstance(value, datetime.date):
             value = datetime.datetime.combine(value, datetime.datetime.min.time())
+            if value.tzinfo is None:
+                timezone = value.astimezone().tzinfo
+                value = value.replace(tzinfo=timezone)
             return int(value.timestamp())
         elif isinstance(value, str):
             try:
@@ -275,7 +283,7 @@ class Column(BaseClass):
             type = type.capitalize()
             unit = item.get("unit")
             name = item.get("name")
-            data = item.get("data")
+            data = item.get("value")
             data = cls._type_check(type, data)
             unit = FieldData._check_unit(unit)
             data_dict = {"name": name, "type": type, "values": data, "unit": unit}
