@@ -1,4 +1,5 @@
 import datetime
+from datetime import timezone
 import math
 
 import iteration_utilities
@@ -48,7 +49,7 @@ class Column(BaseClass):
             if not value:
                 return value
             if isinstance(value, (int, float)):
-                value = datetime.datetime.fromtimestamp(value)
+                value = datetime.datetime.fromtimestamp(value, tz=timezone.utc)
             if isinstance(value, str):
                 value = datetime.datetime.fromisoformat(value)
             return value
