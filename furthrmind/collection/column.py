@@ -289,7 +289,7 @@ class Column(BaseClass):
             unit = item.get("unit")
             name = item.get("name")
             data = item.get("value")
-            if not data:
+            if data is None:
                 data = item.get("data")
             data = cls._type_check(type, data)
             unit = FieldData._check_unit(unit)
