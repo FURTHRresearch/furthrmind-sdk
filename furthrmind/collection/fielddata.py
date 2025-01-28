@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timezone
 
 from bson import ObjectId
 from typing_extensions import List, TYPE_CHECKING, Dict, Tuple, Union, Self
@@ -68,7 +68,10 @@ class FieldData(BaseClass):
         super()._update_attributes(data)
         if self.field_type == "Date":
             if self.value:
-                self.value = datetime.fromtimestamp(self.value)
+                if isinstance(self.value, (int, float)):
+                    self.value = datetime.fromtimestamp(self.value, tz=timezone.utc)
+                if isinstance(self.value, str):
+                    self.value = datetime.fromisoformat(self.value)
 
     @classmethod
     def _post_url(cls, project_id=None):
@@ -185,11 +188,12 @@ class FieldData(BaseClass):
         elif field_type == "Date":
             if isinstance(value, datetime):
                 if value.tzinfo is None:
-                    timezone = value.astimezone().tzinfo
-                    value = value.replace(tzinfo=timezone)
+                    return value.isoformat(), field_type
                 return int(value.timestamp()), field_type
             if isinstance(value, date):
                 value = datetime.combine(value, datetime.min.time())
+                if value.tzinfo is None:
+                    return value.isoformat(), field_type
                 return int(value.timestamp()), field_type
             if isinstance(value, str):
                 try:
@@ -278,7 +282,7 @@ class FieldData(BaseClass):
         elif isinstance(unit, str):
             try:
                 unit = ObjectId(unit)
-                unit = {"id": unit}
+                unit = {"id": str(unit)}
             except:
                 unit = {"name": unit}
             return unit

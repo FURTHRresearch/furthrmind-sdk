@@ -3,10 +3,12 @@ import math
 
 import iteration_utilities
 import pandas
-from typing_extensions import Self, List, Dict, Any
+from typing_extensions import Self, List, Dict, Any, TYPE_CHECKING
 from inspect import isclass
 from furthrmind.collection.baseclass import BaseClass
 from furthrmind.collection.fielddata import FieldData
+if TYPE_CHECKING:
+    from furthrmind.collection import Unit
 
 
 class Column(BaseClass):
@@ -31,9 +33,10 @@ class Column(BaseClass):
     id: str = ""
     name: str = ""
     type: str = ""
+    unit: "Unit" = None
     values: List[Any] = []
 
-    _attr_definition = {"columns": {"class": "Column"}}
+    _attr_definition = {"unit": {"class": "Unit"}}
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
@@ -44,7 +47,10 @@ class Column(BaseClass):
         def convert_date(value):
             if not value:
                 return value
-            value = datetime.datetime.fromtimestamp(value)
+            if isinstance(value, (int, float)):
+                value = datetime.datetime.fromtimestamp(value)
+            if isinstance(value, str):
+                value = datetime.datetime.fromisoformat(value)
             return value
 
         if self.type == "Date":
@@ -194,19 +200,17 @@ class Column(BaseClass):
             if isinstance(value, pandas.Timestamp):
                 value = value.to_pydatetime()
             if value.tzinfo is None:
-                timezone = value.astimezone().tzinfo
-                value = value.replace(tzinfo=timezone)
+                return value.isoformat()
             return int(value.timestamp())
         elif isinstance(value, datetime.date):
             value = datetime.datetime.combine(value, datetime.datetime.min.time())
             if value.tzinfo is None:
-                timezone = value.astimezone().tzinfo
-                value = value.replace(tzinfo=timezone)
+                return value.isoformat()
             return int(value.timestamp())
         elif isinstance(value, str):
             try:
-                value = datetime.datetime.fromisoformat(value)
-                return int(value.timestamp())
+                datetime.datetime.fromisoformat(value)
+                return value
             except ValueError:
                 raise TypeError("No iso time format")
         elif isinstance(value, (int, float)):
@@ -284,6 +288,8 @@ class Column(BaseClass):
             unit = item.get("unit")
             name = item.get("name")
             data = item.get("value")
+            if not data:
+                data = item.get("data")
             data = cls._type_check(type, data)
             unit = FieldData._check_unit(unit)
             data_dict = {"name": name, "type": type, "values": data, "unit": unit}

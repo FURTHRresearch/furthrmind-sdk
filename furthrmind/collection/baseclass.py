@@ -810,12 +810,12 @@ class BaseClassWithFiles(BaseClass):
         for file in self.files:
             found = False
             if file_id:
-                found = True
                 if file.id == file_id:
+                    found = True
                     file_to_be_removed = file
             elif file_name:
-                found = True
                 if file.name == file_name:
+                    found = True
                     file_to_be_removed = file
             if not found:
                 new_file_list.append(file)

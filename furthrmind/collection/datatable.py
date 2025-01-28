@@ -1,7 +1,7 @@
 from inspect import isclass
 
 from pandas import DataFrame
-from typing_extensions import Self, List, TYPE_CHECKING
+from typing_extensions import Self, List, TYPE_CHECKING, Union, Dict
 
 from furthrmind.collection.baseclass import BaseClass
 
@@ -90,7 +90,7 @@ class DataTable(BaseClass):
 
         if isclass(cls):
             assert id, "id must be specified"
-        return cls.get(id, project_id=project_id)
+        return cls._get(id, project_id=project_id)
 
     # noinspection PyMethodOverriding
     @classmethod
@@ -198,10 +198,25 @@ class DataTable(BaseClass):
         """
 
         columns = self._get_columns(column_id_list, column_name_list)
+        new_column_mapping = {c.id: c for c in columns}
+        new_column_list = []
+        for column in self.columns:
+            if column.id in new_column_mapping:
+                new_column_list.append(new_column_mapping[column.id])
+            else:
+                new_column_list.append(column)
+        self.columns = new_column_list
+        
         data_dict = {}
+        max_length = 0
         for c in columns:
             data_dict[c.name] = c.values
-        df = DataFrame.from_dict(data_dict)
+            if len(c.values) > max_length:
+                max_length = len(c.values)
+        for key in data_dict:
+            if len(data_dict[key]) < max_length:
+                data_dict[key] = data_dict[key] + [None] * (max_length - len(data_dict[key]))
+        df = DataFrame.from_dict(data_dict, orient="columns")
         return df
 
     def _get_columns(self, column_id_list: List[str] = None, column_name_list: List[str] = None) -> List["Column"]:
@@ -286,3 +301,48 @@ class DataTable(BaseClass):
         id = cls._post(data, project_id)
         data["id"] = id
         return data
+
+    def add_column(self, name: str, type: str, data: List, unit: Union[Dict, str] = None, 
+                   pos: int = None, project_id: str = "") -> "DataTable":
+        """
+        Parameters
+        ----------
+        name: str
+            Name of the column.
+        type: str
+            Type of the column, Either "Text" or "Numeric". Data must fit to type, for Text all data will be converted
+            to string and for Numeric all data is converted to float (if possible)
+        data: List
+            List of column values, must fit to column_type, can also be a pandas data series
+        unit: Union[Dict, str] 
+            Dict with id or name, or name as string, or id as string
+        project_id: str
+            Optionally to create an item in another project as the furthrmind sdk was initiated with
+
+        Returns
+        -------
+        Self
+            Instance of datatable class.
+
+        Raises
+        ------
+        AssertionError
+            If name is not provided.
+            If experiment_id nor sample_id nor researchitem_id is not provided.
+        """
+        
+        column = self.fm.Column.create(name, type, data, unit, project_id=project_id)
+        new_column_list = [{"id": c.id} for c in self.columns]
+        if pos:
+            new_column_list.insert(pos, {"id": column.id})
+        else:
+            new_column_list.append({"id": column.id})
+            
+        data = {"id": self.id, "columns": new_column_list}
+        self._post(data, project_id)
+        
+        if pos:
+            self.columns.insert(pos, column)
+        else:
+            self.columns.append(column)
+        return self
