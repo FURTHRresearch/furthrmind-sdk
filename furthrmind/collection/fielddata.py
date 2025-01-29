@@ -69,7 +69,7 @@ class FieldData(BaseClass):
         if self.field_type == "Date":
             if self.value:
                 if isinstance(self.value, (int, float)):
-                    self.value = datetime.fromtimestamp(self.value, tz=timezone.utc)
+                    self.value = datetime.fromtimestamp(self.value)
                 if isinstance(self.value, str):
                     self.value = datetime.fromisoformat(self.value)
 

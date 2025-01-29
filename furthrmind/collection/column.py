@@ -49,7 +49,7 @@ class Column(BaseClass):
             if not value:
                 return value
             if isinstance(value, (int, float)):
-                value = datetime.datetime.fromtimestamp(value, tz=timezone.utc)
+                value = datetime.datetime.fromtimestamp(value)
             if isinstance(value, str):
                 value = datetime.datetime.fromisoformat(value)
             return value
