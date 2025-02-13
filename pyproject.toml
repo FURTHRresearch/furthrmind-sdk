@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "furthrmind"
-version = "0.1.17"
+version = "0.2.0"
 description = "Official python wrapper for the FURTHRmind rest api."
 authors = ["Daniel Menne"]
 license = "GNU GENERAL PUBLIC LICENSE Version 3"

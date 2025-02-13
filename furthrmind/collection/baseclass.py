@@ -1031,7 +1031,7 @@ class BaseClassWithGroup(BaseClass):
         group_name: str = None,
         fielddata: bool = True,
         files: bool = True,
-        datatable: bool = True,
+        datatables: bool = True,
         project_id: str = None,
     ) -> Self:
         """_summary_
@@ -1092,7 +1092,7 @@ class BaseClassWithGroup(BaseClass):
             # includeResearchItems: true,
             # includeSubgroups: true,
             "includeFields": fielddata,
-            "includeRawData": datatable,
+            "includeRawData": datatables,
             "includeFiles": files}
         
         result = cls._post(data, endpoint="/copy-item")
