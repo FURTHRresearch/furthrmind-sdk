@@ -59,6 +59,7 @@ def test_create_column_date(fm):
     assert len(column.id) == 24
     now = now.replace(microsecond=0)
     for v in column.values:
+        v = v.replace(microsecond=0)
         assert v == now
 
     id = column.id
@@ -86,7 +87,7 @@ def test_type_check(fm):
     now = datetime.datetime.now()
     data = [now, None]
     data = fm.Column._type_check(_type, data)
-    assert data == [int(now.timestamp()), None]
+    assert data == [now.isoformat(), None]
 
     _type = "numeric"
     data = {1: [1, 2]}

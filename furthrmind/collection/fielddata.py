@@ -1,5 +1,5 @@
 from datetime import datetime, date, timezone
-
+from inspect import isclass
 from bson import ObjectId
 from typing_extensions import List, TYPE_CHECKING, Dict, Tuple, Union, Self
 
@@ -80,12 +80,32 @@ class FieldData(BaseClass):
         return url
 
     @classmethod
-    def get(cls, id=None):
-        raise TypeError("Not implemented")
+    def get(cls, id=None, project_id: str = ""):
+        if isclass(cls):
+            assert id, "id must be specified"
+
+        return cls._get(id, project_id=project_id)
 
     @classmethod
-    def _get_all(cls, project_id=None):
-        raise TypeError("Not implemented")
+    def get_all(cls, project_id=None):
+        return cls._get_all(project_id=project_id)
+    
+    def _get_url_instance(self, project_id=None):
+        project_url = FieldData.fm.get_project_url(project_id)
+        url = f"{project_url}/fielddata/{self.id}"
+        return url
+
+    @classmethod
+    def _get_url_class(cls, id, project_id=None):
+        project_url = cls.fm.get_project_url(project_id)
+        url = f"{project_url}/fielddata/{id}"
+        return url
+    
+    @classmethod
+    def _get_all_url(cls, project_id: str = None) -> str:
+        project_url = cls.fm.get_project_url(project_id)
+        url = f"{project_url}/fielddata"
+        return url
 
     def update_value(self, value) -> str:
         """
@@ -113,6 +133,11 @@ class FieldData(BaseClass):
         value, field_type = self.__class__._check_value_type(value, self.field_type)
         data = {"id": self.id,
                 "value": value}
+        if self.field_type == "Date":
+            if isinstance(value, str):
+                value = datetime.fromisoformat(value)
+            elif isinstance(value, (int, float)):
+                value = datetime.fromtimestamp(value)
         id = self._post(data)
         self.value = value
         return id
@@ -198,7 +223,7 @@ class FieldData(BaseClass):
             if isinstance(value, str):
                 try:
                     value = datetime.fromisoformat(value)
-                    return int(value.timestamp()), field_type
+                    return value, field_type
                 except ValueError:
                     raise TypeError("No iso time format")
             if isinstance(value, (int, float)):
@@ -419,8 +444,9 @@ class FieldData(BaseClass):
             _data = {}
             if field_id:
                 _data.update({"fieldid": field_id})
-                field: Field = Field.get(id=field_id)
-                field_type = field.type
+                if not field_type:
+                    field: Field = Field.get(id=field_id)
+                    field_type = field.type
 
             value, field_type = FieldData._check_value_type(value, field_type)
             _data["value"] = value

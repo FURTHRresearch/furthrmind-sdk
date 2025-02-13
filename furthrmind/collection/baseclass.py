@@ -9,6 +9,7 @@ from urllib import parse
 if TYPE_CHECKING:
     from furthrmind.collection import File, FieldData, Experiment, Sample, ResearchItem
 
+
 class BaseClass:
     _data = {}
     _fetched = False
@@ -30,8 +31,18 @@ class BaseClass:
             raise ValueError("No id provided")
 
         # create instance methods for certain class_methods
-        instance_methods = ["get", "get_all", "get_many", "post", "delete",
-                            "_get", "_get_all", "_get_many", "_post", "_delete"]
+        instance_methods = [
+            "get",
+            "get_all",
+            "get_many",
+            "post",
+            "delete",
+            "_get",
+            "_get_all",
+            "_get_many",
+            "_post",
+            "_delete",
+        ]
         instance_overload(self, instance_methods)
 
     def __getitem__(self, item):
@@ -47,7 +58,6 @@ class BaseClass:
         if hasattr(self, "name"):
             name = self.name
         return f"{class_name} id: {id}, name: {name}"
-
 
     def _get_url_instance(self, project_id=None):
         return ""
@@ -76,6 +86,7 @@ class BaseClass:
                 return self
 
             return wrapper
+
         return decorator
 
     @staticmethod
@@ -105,10 +116,12 @@ class BaseClass:
                     return item
 
             return wrapper
+
         return decorator
 
     def _update_attributes(self, data):
         from furthrmind.collection import get_collection_class
+
         self._data = data
 
         def _create_instance(classname, _data):
@@ -132,11 +145,14 @@ class BaseClass:
                         if "nested_dict" in attr_definition:
                             item = {}
                             for item_key in data[key]:
-                                item[item_key] = _create_instance(attr_definition["class"],
-                                                                  data[key][item_key])
+                                item[item_key] = _create_instance(
+                                    attr_definition["class"], data[key][item_key]
+                                )
                         else:
                             if data[key]:
-                                item = _create_instance(attr_definition["class"], data[key])
+                                item = _create_instance(
+                                    attr_definition["class"], data[key]
+                                )
                             else:
                                 pass
 
@@ -149,17 +165,34 @@ class BaseClass:
                         if definition_value["data_key"] == key:
                             item = data[key]
                             if "class" in definition_value:
-                                item = _create_instance(definition_value["class"], data[key])
+                                item = _create_instance(
+                                    definition_value["class"], data[key]
+                                )
                             setattr(self, definition_key, item)
                             break
 
     @classmethod
-    def _get(cls, id=None, shortid=None, name=None, category_name=None, category_id=None,
-             parent_group_id=None, project_id=None):
+    def _get(
+        cls,
+        id=None,
+        shortid=None,
+        name=None,
+        category_name=None,
+        category_id=None,
+        parent_group_id=None,
+        project_id=None,
+    ):
 
         if isclass(cls):
-            data = cls._get_class_method(id, shortid, name, category_name, category_id,
-                                         parent_group_id, project_id)
+            data = cls._get_class_method(
+                id,
+                shortid,
+                name,
+                category_name,
+                category_id,
+                parent_group_id,
+                project_id,
+            )
             return data
         else:
             self = cls
@@ -176,8 +209,16 @@ class BaseClass:
     @classmethod
     @_create_instances_decorator(_fetched=True)
     @furthr_wrap(force_list=False)
-    def _get_class_method(cls, id=None, shortid=None, name=None, category_name=None, category_id=None,
-                          parent_group_id=None, project_id=None):
+    def _get_class_method(
+        cls,
+        id=None,
+        shortid=None,
+        name=None,
+        category_name=None,
+        category_id=None,
+        parent_group_id=None,
+        project_id=None,
+    ):
         if id:
             if len(id) == 10:
                 shortid = id
@@ -207,9 +248,15 @@ class BaseClass:
         return result
 
     @classmethod
-    def _get_many(cls, ids: List[str] = (), shortids: List[str] = (), names: List[str] = (),
-                  category_name=None, category_id=None,
-                  project_id=None) -> List[Self]:
+    def _get_many(
+        cls,
+        ids: List[str] = (),
+        shortids: List[str] = (),
+        names: List[str] = (),
+        category_name=None,
+        category_id=None,
+        project_id=None,
+    ) -> List[Self]:
         query = []
         if ids:
             for id in ids:
@@ -244,6 +291,7 @@ class BaseClass:
     @furthr_wrap(force_list=True)
     def _get_all_instance_method(self, project_id, url_query=""):
         from .project import Project
+
         if isinstance(self, Project):
             url = self.__class__._get_all_url()
         else:
@@ -258,6 +306,7 @@ class BaseClass:
     @furthr_wrap(force_list=True)
     def _get_all_class_method(cls, project_id, url_query=""):
         from .project import Project
+
         if cls in [Project]:
             url = cls._get_all_url()
         else:
@@ -267,9 +316,14 @@ class BaseClass:
             url = f"{url}?{url_query}"
         return BaseClass.fm.session.get(url)
 
-
     @classmethod
-    def _post(cls, data, project_id=None, force_list=False):
+    def _post(cls, data, project_id=None, force_list=False, endpoint=None):
+        if endpoint:
+            if force_list:
+                return cls._post_custom_url_force_list(data, endpoint)
+            else:  
+                return cls._post_custom_url(data, endpoint)
+            
         if isclass(cls):
             if force_list:
                 return cls._post_class_force_list_method(data, project_id)
@@ -278,10 +332,25 @@ class BaseClass:
         else:
             self = cls
             return self._post_instance_method(data, project_id)
-
-
+    
+    @classmethod
     @furthr_wrap(force_list=False)
-    def _post_instance_method(self, data,  project_id=None):
+    def _post_custom_url(cls, data, endpoint):
+        if not endpoint.startswith("/") and not cls.fm.base_url.endswith("/"):
+            endpoint = "/" + endpoint
+        url = cls.fm.base_url + endpoint
+        return cls.fm.session.post(url, json=data)
+    
+    @classmethod
+    @furthr_wrap(force_list=True)
+    def _post_custom_url_force_list(cls, data, endpoint):
+        if not endpoint.startswith("/") and not cls.fm.base_url.endswith("/"):
+            endpoint = "/" + endpoint
+        url = cls.fm.base_url + endpoint
+        return cls.fm.session.post(url, json=data)
+    
+    @furthr_wrap(force_list=False)
+    def _post_instance_method(self, data, project_id=None):
         url = self.__class__._post_url(project_id)
         return self.fm.session.post(url, json=data)
 
@@ -344,9 +413,10 @@ class BaseClass:
         """
 
         from furthrmind import Furthrmind
+
         data = {}
         for attr in dir(self):
-            if attr.startswith('_'):
+            if attr.startswith("_"):
                 continue
             value = getattr(self, attr)
             if callable(value):
@@ -387,10 +457,10 @@ class BaseClass:
 
         return new_item
 
+
 class BaseClassWithFieldData(BaseClass):
     id = None
     fielddata: List["FieldData"] = []
-
 
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
@@ -443,7 +513,9 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.update_value(value)
 
-    def update_field_unit(self, unit: Union[Dict, str], field_name: str = "", field_id: str = ""):
+    def update_field_unit(
+        self, unit: Union[Dict, str], field_name: str = "", field_id: str = ""
+    ):
         """
         Method to update the unit of a field.
 
@@ -487,7 +559,13 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.update_unit(unit)
 
-    def set_calculation_result(self, value: dict, field_name: str = "", field_id: str = "", fielddata_id: str = ""):
+    def set_calculation_result(
+        self,
+        value: dict,
+        field_name: str = "",
+        field_id: str = "",
+        fielddata_id: str = "",
+    ):
         """
         Method to update a calculation result
 
@@ -535,8 +613,15 @@ class BaseClassWithFieldData(BaseClass):
 
         return fielddata.set_calculation_result(value)
 
-    def add_field(self, field_name: str = "", field_type: str = "", field_id: str = "",
-                  value: Any = None, unit: Union[Dict, str] = None, position: int = None) -> "FieldData":
+    def add_field(
+        self,
+        field_name: str = "",
+        field_type: str = "",
+        field_id: str = "",
+        value: Any = None,
+        unit: Union[Dict, str] = None,
+        position: int = None,
+    ) -> "FieldData":
         """
         Method to add a field to the current item
 
@@ -581,6 +666,7 @@ class BaseClassWithFieldData(BaseClass):
         """
 
         from .fielddata import FieldData
+
         if not self._fetched:
             self._get()
 
@@ -640,8 +726,8 @@ class BaseClassWithFieldData(BaseClass):
 
         """
 
-
         from .fielddata import FieldData
+
         if not self._fetched:
             self._get()
 
@@ -660,7 +746,6 @@ class BaseClassWithFieldData(BaseClass):
         data = {"id": self.id, "fielddata": [{"id": f.id} for f in self.fielddata]}
         self._post(data)
         return fielddata_list
-
 
     def remove_field(self, field_name: str = "", field_id: str = ""):
         """
@@ -684,7 +769,6 @@ class BaseClassWithFieldData(BaseClass):
             If no field is found with the given `field_name` or `field_id`.
         """
 
-
         if not self._fetched:
             self._get()
 
@@ -703,7 +787,6 @@ class BaseClassWithFieldData(BaseClass):
             if not found:
                 new_fielddata_list.append(fielddata)
 
-
         if not fielddata_to_be_removed:
             raise ValueError("No field found with the given fieldid or fieldname")
 
@@ -713,6 +796,7 @@ class BaseClassWithFieldData(BaseClass):
         id = self._post(post_data)
         return id
 
+
 class BaseClassWithFiles(BaseClass):
     id = None
     files = []
@@ -720,7 +804,9 @@ class BaseClassWithFiles(BaseClass):
     def __init__(self, id=None, data=None):
         super().__init__(id, data)
 
-    def add_file(self, file_path: str = "", file_name: str = "", file_id: str = "") -> "File":
+    def add_file(
+        self, file_path: str = "", file_name: str = "", file_id: str = ""
+    ) -> "File":
         """
         Parameters
         ----------
@@ -744,7 +830,6 @@ class BaseClassWithFiles(BaseClass):
             If the file path specified does not exist.
         """
 
-
         from furthrmind.file_loader import FileLoader
         from .file import File
 
@@ -763,8 +848,7 @@ class BaseClassWithFiles(BaseClass):
             if not file_name:
                 file_path = file_path.replace("\\", "/")
                 file_name = os.path.basename(file_path)
-            file_data = {"id": file_id,
-                         "name": file_name}
+            file_data = {"id": file_id, "name": file_name}
         else:
             file_data = {"id": file_id}
 
@@ -829,6 +913,7 @@ class BaseClassWithFiles(BaseClass):
         id = self._post(post_data)
         return id
 
+
 class BaseClassWithGroup(BaseClass):
     id = None
     groups = []
@@ -837,7 +922,9 @@ class BaseClassWithGroup(BaseClass):
         super().__init__(id, data)
 
     @classmethod
-    def _create(cls, name, group_name: str = "", group_id: str = "", project_id: str = ""):
+    def _create(
+        cls, name, group_name: str = "", group_id: str = "", project_id: str = ""
+    ):
         """
         Internal method to create items that belong to a group: exp, sample, researchitem
 
@@ -900,8 +987,14 @@ class BaseClassWithGroup(BaseClass):
 
         new_list = []
         for data in data_list:
-            new_list.append(cls._prepare_data_for_create(name=data.get("name"), group_name=data.get("group_name"),
-                                                         group_id=data.get("group_id"), project_id=project_id))
+            new_list.append(
+                cls._prepare_data_for_create(
+                    name=data.get("name"),
+                    group_name=data.get("group_name"),
+                    group_id=data.get("group_id"),
+                    project_id=project_id,
+                )
+            )
 
         id_list = cls._post(new_list, project_id, force_list=True)
         for data, id in zip(new_list, id_list):
@@ -909,8 +1002,11 @@ class BaseClassWithGroup(BaseClass):
         return new_list
 
     @classmethod
-    def _prepare_data_for_create(cls, name, group_name = None, group_id=None, project_id=None):
+    def _prepare_data_for_create(
+        cls, name, group_name=None, group_id=None, project_id=None
+    ):
         from furthrmind.collection import Group
+
         assert name, "Name must be specified"
         assert group_name or group_id, "Either group_name or group_id must be specified"
 
@@ -925,6 +1021,89 @@ class BaseClassWithGroup(BaseClass):
         data = {"name": name, "groups": [{"id": group_id}]}
 
         return data
+    
+    @classmethod
+    def copy(
+        cls,
+        item_to_be_copied_id: str,
+        name: str,
+        group_id: str = None,
+        group_name: str = None,
+        fielddata: bool = True,
+        files: bool = True,
+        datatable: bool = True,
+        project_id: str = None,
+    ) -> Self:
+        """_summary_
+
+        Parameters
+        ----------
+        item_to_be_copied_id : str, optional
+            the id of the item that should be copied
+        name : str, optional
+            the name of the new item
+        group_id : str, optional
+            id of the group, where the new item should be created, Either `group_id` or `group_name` must be specified, by default None
+        group_name : str, optional
+            the name of the group, where the new item should be created, Either group_name or group_id must be specified, by default None
+        fielddata : bool, optional
+            whether the fielddata should be copied or not, by default True
+        files : bool, optional
+            whether the files of the item should be copied or not, by default True
+        datatables : bool, optional
+            whether the datatables of the item should be copied or not, by default True
+        project_id : str, optional
+            if the item should be created in another project. If None, the project is used the furthrmind sdk was initiated with, by default None
+
+        Returns
+        -------
+        Self
+            A new instance of the class
+
+        Raises
+        ------
+        AssertionError
+            if name is not set or not a string
+        AssertionError
+            if group_id and group_name are not set
+        """
+
+        assert name and isinstance(name, str), "Name must be a string"
+        assert group_id or group_name, "Either group_id or group_name must be specified"
+        
+        item_to_be_copied = cls.get(item_to_be_copied_id)
+        if not item_to_be_copied:
+            raise ValueError("Item to be copied not found")
+        
+        if not project_id:
+            project_id = cls.fm.project_id
+            
+        if not group_id and group_name:
+            group = cls.fm.Group.get(name=group_name, project_id=project_id)
+            group_id = group.id
+ 
+        data = {
+            "targetProject": project_id,
+            "targetGroup": group_id,
+            "sourceId": item_to_be_copied_id,
+            "collection": cls.__name__,
+            # includeExps: true,
+            # includeSamples: true,
+            # includeResearchItems: true,
+            # includeSubgroups: true,
+            "includeFields": fielddata,
+            "includeRawData": datatable,
+            "includeFiles": files}
+        
+        result = cls._post(data, endpoint="/copy-item")
+        new_id = result.get("id")
+        new_item = cls.get(new_id)
+        
+        update_id = new_item.update_name(name)
+        if not update_id == new_id:
+            new_item.delete()
+            raise ValueError("Error updating the name, most likely name conflict")
+        return new_item
 
 class BaseClassWithLinking(BaseClass):
     id: str = ""
@@ -960,7 +1139,10 @@ class BaseClassWithLinking(BaseClass):
         """
 
         from furthrmind.collection import Experiment
-        assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
+
+        assert (
+            experiment_id or experiment_name
+        ), "Either experiment_id or experiment_name must be specified"
 
         if not self._fetched:
             self._get()
@@ -980,10 +1162,7 @@ class BaseClassWithLinking(BaseClass):
         experiment_id_list.append(experiment_id)
 
         linked_experiment = [{"id": exp_id} for exp_id in experiment_id_list]
-        data = {
-            "id": self.id,
-                "experiments": linked_experiment
-        }
+        data = {"id": self.id, "experiments": linked_experiment}
 
         self._post(data=data)
         new_linked_experiments = list(self.linked_experiments)
@@ -991,7 +1170,9 @@ class BaseClassWithLinking(BaseClass):
         self.linked_experiments = new_linked_experiments
         return self.id
 
-    def remove_linked_experiment(self, experiment_id: str = "", experiment_name: str = ""):
+    def remove_linked_experiment(
+        self, experiment_id: str = "", experiment_name: str = ""
+    ):
         """
         Method to remove a linked experiment from the current item.
 
@@ -1017,13 +1198,16 @@ class BaseClassWithLinking(BaseClass):
         """
 
         from furthrmind.collection import Experiment
-        assert experiment_id or experiment_name, "Either experiment_id or experiment_name must be specified"
+
+        assert (
+            experiment_id or experiment_name
+        ), "Either experiment_id or experiment_name must be specified"
 
         if not self._fetched:
             self._get()
 
         if experiment_name:
-            exp = Experiment.get(name = experiment_name)
+            exp = Experiment.get(name=experiment_name)
             if not exp:
                 raise ValueError("No exp found with the given name")
             experiment_id = exp.id
@@ -1037,10 +1221,7 @@ class BaseClassWithLinking(BaseClass):
             experiment_id_list.append(item.id)
 
         linked_experiment = [{"id": exp_id} for exp_id in experiment_id_list]
-        data = {
-            "id": self.id,
-                "experiments": linked_experiment
-        }
+        data = {"id": self.id, "experiments": linked_experiment}
 
         self._post(data=data)
         self.linked_experiments = new_linked_items
@@ -1070,7 +1251,10 @@ class BaseClassWithLinking(BaseClass):
         """
 
         from furthrmind.collection import Sample
-        assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        assert (
+            sample_id or sample_name
+        ), "Either sample_id or sample_name must be specified"
 
         if not self._fetched:
             self._get()
@@ -1091,10 +1275,7 @@ class BaseClassWithLinking(BaseClass):
 
         linked_samples = [{"id": s_id} for s_id in sample_id_list]
 
-        data = {
-            "id": self.id,
-            "samples": linked_samples
-        }
+        data = {"id": self.id, "samples": linked_samples}
 
         self._post(data=data)
         new_linked_samples = list(self.linked_samples)
@@ -1130,7 +1311,10 @@ class BaseClassWithLinking(BaseClass):
         """
 
         from furthrmind.collection import Sample
-        assert sample_id or sample_name, "Either sample_id or sample_name must be specified"
+
+        assert (
+            sample_id or sample_name
+        ), "Either sample_id or sample_name must be specified"
 
         if not self._fetched:
             self._get()
@@ -1151,10 +1335,7 @@ class BaseClassWithLinking(BaseClass):
 
         linked_samples = [{"id": s_id} for s_id in sample_id_list]
 
-        data = {
-            "id": self.id,
-            "samples": linked_samples
-        }
+        data = {"id": self.id, "samples": linked_samples}
         self._post(data=data)
         self.linked_samples = new_linked_items
         return self.id
@@ -1181,6 +1362,7 @@ class BaseClassWithLinking(BaseClass):
         """
 
         from furthrmind.collection import ResearchItem
+
         assert researchitem_id, "researchitem_id must be specified"
 
         if not self._fetched:
@@ -1188,7 +1370,9 @@ class BaseClassWithLinking(BaseClass):
 
         researchitem_id_list = []
         for cat in self.linked_researchitems:
-            researchitem_id_list.extend([ri_id.id for ri_id in self.linked_researchitems[cat]])
+            researchitem_id_list.extend(
+                [ri_id.id for ri_id in self.linked_researchitems[cat]]
+            )
 
         if researchitem_id in researchitem_id_list:
             return self.id
@@ -1197,11 +1381,7 @@ class BaseClassWithLinking(BaseClass):
 
         linked_researchitems = [{"id": ri_id} for ri_id in researchitem_id_list]
 
-
-        data = {
-            "id": self.id,
-            "researchitems": linked_researchitems
-        }
+        data = {"id": self.id, "researchitems": linked_researchitems}
 
         self._post(data=data)
         ri = ResearchItem.get(id=researchitem_id)
@@ -1253,10 +1433,7 @@ class BaseClassWithLinking(BaseClass):
 
         linked_researchitems = [{"id": ri_id} for ri_id in researchitem_id_list]
 
-        data = {
-            "id": self.id,
-            "researchitems": linked_researchitems
-        }
+        data = {"id": self.id, "researchitems": linked_researchitems}
 
         self._post(data=data)
         self.linked_researchitems = new_linked_items
@@ -1292,7 +1469,7 @@ class BaseClassWithNameUpdate(BaseClass):
         return id
 
     @classmethod
-    def update_many_names(cls, data_list: [List[Dict[str, str]]]) -> List[str]:
+    def update_many_names(cls, data_list: List[Dict[str, str]]) -> List[str]:
         """
         Method to update the name of many items.
 
@@ -1318,14 +1495,18 @@ class BaseClassWithNameUpdate(BaseClass):
 
         new_data_list = []
         for data in data_list:
-            assert isinstance(data, dict), "Each entry in the data list must be a dictionary"
-            assert "name" in data and "id" in data, "Each entry must have a key 'name' and a key 'id'"
+            assert isinstance(
+                data, dict
+            ), "Each entry in the data list must be a dictionary"
+            assert (
+                "name" in data and "id" in data
+            ), "Each entry must have a key 'name' and a key 'id'"
             new_data_list.append({"id": data["id"], "name": data["name"]})
-
 
         id_list = cls._post(new_data_list, force_list=True)
 
         return id_list
+
 
 class BaseClassWithProtected(BaseClass):
     id = None
@@ -1362,7 +1543,7 @@ class BaseClassWithProtected(BaseClass):
         return id
 
     @classmethod
-    def update_many_protected(cls, data_list: [List[Dict[str, str]]]) -> List[str]:
+    def update_many_protected(cls, data_list: List[Dict[str, str]]) -> List[str]:
         """
         With this method the protection state of many items are updated.
 
@@ -1388,12 +1569,16 @@ class BaseClassWithProtected(BaseClass):
 
         new_data_list = []
         for data in data_list:
-            assert isinstance(data, dict), "Each entry in the data list must be a dictionary"
-            assert "protected" in data and "id" in data, "Each entry must have a key 'name' and a key 'id'"
+            assert isinstance(
+                data, dict
+            ), "Each entry in the data list must be a dictionary"
+            assert (
+                "protected" in data and "id" in data
+            ), "Each entry must have a key 'name' and a key 'id'"
             assert isinstance(data["protected"], bool), "protected must be a boolean"
             new_data_list.append({"id": data["id"], "protected": data["protected"]})
-
 
         id_list = cls._post(new_data_list, force_list=True)
 
         return id_list
+

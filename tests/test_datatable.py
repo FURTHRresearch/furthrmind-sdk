@@ -37,6 +37,7 @@ def test_add_column(fm):
     
     for col in new_datatable.columns:
         if col.name == "col3":
+            col.get()
             assert col.values == ["aaa", "bbb", "ccc"]
             
             

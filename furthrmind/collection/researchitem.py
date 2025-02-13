@@ -6,7 +6,7 @@ from typing_extensions import List, Dict, Self, TYPE_CHECKING
 from inspect import isclass
 
 if TYPE_CHECKING:
-    from furthrmind.collection import File, FieldData, Sample, Group, Category, DataTable
+    from furthrmind.collection import File, FieldData, Sample, Group, Category, DataTable, Experiment
 
 class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGroup, BaseClassWithLinking,
                    BaseClassWithNameUpdate, BaseClassWithProtected, BaseClass ):
@@ -60,6 +60,7 @@ class ResearchItem(BaseClassWithFieldData, BaseClassWithFiles, BaseClassWithGrou
 
     id = ""
     name = ""
+    neglect = False
     neglect = False
     protected = False
     shortid = ""
