@@ -14,7 +14,7 @@ def test_copy_sample(fm: Furthrmind):
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     new_name = f"Test copy {random_string}"
     
-    new_sample = fm.Sample.copy(sample_id, new_name, group_name="Default group", files=True, datatable=True)
+    new_sample = fm.Sample.copy(sample_id, new_name, group_name="Default group", files=True, datatables=True)
     assert new_sample.name == new_name
     assert len(new_sample.fielddata) == len(sample.fielddata)
     import time

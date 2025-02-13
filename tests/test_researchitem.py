@@ -25,7 +25,7 @@ def test_copy_researchitem(fm: Furthrmind):
     random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     new_name = f"Test copy {random_string}"
     
-    new_ri = fm.ResearchItem.copy(ri_id, new_name, group_name="Default group", files=True, datatable=True)
+    new_ri = fm.ResearchItem.copy(ri_id, new_name, group_name="Default group", files=True, datatables=True)
     assert new_ri.name == new_name
     assert len(new_ri.fielddata) == len(ri.fielddata)
     import time
