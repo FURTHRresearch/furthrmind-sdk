@@ -258,8 +258,8 @@ class ComboBoxEntry(BaseClassWithFieldData):
                             field_id = field.id
                             data["field_id"] = field_id
                             break
-                        if not data.get("field_id"):
-                            raise ValueError(f"Field with given name '{field_name}' not found")
+                    if not data.get("field_id"):
+                        raise ValueError(f"Field with given name '{field_name}' not found")
 
         new_data_list = []
         for data in data_list:
